@@ -27,8 +27,6 @@ public class Cell implements Drawable {
         this.actor = actor;
     }
 
-
-
     public Actor getActor() {
         return actor;
     }
@@ -36,7 +34,6 @@ public class Cell implements Drawable {
     public Cell getNeighbor(int dx, int dy) {
         return gameMap.getCell(x + dx, y + dy);
     }
-
 
     @Override
     public String getTileName() {
