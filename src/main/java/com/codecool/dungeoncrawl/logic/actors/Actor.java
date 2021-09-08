@@ -24,7 +24,7 @@ public abstract class Actor implements Drawable {
     }
 
     private boolean tryToGetMove (CellType neighbourCellType){
-        return(neighbourCellType != CellType.WALL && neighbourCellType != CellType.SKELETON);
+        return(neighbourCellType != CellType.WALL && neighbourCellType != CellType.ENEMY);
     }
 
     public int getHealth() {
