@@ -6,14 +6,15 @@ public enum CellType {
     WALL("wall"),
     ENEMY("enemy"),
     ITEM("item"),
-
     ;
 
     private final String tileName;
 
+
     CellType(String tileName) {
         this.tileName = tileName;
     }
+
 
     public String getTileName() {
         return tileName;
