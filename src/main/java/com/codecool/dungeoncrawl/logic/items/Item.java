@@ -13,9 +13,9 @@ public abstract class Item implements Drawable {
     protected Item(Cell cell) {
         this.cell = cell;
         this.cell.setItem(this);
-        this.health = 10;
-        this.attack = 10;
-        this.armor = 10;
+        this.health = 0;
+        this.attack = 0;
+        this.armor = 0;
 
     }
 private void updatePlayerHeatlh (Actor player){
