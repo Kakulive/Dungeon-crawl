@@ -45,10 +45,7 @@ public class Main extends Application {
 
         // TODO: fix that the Player can make move only with pressed shift
         ui.add(pickUpButton, 0, 3);
-        pickUpButton.setOnAction(value ->  {
-            //
-            ui.add(new Label("Clicked"), 0, 4);
-        });
+        pickUpButton.setOnAction(value -> map.getPlayer().pickUpItem());
 
 
         BorderPane borderPane = new BorderPane();
