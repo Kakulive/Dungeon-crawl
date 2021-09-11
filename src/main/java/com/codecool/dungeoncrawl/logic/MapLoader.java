@@ -32,6 +32,15 @@ public class MapLoader {
                         case '.':
                             cell.setType(CellType.FLOOR);
                             break;
+                        case 'l':
+                            cell.setType(CellType.STAIRS);
+                            break;
+                        case 'd':
+                            cell.setType(CellType.CLOSED_DOOR);
+                            break;
+                        case 'k':
+                            cell.setType(CellType.KEY);
+                            break;
                         case 's':
                             cell.setType(CellType.ENEMY);
                             new Skeleton(cell);
@@ -40,7 +49,7 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             map.setPlayer(new Player(cell));
                             break;
-                        case 'k':
+                        case 'i':
                             cell.setType(CellType.ITEM);
                             new Sword(cell);
                             break;
