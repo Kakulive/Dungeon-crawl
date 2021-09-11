@@ -35,8 +35,7 @@ public class Skeleton extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-        System.out.println("I am moving!");
-        // TODO fix me
+        // Skeletons don't move!
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 
 public class Wizard extends Actor {
     private int health = 12;
@@ -35,9 +36,12 @@ public class Wizard extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-        System.out.println("I am moving!");
-        // TODO fix me
-
+        Cell nextCell = cell.getSpecificCell(dx, dy);
+        cell.setActor(null);
+        cell.setType(CellType.FLOOR);
+        nextCell.setActor(this);
+        nextCell.setType(CellType.ENEMY);
+        cell = nextCell;
     }
 
     @Override

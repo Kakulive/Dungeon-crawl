@@ -6,7 +6,7 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.GameMap;
 
 public abstract class Actor implements Drawable {
-    private Cell cell;
+    protected Cell cell;
     private int health = 10;
     private int attack = 5;
     private int armor = 0;
@@ -65,7 +65,7 @@ public abstract class Actor implements Drawable {
         }
     }
 
-    private boolean isClosedDoor(CellType neighbourCellType) {
+    protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
 
     }
@@ -104,7 +104,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    private boolean isWall(CellType neighbourCellType) {
+    protected boolean isWall(CellType neighbourCellType) {
         return neighbourCellType == CellType.WALL;
     }
 
