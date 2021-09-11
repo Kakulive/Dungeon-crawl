@@ -3,12 +3,14 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
 public abstract class Actor implements Drawable {
-    private Cell cell;
+    protected Cell cell;
     private int health = 10;
     private int attack = 5;
     private int armor = 0;
+    public static int enemyIdCounter = 1;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -63,7 +65,7 @@ public abstract class Actor implements Drawable {
         }
     }
 
-    private boolean isClosedDoor(CellType neighbourCellType) {
+    protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
 
     }
@@ -89,6 +91,8 @@ public abstract class Actor implements Drawable {
     }
 
     private void killEnemyAndMove(Cell nextCell) {
+        int defeatedEnemyId = nextCell.getActor().getId();
+        GameMap.removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
         nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
@@ -100,7 +104,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    private boolean isWall(CellType neighbourCellType) {
+    protected boolean isWall(CellType neighbourCellType) {
         return neighbourCellType == CellType.WALL;
     }
 
@@ -134,6 +138,10 @@ public abstract class Actor implements Drawable {
 
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    public int getId() {
+        return 0;
     }
 
     public void setAttack(int attack) {

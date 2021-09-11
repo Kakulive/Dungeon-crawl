@@ -13,4 +13,8 @@ public class Randomizer {
         int randomInt = validNumbers.get(random.nextInt(validNumbers.size()));
         return randomInt;
     }
+
+    public int getRandomNumber(int length){
+        return random.nextInt(length);
+    }
 }

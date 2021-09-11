@@ -6,19 +6,22 @@ import com.codecool.dungeoncrawl.logic.utils.Randomizer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GameMap {
-    private int width;
-    private int height;
-    private Cell[][] cells;
+    private final int width;
+    private final int height;
+    private final Cell[][] cells;
 
     private Player player;
-    private List<Actor> enemiesList;
+    public static List<Actor> enemiesList;
+
+    private final Randomizer randomizer = new Randomizer();
 
     public GameMap(int width, int height, CellType defaultCellType) {
         this.width = width;
         this.height = height;
-        this.enemiesList = new ArrayList<>();
+        enemiesList = new ArrayList<>();
         cells = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -27,13 +30,64 @@ public class GameMap {
         }
     }
     public void moveEnemies(GameMap map) {
-        Randomizer randomizer = new Randomizer();
         List<Actor> enemiesList = map.getEnemiesList();
         for (Actor enemy: enemiesList) {
-            int dx = randomizer.rollRandomMove();
-            int dy = randomizer.rollRandomMove();
+            int x = enemy.getX();
+            int y = enemy.getY();
+            int dx, dy;
+            if(Objects.equals(enemy.getTileName(), "spider")){
+                int[] moveCoordinates = getSpiderMoveCooridnates(map, x, y);
+                dx = moveCoordinates[0];
+                dy = moveCoordinates[1];
+            } else if (Objects.equals(enemy.getTileName(), "wizard")) {
+                int[] moveCoordinates = getWizardMoveCoordinates(map, x, y);
+                dx = moveCoordinates[0];
+                dy = moveCoordinates[1];
+            } else {
+                dx = 0;
+                dy = 0;
+            }
             enemy.move(dx, dy);
         }
+    }
+
+    private int[] getSpiderMoveCooridnates(GameMap map, int x, int y){
+        int dx = randomizer.rollRandomMove();
+        int dy = randomizer.rollRandomMove();
+        while (isSpiderMoveValid(map, x, y, dx, dy)){
+            dx = randomizer.rollRandomMove();
+            dy = randomizer.rollRandomMove();
+        }
+        int[] moveCoordinates = new int[2];
+        moveCoordinates[0] = dx;
+        moveCoordinates[1] = dy;
+        return moveCoordinates;
+    }
+
+    private boolean isSpiderMoveValid(GameMap map, int x, int y, int dx, int dy) {
+        return map.getCell(x + dx, y + dy).getActor() != null
+                || map.getCell(x + dx, y + dy).getType() == CellType.WALL
+                || map.getCell(x + dx, y + dy).getType() == CellType.CLOSED_DOOR;
+    }
+
+    private int[] getWizardMoveCoordinates(GameMap map, int x, int y){
+        int newX = randomizer.getRandomNumber(width);
+        int newY = randomizer.getRandomNumber(height);
+        while (isWizardMoveValid(map, newX, newY)){
+            newX = randomizer.getRandomNumber(width);
+            newY = randomizer.getRandomNumber(height);
+        }
+        int[] moveCoordinates = new int[2];
+        moveCoordinates[0] = newX;
+        moveCoordinates[1] = newY;
+        return moveCoordinates;
+    }
+
+    private boolean isWizardMoveValid(GameMap map, int newX, int newY) {
+        return map.getCell(newX, newY).getActor() != null
+                || map.getCell(newX, newY).getType() == CellType.WALL
+                || map.getCell(newX, newY).getType() == CellType.CLOSED_DOOR
+                || map.getCell(newX, newY).getType() == CellType.EMPTY;
     }
 
     public Cell getCell(int x, int y) {
@@ -61,6 +115,10 @@ public class GameMap {
     }
 
     public void addEnemyToList(Actor enemy) {
-        this.enemiesList.add(enemy);
+        enemiesList.add(enemy);
+    }
+
+    public static void removeEnemyFromList(int id) {
+        enemiesList.removeIf(enemy -> enemy.getId() == id);
     }
 }

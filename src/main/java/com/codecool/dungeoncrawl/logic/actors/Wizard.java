@@ -1,13 +1,17 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 
 public class Wizard extends Actor {
     private int health = 12;
     private final int attack = 5;
+    private final int id;
 
     public Wizard(Cell cell) {
         super(cell);
+        this.id = Actor.enemyIdCounter;
+        Actor.enemyIdCounter++;
     }
 
     @Override
@@ -32,8 +36,16 @@ public class Wizard extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-        System.out.println("I am moving!");
-        // TODO fix me
+        Cell nextCell = cell.getSpecificCell(dx, dy);
+        cell.setActor(null);
+        cell.setType(CellType.FLOOR);
+        nextCell.setActor(this);
+        nextCell.setType(CellType.ENEMY);
+        cell = nextCell;
+    }
 
+    @Override
+    public int getId() {
+        return id;
     }
 }

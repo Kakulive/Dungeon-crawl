@@ -1,13 +1,17 @@
 package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 
 public class Spider extends Actor {
     private int health = 2;
     private final int attack = 1;
+    private final int id;
 
     public Spider(Cell cell) {
         super(cell);
+        this.id = Actor.enemyIdCounter;
+        Actor.enemyIdCounter++;
     }
 
     @Override
@@ -32,7 +36,17 @@ public class Spider extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-        System.out.println("I am moving!");
-        // TODO fix me
+        Cell nextCell = cell.getNeighbor(dx, dy);
+        cell.setActor(null);
+        cell.setType(CellType.FLOOR);
+        nextCell.setActor(this);
+        nextCell.setType(CellType.ENEMY);
+        cell = nextCell;
+    }
+
+
+    @Override
+    public int getId() {
+        return id;
     }
 }
