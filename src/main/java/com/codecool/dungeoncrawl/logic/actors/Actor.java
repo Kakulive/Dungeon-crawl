@@ -25,6 +25,14 @@ public abstract class Actor implements Drawable {
         }
     }
 
+    public void pickUpItem(){
+        Cell nextCell = cell.getNeighbor(0, 0);
+        CellType cellType = nextCell.getType();
+        if (cellType.equals(CellType.ITEM)){
+            nextCell.setType(CellType.FLOOR);
+        }
+    }
+
     private void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
@@ -108,4 +116,8 @@ public abstract class Actor implements Drawable {
     public void setHealth(int health) {
         this.health = health;
     }
-};
+
+    public void setAttack(int attack) {this.attack = attack;}
+
+    public void setArmor(int armor) {this.armor = armor;}
+}

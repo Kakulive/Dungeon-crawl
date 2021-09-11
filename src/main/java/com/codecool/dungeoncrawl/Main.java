@@ -8,7 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -24,6 +24,7 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label attackLabel = new Label();
     Label armorLabel = new Label();
+    Button pickUpButton = new Button("Pick up");
 
     public static void main(String[] args) {
         launch(args);
@@ -42,6 +43,10 @@ public class Main extends Application {
         ui.add(new Label("Armor: "), 0, 2);
         ui.add(armorLabel, 1, 2);
 
+        // TODO: fix that the Player can make move only with pressed shift
+        ui.add(pickUpButton, 0, 3);
+        pickUpButton.setOnAction(value -> map.getPlayer().pickUpItem());
+
 
         BorderPane borderPane = new BorderPane();
 
@@ -52,7 +57,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         refresh();
         scene.setOnKeyPressed(this::onKeyPressed);
-
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
     }
@@ -95,4 +99,6 @@ public class Main extends Application {
         attackLabel.setText("" + map.getPlayer().getAttack());
         armorLabel.setText("" + map.getPlayer().getArmor());
     }
+
+
 }
