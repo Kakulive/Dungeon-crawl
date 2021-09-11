@@ -46,15 +46,18 @@ public class MapLoader {
                             break;
                         case 's':
                             cell.setType(CellType.ENEMY);
-                            new Skeleton(cell);
+                            Skeleton skeleton = new Skeleton(cell);
+                            map.addEnemyToList(skeleton);
                             break;
                         case 'p':
                             cell.setType(CellType.ENEMY);
-                            new Spider(cell);
+                            Spider spider = new Spider(cell);
+                            map.addEnemyToList(spider);
                             break;
                         case 'w':
                             cell.setType(CellType.ENEMY);
-                            new Wizard(cell);
+                            Wizard wizard = new Wizard(cell);
+                            map.addEnemyToList(wizard);
                             break;
                         case '@':
                             cell.setType(CellType.FLOOR);

@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -14,6 +15,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.beans.EventHandler;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -44,10 +47,7 @@ public class Main extends Application {
         ui.add(new Label("Armor: "), 0, 2);
         ui.add(armorLabel, 1, 2);
 
-        // TODO: fix that the Player can make move only with pressed shift
         ui.add(pickUpButton, 0, 3);
-        pickUpButton.setOnAction(value -> map.getPlayer().pickUpItem());
-
 
         BorderPane borderPane = new BorderPane();
 
@@ -60,27 +60,31 @@ public class Main extends Application {
         scene.setOnKeyPressed(this::onKeyPressed);
         primaryStage.setTitle("Dungeon Crawl");
         primaryStage.show();
+        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+
+        pickUpButton.setOnAction(event -> {
+            map.getPlayer().pickUpItem();
+            borderPane.requestFocus();
+        });
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
-                refresh();
                 break;
             case DOWN:
                 map.getPlayer().move(0, 1);
-                refresh();
                 break;
             case LEFT:
                 map.getPlayer().move(-1, 0);
-                refresh();
                 break;
             case RIGHT:
                 map.getPlayer().move(1,0);
-                refresh();
                 break;
         }
+        refresh();
+        map.moveEnemies(map);
     }
 
     private void refresh() {

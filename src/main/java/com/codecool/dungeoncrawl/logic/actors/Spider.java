@@ -30,5 +30,9 @@ public class Spider extends Actor {
         return attack;
     }
 
-
+    @Override
+    public void move(int dx, int dy) {
+        System.out.println("I am moving!");
+        // TODO fix me
+    }
 }

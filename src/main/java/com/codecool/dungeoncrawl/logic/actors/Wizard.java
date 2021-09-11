@@ -29,4 +29,11 @@ public class Wizard extends Actor {
     public void setHealth(int health) {
         this.health = health;
     }
+
+    @Override
+    public void move(int dx, int dy) {
+        System.out.println("I am moving!");
+        // TODO fix me
+
+    }
 }
