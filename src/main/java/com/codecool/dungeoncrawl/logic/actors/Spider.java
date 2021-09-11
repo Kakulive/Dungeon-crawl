@@ -5,9 +5,12 @@ import com.codecool.dungeoncrawl.logic.Cell;
 public class Spider extends Actor {
     private int health = 2;
     private final int attack = 1;
+    private final int id;
 
     public Spider(Cell cell) {
         super(cell);
+        this.id = Actor.enemyIdCounter;
+        Actor.enemyIdCounter++;
     }
 
     @Override
@@ -34,5 +37,10 @@ public class Spider extends Actor {
     public void move(int dx, int dy) {
         System.out.println("I am moving!");
         // TODO fix me
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }

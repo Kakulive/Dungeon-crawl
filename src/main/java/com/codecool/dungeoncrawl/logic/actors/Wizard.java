@@ -5,9 +5,12 @@ import com.codecool.dungeoncrawl.logic.Cell;
 public class Wizard extends Actor {
     private int health = 12;
     private final int attack = 5;
+    private final int id;
 
     public Wizard(Cell cell) {
         super(cell);
+        this.id = Actor.enemyIdCounter;
+        Actor.enemyIdCounter++;
     }
 
     @Override
@@ -35,5 +38,10 @@ public class Wizard extends Actor {
         System.out.println("I am moving!");
         // TODO fix me
 
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }
