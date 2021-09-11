@@ -5,15 +5,20 @@ public enum CellType {
     FLOOR("floor"),
     WALL("wall"),
     ENEMY("enemy"),
-    ITEM("item"),
-
+    ITEM("sword"),
+    OPEN_DOOR("open_door"),
+    CLOSED_DOOR("closed_door"),
+    KEY("key"),
+    STAIRS("stairs"),
     ;
 
     private final String tileName;
 
+
     CellType(String tileName) {
         this.tileName = tileName;
     }
+
 
     public String getTileName() {
         return tileName;

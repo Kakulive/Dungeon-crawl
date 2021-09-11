@@ -16,12 +16,33 @@ public abstract class Actor implements Drawable {
     }
 
     public void move(int dx, int dy) {
+        Player player = (Player) cell.getActor();
         Cell nextCell = cell.getNeighbor(dx, dy);
         CellType cellType = nextCell.getType();
         if (isEnemy(cellType)) {
             battleMove(nextCell);
-        } else if (!isWall(cellType)) {
+        } else if (isClosedDoor(cellType)) {
+            if (player.getHasKey()) {
+                openDoor(nextCell);
+            } else {
+                System.out.println("You need a key!");
+                //TODO flash using javafx
+            }
+        } else if (!isWall(cellType) && !isClosedDoor(cellType))  {
             standardMove(nextCell);
+        }
+    }
+
+    private void openDoor(Cell nextcell) {
+        nextcell.setType(CellType.OPEN_DOOR);
+    }
+
+    public void pickUpItem() {
+        Cell nextCell = cell.getNeighbor(0, 0);
+        CellType cellType = nextCell.getType();
+        if (cellType.equals(CellType.ITEM)) {
+            nextCell.setType(CellType.FLOOR);
+            // TODO add item to inventory
         }
     }
 
@@ -39,6 +60,11 @@ public abstract class Actor implements Drawable {
         } else {
             killEnemyAndMove(nextCell);
         }
+    }
+
+    private boolean isClosedDoor(CellType neighbourCellType) {
+        return neighbourCellType == CellType.CLOSED_DOOR;
+
     }
 
     private boolean isOneShot(Actor player, Actor enemy) {
@@ -108,4 +134,12 @@ public abstract class Actor implements Drawable {
     public void setHealth(int health) {
         this.health = health;
     }
-};
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public void setArmor(int armor) {
+        this.armor = armor;
+    }
+}
