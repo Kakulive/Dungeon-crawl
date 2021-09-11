@@ -27,6 +27,7 @@ public class Main extends Application {
     Button pickUpButton = new Button("Pick up");
 
     public static void main(String[] args) {
+
         launch(args);
     }
 

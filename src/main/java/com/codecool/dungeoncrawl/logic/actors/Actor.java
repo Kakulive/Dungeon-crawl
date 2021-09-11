@@ -38,11 +38,12 @@ public abstract class Actor implements Drawable {
     }
 
     public void pickUpItem() {
-        Cell nextCell = cell.getNeighbor(0, 0);
-        CellType cellType = nextCell.getType();
+        Cell currentCell = cell.getNeighbor(0, 0);
+        CellType cellType = currentCell.getType();
         if (cellType.equals(CellType.ITEM)) {
-            nextCell.setType(CellType.FLOOR);
+            currentCell.setType(CellType.FLOOR);
             // TODO add item to inventory
+            // TODO if ITEM is key, player.hasKey, change hasKey to true
         }
     }
 

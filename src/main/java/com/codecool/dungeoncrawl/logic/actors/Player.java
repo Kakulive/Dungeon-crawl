@@ -7,7 +7,7 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
-        this.hasKey = false;
+        this.hasKey = false; //TODO change once inventory is implemented
     }
 
     public String getTileName() {
