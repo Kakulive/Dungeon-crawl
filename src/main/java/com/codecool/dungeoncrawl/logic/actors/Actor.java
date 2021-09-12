@@ -9,6 +9,7 @@ public abstract class Actor implements Drawable {
     private int health = 10;
     private int attack = 5;
     private int armor = 0;
+    private String itemUrl;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -30,6 +31,17 @@ public abstract class Actor implements Drawable {
         CellType cellType = nextCell.getType();
         if (cellType.equals(CellType.ITEM)){
             nextCell.setType(CellType.FLOOR);
+            switch (cellType.getTileName()) {
+                case "sword":
+                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
+                    break;
+                case "heart":
+                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
+                    break;
+                case "key":
+                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
+                    break;
+            }
         }
     }
 
@@ -120,4 +132,12 @@ public abstract class Actor implements Drawable {
     public void setAttack(int attack) {this.attack = attack;}
 
     public void setArmor(int armor) {this.armor = armor;}
+
+    public String getItemUrl() {
+        return itemUrl;
+    }
+
+    public void setItemUrl(String itemUrl) {
+        this.itemUrl = itemUrl;
+    }
 }
