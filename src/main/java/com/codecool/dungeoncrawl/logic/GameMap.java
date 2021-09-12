@@ -36,7 +36,7 @@ public class GameMap {
             int y = enemy.getY();
             int dx, dy;
             if(Objects.equals(enemy.getTileName(), "spider")){
-                int[] moveCoordinates = getSpiderMoveCooridnates(map, x, y);
+                int[] moveCoordinates = getSpiderMoveCoordinates(map, x, y);
                 dx = moveCoordinates[0];
                 dy = moveCoordinates[1];
             } else if (Objects.equals(enemy.getTileName(), "wizard")) {
@@ -51,10 +51,10 @@ public class GameMap {
         }
     }
 
-    private int[] getSpiderMoveCooridnates(GameMap map, int x, int y){
+    private int[] getSpiderMoveCoordinates(GameMap map, int x, int y){
         int dx = randomizer.rollRandomMove();
         int dy = randomizer.rollRandomMove();
-        while (isSpiderMoveValid(map, x, y, dx, dy)){
+        while (!isSpiderMoveValid(map, x, y, dx, dy)){
             dx = randomizer.rollRandomMove();
             dy = randomizer.rollRandomMove();
         }
@@ -65,15 +65,14 @@ public class GameMap {
     }
 
     private boolean isSpiderMoveValid(GameMap map, int x, int y, int dx, int dy) {
-        return map.getCell(x + dx, y + dy).getActor() != null
-                || map.getCell(x + dx, y + dy).getType() == CellType.WALL
-                || map.getCell(x + dx, y + dy).getType() == CellType.CLOSED_DOOR;
+        CellType cellType = map.getCell(x + dx, y + dy).getType();
+        return map.getCell(x + dx, y + dy).getActor() == null && cellType == CellType.FLOOR;
     }
 
     private int[] getWizardMoveCoordinates(GameMap map, int x, int y){
         int newX = randomizer.getRandomNumber(width);
         int newY = randomizer.getRandomNumber(height);
-        while (isWizardMoveValid(map, newX, newY)){
+        while (!isWizardMoveValid(map, newX, newY)){
             newX = randomizer.getRandomNumber(width);
             newY = randomizer.getRandomNumber(height);
         }
@@ -84,10 +83,8 @@ public class GameMap {
     }
 
     private boolean isWizardMoveValid(GameMap map, int newX, int newY) {
-        return map.getCell(newX, newY).getActor() != null
-                || map.getCell(newX, newY).getType() == CellType.WALL
-                || map.getCell(newX, newY).getType() == CellType.CLOSED_DOOR
-                || map.getCell(newX, newY).getType() == CellType.EMPTY;
+        CellType cellType = map.getCell(newX, newY).getType();
+        return map.getCell(newX, newY).getActor() == null && cellType == CellType.FLOOR;
     }
 
     public Cell getCell(int x, int y) {
