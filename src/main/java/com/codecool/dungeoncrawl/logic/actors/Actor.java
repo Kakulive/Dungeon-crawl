@@ -3,12 +3,14 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
 public abstract class Actor implements Drawable {
-    private Cell cell;
+    protected Cell cell;
     private int health = 10;
     private int attack = 5;
     private int armor = 0;
+    public static int enemyIdCounter = 1;
     private String itemUrl;
 
     public Actor(Cell cell) {
@@ -17,20 +19,34 @@ public abstract class Actor implements Drawable {
     }
 
     public void move(int dx, int dy) {
+        Player player = (Player) cell.getActor();
         Cell nextCell = cell.getNeighbor(dx, dy);
         CellType cellType = nextCell.getType();
         if (isEnemy(cellType)) {
             battleMove(nextCell);
-        } else if (!isWall(cellType)) {
+        } else if (isClosedDoor(cellType)) {
+            if (player.getHasKey()) {
+                openDoor(nextCell);
+            } else {
+                System.out.println("You need a key!");
+                //TODO flash using javafx
+            }
+        } else if (!isWall(cellType) && !isClosedDoor(cellType))  {
             standardMove(nextCell);
         }
     }
 
-    public void pickUpItem(){
-        Cell nextCell = cell.getNeighbor(0, 0);
-        CellType cellType = nextCell.getType();
-        if (cellType.equals(CellType.ITEM)){
-            nextCell.setType(CellType.FLOOR);
+    private void openDoor(Cell nextcell) {
+        nextcell.setType(CellType.OPEN_DOOR);
+    }
+
+    public void pickUpItem() {
+        Cell currentCell = cell.getNeighbor(0, 0);
+        CellType cellType = currentCell.getType();
+        if (cellType.equals(CellType.ITEM)) {
+            currentCell.setType(CellType.FLOOR);
+            // TODO add item to inventory
+            // TODO if ITEM is key, player.hasKey, change hasKey to true
             switch (cellType.getTileName()) {
                 case "sword":
                     setItemUrl("https://i.imgur.com/PmvQYO3.png");
@@ -61,6 +77,11 @@ public abstract class Actor implements Drawable {
         }
     }
 
+    protected boolean isClosedDoor(CellType neighbourCellType) {
+        return neighbourCellType == CellType.CLOSED_DOOR;
+
+    }
+
     private boolean isOneShot(Actor player, Actor enemy) {
         return enemy.getHealth() < player.getAttack();
     }
@@ -82,6 +103,8 @@ public abstract class Actor implements Drawable {
     }
 
     private void killEnemyAndMove(Cell nextCell) {
+        int defeatedEnemyId = nextCell.getActor().getId();
+        GameMap.removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
         nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
@@ -93,7 +116,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    private boolean isWall(CellType neighbourCellType) {
+    protected boolean isWall(CellType neighbourCellType) {
         return neighbourCellType == CellType.WALL;
     }
 
@@ -129,9 +152,17 @@ public abstract class Actor implements Drawable {
         this.health = health;
     }
 
-    public void setAttack(int attack) {this.attack = attack;}
+    public int getId() {
+        return 0;
+    }
 
-    public void setArmor(int armor) {this.armor = armor;}
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public void setArmor(int armor) {
+        this.armor = armor;
+    }
 
     public String getItemUrl() {
         return itemUrl;
