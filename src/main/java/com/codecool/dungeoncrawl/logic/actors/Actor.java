@@ -11,6 +11,7 @@ public abstract class Actor implements Drawable {
     private int attack = 5;
     private int armor = 0;
     public static int enemyIdCounter = 1;
+    private String itemUrl;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -42,11 +43,20 @@ public abstract class Actor implements Drawable {
     public void pickUpItem() {
         Cell currentCell = cell.getNeighbor(0, 0);
         CellType cellType = currentCell.getType();
-        if (cellType.equals(CellType.ITEM)) {
+        if (cellType.equals(CellType.ITEM) || cellType.equals(CellType.KEY) || cellType.equals(CellType.HEART)) {
             currentCell.setType(CellType.FLOOR);
-            // TODO add item to inventory
-            // TODO if ITEM is key, player.hasKey, change hasKey to true
-        }
+            switch (cellType.getTileName().toUpperCase()) {
+                case "SWORD":
+                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
+                    break;
+                case "HEART":
+                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
+                    break;
+                case "KEY":
+                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
+                    break;
+            }
+        } else setItemUrl(null);
     }
 
     private void battleMove(Cell nextCell) {
@@ -150,5 +160,13 @@ public abstract class Actor implements Drawable {
 
     public void setArmor(int armor) {
         this.armor = armor;
+    }
+
+    public String getItemUrl() {
+        return itemUrl;
+    }
+
+    public void setItemUrl(String itemUrl) {
+        this.itemUrl = itemUrl;
     }
 }
