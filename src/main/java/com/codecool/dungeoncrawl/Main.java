@@ -56,6 +56,9 @@ public class Main extends Application {
 
         final int[] rowIndex = {5};
         pickUpButton.setOnAction(event -> {
+            if (map.getPlayer().getCell().getTileName().equals("key")){
+                map.getPlayer().setHasKey(true);
+            }
             map.getPlayer().pickUpItem();
             borderPane.requestFocus();
             Label imageLabel = new Label();

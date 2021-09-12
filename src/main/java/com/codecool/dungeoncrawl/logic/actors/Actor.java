@@ -45,8 +45,6 @@ public abstract class Actor implements Drawable {
         CellType cellType = currentCell.getType();
         if (cellType.equals(CellType.ITEM) || cellType.equals(CellType.KEY) || cellType.equals(CellType.HEART)) {
             currentCell.setType(CellType.FLOOR);
-            // TODO add item to inventory
-            // TODO if ITEM is key, player.hasKey, change hasKey to true
             switch (cellType.getTileName().toUpperCase()) {
                 case "SWORD":
                     setItemUrl("https://i.imgur.com/PmvQYO3.png");
