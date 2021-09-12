@@ -43,22 +43,22 @@ public abstract class Actor implements Drawable {
     public void pickUpItem() {
         Cell currentCell = cell.getNeighbor(0, 0);
         CellType cellType = currentCell.getType();
-        if (cellType.equals(CellType.ITEM)) {
+        if (cellType.equals(CellType.ITEM) || cellType.equals(CellType.KEY) || cellType.equals(CellType.HEART)) {
             currentCell.setType(CellType.FLOOR);
             // TODO add item to inventory
             // TODO if ITEM is key, player.hasKey, change hasKey to true
-            switch (cellType.getTileName()) {
-                case "sword":
+            switch (cellType.getTileName().toUpperCase()) {
+                case "SWORD":
                     setItemUrl("https://i.imgur.com/PmvQYO3.png");
                     break;
-                case "heart":
+                case "HEART":
                     setItemUrl("https://i.imgur.com/KFEzRS4.png");
                     break;
-                case "key":
+                case "KEY":
                     setItemUrl("https://i.imgur.com/4kUCAMK.png");
                     break;
             }
-        }
+        } else setItemUrl(null);
     }
 
     private void battleMove(Cell nextCell) {

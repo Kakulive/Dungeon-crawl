@@ -54,17 +54,6 @@ public class Main extends Application {
 
         BorderPane borderPane = new BorderPane();
 
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
-        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
-
         final int[] rowIndex = {5};
         pickUpButton.setOnAction(event -> {
             map.getPlayer().pickUpItem();
@@ -77,6 +66,18 @@ public class Main extends Application {
                 rowIndex[0]++;
             }
         });
+
+        borderPane.setCenter(canvas);
+        borderPane.setRight(ui);
+
+        Scene scene = new Scene(borderPane);
+        primaryStage.setScene(scene);
+        refresh();
+        scene.setOnKeyPressed(this::onKeyPressed);
+        primaryStage.setTitle("Dungeon Crawl");
+        primaryStage.show();
+        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
