@@ -49,21 +49,8 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Armor: "), 0, 2);
         ui.add(armorLabel, 1, 2);
-
         ui.add(pickUpButton, 0, 3);
         ui.add(new Label("Inventory:"), 0, 4);
-        final int[] rowIndex = {5};
-        pickUpButton.setOnAction(value -> {
-            map.getPlayer().pickUpItem();
-            Label imageLabel = new Label();
-            if (map.getPlayer().getItemUrl() != null) {
-                Image image = new Image(map.getPlayer().getItemUrl());
-                imageLabel.setGraphic(new ImageView(image));
-                ui.add(imageLabel, 0, rowIndex[0]);
-                rowIndex[0]++;
-            }
-        });
-
 
         BorderPane borderPane = new BorderPane();
 
@@ -78,9 +65,17 @@ public class Main extends Application {
         primaryStage.show();
         borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
 
+        final int[] rowIndex = {5};
         pickUpButton.setOnAction(event -> {
             map.getPlayer().pickUpItem();
             borderPane.requestFocus();
+            Label imageLabel = new Label();
+            if (map.getPlayer().getItemUrl() != null) {
+                Image image = new Image(map.getPlayer().getItemUrl());
+                imageLabel.setGraphic(new ImageView(image));
+                ui.add(imageLabel, 0, rowIndex[0]);
+                rowIndex[0]++;
+            }
         });
     }
 
