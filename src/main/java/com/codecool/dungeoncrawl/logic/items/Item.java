@@ -18,7 +18,7 @@ public abstract class Item implements Drawable {
         this.armor = 0;
 
     }
-private void updatePlayerHeatlh (Actor player){
+private void updatePlayerHealth(Actor player){
         player.setHealth(player.getHealth()+  health);
 }
 

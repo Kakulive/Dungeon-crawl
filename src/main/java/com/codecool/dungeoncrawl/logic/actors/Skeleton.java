@@ -5,9 +5,12 @@ import com.codecool.dungeoncrawl.logic.Cell;
 public class Skeleton extends Actor {
     private int health = 6;
     private final int attack = 2;
+    private final int id;
 
     public Skeleton(Cell cell) {
         super(cell);
+        this.id = Actor.enemyIdCounter;
+        Actor.enemyIdCounter++;
     }
 
     @Override
@@ -28,5 +31,15 @@ public class Skeleton extends Actor {
     @Override
     public void setHealth(int health) {
         this.health = health;
+    }
+
+    @Override
+    public void move(int dx, int dy) {
+        // Skeletons don't move!
+    }
+
+    @Override
+    public int getId() {
+        return id;
     }
 }
