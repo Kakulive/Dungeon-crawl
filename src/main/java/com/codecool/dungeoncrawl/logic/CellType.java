@@ -11,7 +11,9 @@ public enum CellType {
     CLOSED_DOOR("closed_door"),
     KEY("key"),
     STAIRS("stairs"),
-    HEART("heart")
+    HEART("heart"),
+    CANDLE("candle"),
+    GRASS("grass"),
     ;
 
     private final String tileName;

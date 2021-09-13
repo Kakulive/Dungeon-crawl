@@ -68,6 +68,7 @@ public class Main extends Application {
                 ui.add(imageLabel, 0, rowIndex[0]);
                 rowIndex[0]++;
             }
+        refresh();
         });
 
         borderPane.setCenter(canvas);

@@ -72,6 +72,15 @@ public class MapLoader {
                             cell.setType(CellType.SHIELD);
                             new Shield(cell);
                             break;
+                        case 'n':
+                            cell.setType(CellType.CANDLE);
+                            break;
+                        case 'x':
+                            cell.setType(CellType.HEART);
+                            break;
+                        case 'z':
+                            cell.setType(CellType.GRASS);
+                            break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
                     }

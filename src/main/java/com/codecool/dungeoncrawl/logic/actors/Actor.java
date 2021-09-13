@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
@@ -33,7 +34,7 @@ public abstract class Actor implements Drawable {
                 System.out.println("You need a key!");
                 //TODO flash using javafx
             }
-        } else if (!isWall(cellType) && !isClosedDoor(cellType))  {
+        } else if (!isWall(cellType) && !isClosedDoor(cellType)) {
             standardMove(nextCell);
         }
     }
@@ -55,15 +56,19 @@ public abstract class Actor implements Drawable {
                     setItemUrl("https://i.imgur.com/PmvQYO3.png");
                     this.setAttack(this.getAttack() + Sword.getAttack());
                     break;
-                case "HEART":
-                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
-                    break;
+//                case "HEART":
+//                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
+//                    break;
                 case "KEY":
                     setItemUrl("https://i.imgur.com/4kUCAMK.png");
                     break;
                 case "SHIELD":
                     setItemUrl("https://i.ibb.co/x37t4L1/Shield.png"); // TODO fix picture
                     this.setArmor(this.getArmor() + Shield.getArmor());
+                    break;
+                case "HEART":
+                    this.setHealth(this.getHealth() + Heart.health);
+                    setItemUrl(null);
                     break;
             }
         } else setItemUrl(null);
