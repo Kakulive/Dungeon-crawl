@@ -4,13 +4,13 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
@@ -19,7 +19,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.beans.EventHandler;
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -30,10 +29,12 @@ public class Main extends Application {
     Label healthLabel = new Label();
     Label attackLabel = new Label();
     Label armorLabel = new Label();
+    Label name = new Label();
+    TextField nameInput = new TextField("What's your name?");
+    Button nameSubmitButton = new Button("Submit");
     Button pickUpButton = new Button("Pick up");
 
     public static void main(String[] args) {
-
         launch(args);
     }
 
@@ -42,19 +43,46 @@ public class Main extends Application {
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
+        ui.setHgap(5);
+        ui.setVgap(5);
 
-        ui.add(new Label("Health: "), 0, 0);
-        ui.add(healthLabel, 1, 0);
-        ui.add(new Label("Attack: "), 0, 1);
-        ui.add(attackLabel, 1, 1);
-        ui.add(new Label("Armor: "), 0, 2);
-        ui.add(armorLabel, 1, 2);
-        ui.add(pickUpButton, 0, 3);
-        ui.add(new Label("Inventory:"), 0, 4);
+        ui.add(nameInput,0,0);
+        ui.add(nameSubmitButton,0,1);
+        ui.add(new Label("Health: "), 0, 2);
+        ui.add(healthLabel, 1, 2);
+        ui.add(new Label("Attack: "), 0, 3);
+        ui.add(attackLabel, 1, 3);
+        ui.add(new Label("Armor: "), 0, 4);
+        ui.add(armorLabel, 1, 4);
+        ui.add(pickUpButton, 0, 5);
+        ui.add(new Label("Inventory:"), 0, 6);
 
         BorderPane borderPane = new BorderPane();
 
-        final int[] rowIndex = {5};
+        borderPane.setCenter(canvas);
+        borderPane.setRight(ui);
+
+        Scene scene = new Scene(borderPane);
+        primaryStage.setScene(scene);
+        refresh();
+        scene.setOnKeyPressed(this::onKeyPressed);
+        primaryStage.setTitle("Dungeon Crawl");
+        primaryStage.show();
+        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+
+        //TODO put below code in the UserInterfaceHandler class
+
+        nameSubmitButton.setOnAction(event -> {
+            String userName = nameInput.getText();
+            ui.getChildren().remove(nameInput);
+            ui.getChildren().remove(nameSubmitButton);
+            ui.add(name,0,0);
+            name.setText(userName);
+            name.setStyle("-fx-font-weight: bold");
+            borderPane.requestFocus();
+        });
+
+        final int[] rowIndex = {7};
         pickUpButton.setOnAction(event -> {
             if (map.getPlayer().getCell().getTileName().equals("key")){
                 map.getPlayer().setHasKey(true);
@@ -69,17 +97,6 @@ public class Main extends Application {
                 rowIndex[0]++;
             }
         });
-
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
-        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
 
     }
 
