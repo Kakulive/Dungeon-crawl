@@ -34,6 +34,9 @@ public abstract class Actor implements Drawable {
                 System.out.println("You need a key!");
                 //TODO flash using javafx
             }
+        } else if (isCandle(cellType)) {
+            player.setHealth(player.getHealth() - 1);
+            standardMove(nextCell);
         } else if (!isWall(cellType) && !isClosedDoor(cellType)) {
             standardMove(nextCell);
         }
@@ -56,9 +59,6 @@ public abstract class Actor implements Drawable {
                     setItemUrl("https://i.imgur.com/PmvQYO3.png");
                     this.setAttack(this.getAttack() + Sword.getAttack());
                     break;
-//                case "HEART":
-//                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
-//                    break;
                 case "KEY":
                     setItemUrl("https://i.imgur.com/4kUCAMK.png");
                     break;
@@ -135,6 +135,10 @@ public abstract class Actor implements Drawable {
 
     private boolean isEnemy(CellType neighbourCellType) {
         return neighbourCellType == CellType.ENEMY;
+    }
+
+    private boolean isCandle(CellType neighbourCellType) {
+        return neighbourCellType == CellType.CANDLE;
     }
 
     public int getHealth() {
