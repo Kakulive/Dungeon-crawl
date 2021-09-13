@@ -36,6 +36,7 @@ public class Tiles {
         tileMap.put("stairs", new Tile(2,6));
         tileMap.put("wizard", new Tile(24, 1));
         tileMap.put("spider", new Tile(29, 5));
+        tileMap.put("shield", new Tile(5,26));
 
     }
 

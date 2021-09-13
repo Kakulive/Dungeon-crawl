@@ -4,6 +4,8 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.items.Shield;
+import com.codecool.dungeoncrawl.logic.items.Sword;
 
 public abstract class Actor implements Drawable {
     protected Cell cell;
@@ -11,6 +13,7 @@ public abstract class Actor implements Drawable {
     private int attack = 5;
     private int armor = 0;
     public static int enemyIdCounter = 1;
+    private String itemUrl;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -35,18 +38,35 @@ public abstract class Actor implements Drawable {
         }
     }
 
-    private void openDoor(Cell nextcell) {
-        nextcell.setType(CellType.OPEN_DOOR);
+    private void openDoor(Cell nextCell) {
+        nextCell.setType(CellType.OPEN_DOOR);
     }
 
     public void pickUpItem() {
         Cell currentCell = cell.getNeighbor(0, 0);
         CellType cellType = currentCell.getType();
-        if (cellType.equals(CellType.ITEM)) {
+        if (cellType.equals(CellType.SWORD)
+                || cellType.equals(CellType.KEY)
+                || cellType.equals(CellType.HEART)
+                || cellType.equals(CellType.SHIELD)) {
             currentCell.setType(CellType.FLOOR);
-            // TODO add item to inventory
-            // TODO if ITEM is key, player.hasKey, change hasKey to true
-        }
+            switch (cellType.getTileName().toUpperCase()) {
+                case "SWORD":
+                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
+                    this.setAttack(this.getAttack() + Sword.getAttack());
+                    break;
+                case "HEART":
+                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
+                    break;
+                case "KEY":
+                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
+                    break;
+                case "SHIELD":
+                    setItemUrl("https://i.ibb.co/x37t4L1/Shield.png"); // TODO fix picture
+                    this.setArmor(this.getArmor() + Shield.getArmor());
+                    break;
+            }
+        } else setItemUrl(null);
     }
 
     private void battleMove(Cell nextCell) {
@@ -150,5 +170,13 @@ public abstract class Actor implements Drawable {
 
     public void setArmor(int armor) {
         this.armor = armor;
+    }
+
+    public String getItemUrl() {
+        return itemUrl;
+    }
+
+    public void setItemUrl(String itemUrl) {
+        this.itemUrl = itemUrl;
     }
 }

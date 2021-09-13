@@ -9,7 +9,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -46,10 +49,26 @@ public class Main extends Application {
         ui.add(attackLabel, 1, 1);
         ui.add(new Label("Armor: "), 0, 2);
         ui.add(armorLabel, 1, 2);
-
         ui.add(pickUpButton, 0, 3);
+        ui.add(new Label("Inventory:"), 0, 4);
 
         BorderPane borderPane = new BorderPane();
+
+        final int[] rowIndex = {5};
+        pickUpButton.setOnAction(event -> {
+            if (map.getPlayer().getCell().getTileName().equals("key")){
+                map.getPlayer().setHasKey(true);
+            }
+            map.getPlayer().pickUpItem();
+            borderPane.requestFocus();
+            Label imageLabel = new Label();
+            if (map.getPlayer().getItemUrl() != null) {
+                Image image = new Image(map.getPlayer().getItemUrl());
+                imageLabel.setGraphic(new ImageView(image));
+                ui.add(imageLabel, 0, rowIndex[0]);
+                rowIndex[0]++;
+            }
+        });
 
         borderPane.setCenter(canvas);
         borderPane.setRight(ui);
@@ -62,10 +81,6 @@ public class Main extends Application {
         primaryStage.show();
         borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
 
-        pickUpButton.setOnAction(event -> {
-            map.getPlayer().pickUpItem();
-            borderPane.requestFocus();
-        });
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
