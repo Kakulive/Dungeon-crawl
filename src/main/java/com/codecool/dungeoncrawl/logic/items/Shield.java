@@ -12,7 +12,7 @@ public class Shield extends Item{
 
     @Override
     public String getTileName() {
-        return "sword";
+        return "shield";
     }
 
     public static int getArmor() {
