@@ -30,7 +30,7 @@ public class Main extends Application {
     Label attackLabel = new Label();
     Label armorLabel = new Label();
     Label name = new Label();
-    TextField nameInput = new TextField("What's your name?");
+    TextField nameInput = new TextField();
     Button nameSubmitButton = new Button("Submit");
     Button pickUpButton = new Button("Pick up");
 
@@ -47,6 +47,7 @@ public class Main extends Application {
         ui.setVgap(5);
 
         ui.add(nameInput,0,0);
+        nameInput.setPromptText("What's your name?");
         ui.add(nameSubmitButton,0,1);
         ui.add(new Label("Health: "), 0, 2);
         ui.add(healthLabel, 1, 2);
@@ -96,6 +97,7 @@ public class Main extends Application {
                 ui.add(imageLabel, 0, rowIndex[0]);
                 rowIndex[0]++;
             }
+        refresh();
         });
 
     }
