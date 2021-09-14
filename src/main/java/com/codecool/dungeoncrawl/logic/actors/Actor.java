@@ -19,47 +19,14 @@ public abstract class Actor implements Drawable {
     }
 
     public void move(int dx, int dy) {
-        Player player = (Player) cell.getActor();
         Cell nextCell = cell.getNeighbor(dx, dy);
-        CellType cellType = nextCell.getType();
-        if (isEnemy(cellType)) {
-            battleMove(nextCell);
-        } else if (isClosedDoor(cellType)) {
-            if (player.getHasKey()) {
-                openDoor(nextCell);
-            } else {
-                System.out.println("You need a key!");
-                //TODO flash using javafx
-            }
-        } else if (!isWall(cellType) && !isClosedDoor(cellType))  {
-            standardMove(nextCell);
-        }
+        cell.setActor(null);
+        nextCell.setActor(this);
+        cell = nextCell;
     }
 
-    private void openDoor(Cell nextcell) {
-        nextcell.setType(CellType.OPEN_DOOR);
-    }
-
-    public void pickUpItem() {
-        Cell currentCell = cell.getNeighbor(0, 0);
-        CellType cellType = currentCell.getType();
-        if (cellType.equals(CellType.ITEM) || cellType.equals(CellType.KEY) || cellType.equals(CellType.HEART)) {
-            currentCell.setType(CellType.FLOOR);
-            switch (cellType.getTileName().toUpperCase()) {
-                case "SWORD":
-                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
-                    break;
-                case "HEART":
-                    setItemUrl("https://i.imgur.com/KFEzRS4.png");
-                    break;
-                case "KEY":
-                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
-                    break;
-            }
-        } else setItemUrl(null);
-    }
-
-    private void battleMove(Cell nextCell) {
+    // TODO can be protected or change place of this method??
+    protected void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
         if (!isOneShot(player, enemy)) {
@@ -118,7 +85,7 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.WALL;
     }
 
-    private boolean isEnemy(CellType neighbourCellType) {
+    protected boolean isEnemy(CellType neighbourCellType) {
         return neighbourCellType == CellType.ENEMY;
     }
 
