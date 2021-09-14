@@ -5,12 +5,15 @@ public enum CellType {
     FLOOR("floor"),
     WALL("wall"),
     ENEMY("enemy"),
-    ITEM("sword"),
+    SWORD("sword"),
+    SHIELD("shield"),
     OPEN_DOOR("open_door"),
     CLOSED_DOOR("closed_door"),
     KEY("key"),
     STAIRS("stairs"),
-    HEART("heart")
+    HEART("heart"),
+    CANDLE("candle"),
+    GRASS("grass"),
     ;
 
     private final String tileName;

@@ -7,6 +7,9 @@ public class Wizard extends Actor {
     private int health = 12;
     private final int attack = 5;
     private final int id;
+    private int moveCounter = 3;
+    private final int wizardIsMoving = 1;
+    private final int moveFrequency = 3;
 
     public Wizard(Cell cell) {
         super(cell);
@@ -36,16 +39,22 @@ public class Wizard extends Actor {
 
     @Override
     public void move(int dx, int dy) {
+        if (moveCounter == wizardIsMoving) {
         Cell nextCell = cell.getSpecificCell(dx, dy);
         cell.setActor(null);
         cell.setType(CellType.FLOOR);
         nextCell.setActor(this);
         nextCell.setType(CellType.ENEMY);
         cell = nextCell;
+        this.moveCounter = moveFrequency;
+    } else {
+            moveCounter--;
+        }
     }
 
     @Override
     public int getId() {
         return id;
     }
+
 }

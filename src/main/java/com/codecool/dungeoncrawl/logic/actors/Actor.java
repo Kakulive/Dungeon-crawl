@@ -25,7 +25,6 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    // TODO can be protected or change place of this method??
     protected void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
@@ -75,7 +74,7 @@ public abstract class Actor implements Drawable {
         standardMove(nextCell);
     }
 
-    private void standardMove(Cell nextCell) {
+    protected void standardMove(Cell nextCell) {
         cell.setActor(null);
         nextCell.setActor(this);
         cell = nextCell;
@@ -87,6 +86,10 @@ public abstract class Actor implements Drawable {
 
     protected boolean isEnemy(CellType neighbourCellType) {
         return neighbourCellType == CellType.ENEMY;
+    }
+
+    protected boolean isCandle(CellType neighbourCellType) {
+        return neighbourCellType == CellType.CANDLE;
     }
 
     public int getHealth() {
