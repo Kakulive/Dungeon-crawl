@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class MapLoader {
     public static GameMap loadMap() {
-        InputStream is = MapLoader.class.getResourceAsStream("/map.txt");
+        InputStream is = MapLoader.class.getResourceAsStream("/map2.txt");
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
@@ -80,6 +80,9 @@ public class MapLoader {
                             break;
                         case 'z':
                             cell.setType(CellType.GRASS);
+                            break;
+                        case 'b':
+                            cell.setType(CellType.BONES);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");
