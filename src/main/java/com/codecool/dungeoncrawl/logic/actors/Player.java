@@ -8,6 +8,8 @@ import com.codecool.dungeoncrawl.logic.items.Sword;
 
 public class Player extends Actor {
     private boolean hasKey;
+    private boolean onDownStairs;
+    private boolean onUpStairs;
 
     public Player(Cell cell) {
         super(cell);
@@ -30,7 +32,13 @@ public class Player extends Actor {
         } else if (isCandle(cellType)) {
             this.setHealth(this.getHealth() - 1);
             standardMove(nextCell);
-        } else if (!isWall(cellType))  {
+        } else if (isDownStairs(cellType)) {
+            onDownStairs = true;
+            super.move(dx, dy);
+        } else if (isUpStairs(cellType)){
+            onUpStairs = true;
+            super.move(dx, dy);
+        } else if (!isWall(cellType)) {
             super.move(dx, dy);
         }
     }
@@ -79,4 +87,19 @@ public class Player extends Actor {
         } else setItemUrl(null);
     }
 
+    public boolean isOnDownStairs() {
+        return onDownStairs;
+    }
+
+    public void setOnDownStairs(boolean onDownStairs) {
+        this.onDownStairs = onDownStairs;
+    }
+
+    public boolean isOnUpStairs() {
+        return onUpStairs;
+    }
+
+    public void setOnUpStairs(boolean onUpStairs) {
+        this.onUpStairs = onUpStairs;
+    }
 }

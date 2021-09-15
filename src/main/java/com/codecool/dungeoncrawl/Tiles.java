@@ -33,7 +33,8 @@ public class Tiles {
         tileMap.put("key", new Tile(16,23));
         tileMap.put("open_door", new Tile(12,11));
         tileMap.put("closed_door", new Tile(13,11));
-        tileMap.put("stairs", new Tile(2,6));
+        tileMap.put("down_stairs", new Tile(1,6));
+        tileMap.put("up_stairs", new Tile(2,6));
         tileMap.put("wizard", new Tile(24, 1));
         tileMap.put("spider", new Tile(29, 5));
         tileMap.put("shield", new Tile(5,26));
