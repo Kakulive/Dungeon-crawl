@@ -19,6 +19,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Locale;
+
 
 public class Main extends Application {
     GameMap map = MapLoader.loadMap();
@@ -75,6 +77,9 @@ public class Main extends Application {
 
         nameSubmitButton.setOnAction(event -> {
             String userName = nameInput.getText();
+            if (map.getPlayer().checkCheatCode(userName)){
+                map.getPlayer().setCheatMode(true);
+            }
             ui.getChildren().remove(nameInput);
             ui.getChildren().remove(nameSubmitButton);
             ui.add(name,0,0);
