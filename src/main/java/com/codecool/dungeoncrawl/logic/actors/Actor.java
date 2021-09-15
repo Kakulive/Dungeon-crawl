@@ -92,6 +92,10 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.CANDLE;
     }
 
+    protected boolean isUpStairs(CellType neighbourCellType) {return neighbourCellType == CellType.UP_STAIRS;}
+
+    protected boolean isDownStairs(CellType neighbourCellType) {return neighbourCellType == CellType.DOWN_STAIRS;}
+
     public int getHealth() {
         return health;
     }
