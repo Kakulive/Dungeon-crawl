@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
@@ -112,6 +113,8 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        int oldXCoord = map.getPlayer().getX();
+        int oldYCoord = map.getPlayer().getY();
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
@@ -151,18 +154,30 @@ public class Main extends Application {
 
     private void changeCurrentMap() {
         Player currentPlayer = map.getPlayer();
+        int X = map.getPlayer().getX();
+        int Y = map.getPlayer().getY();
+
         if (map.getPlayer().isOnDownStairs()){
             map.getPlayer().setOnDownStairs(false);
+            map.setPlayer(null);
+            map.getCell(X,Y).setActor(null);
             map = map2;
             Cell currentPlayerCell = map.getCell(2,9);
             currentPlayer.setCell(currentPlayerCell);
-            this.map.setPlayer(currentPlayer);
+            map.setPlayer(currentPlayer);
+            currentPlayerCell.setActor(currentPlayer);
+
         } else if (map.getPlayer().isOnUpStairs()) {
             map.getPlayer().setOnUpStairs(false);
+            Cell oldPlayerCell = map.getCell(X,Y);
+            map.setPlayer(null);
+            oldPlayerCell.setActor(null);
             map = map1;
             Cell currentPlayerCell = map.getCell(5,13);
             currentPlayer.setCell(currentPlayerCell);
-            this.map.setPlayer(currentPlayer);
+            map.setPlayer(currentPlayer);
+            currentPlayerCell.setActor(currentPlayer);
+
         }
     }
 
