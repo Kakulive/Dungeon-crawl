@@ -10,6 +10,9 @@ import java.util.Locale;
 
 public class Player extends Actor {
     private boolean hasKey;
+
+    private boolean onDownStairs;
+    private boolean onUpStairs;
     private boolean cheatMode = false;
 
 
@@ -34,6 +37,10 @@ public class Player extends Actor {
         } else if (isCandle(cellType)) {
             this.setHealth(this.getHealth() - 1);
             standardMove(nextCell);
+        } else if (isDownStairs(cellType)) {
+            onDownStairs = true;
+        } else if (isUpStairs(cellType)){
+            onUpStairs = true;
         } else if (isCheatModeOn())  {
             super.move(dx, dy);
         } else if (!isWall(cellType)){
@@ -98,4 +105,19 @@ public class Player extends Actor {
         } else setItemUrl(null);
     }
 
+    public boolean isOnDownStairs() {
+        return onDownStairs;
+    }
+
+    public void setOnDownStairs(boolean onDownStairs) {
+        this.onDownStairs = onDownStairs;
+    }
+
+    public boolean isOnUpStairs() {
+        return onUpStairs;
+    }
+
+    public void setOnUpStairs(boolean onUpStairs) {
+        this.onUpStairs = onUpStairs;
+    }
 }

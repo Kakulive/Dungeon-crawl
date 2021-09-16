@@ -68,7 +68,7 @@ public abstract class Actor implements Drawable {
 
     private void killEnemyAndMove(Cell nextCell) {
         int defeatedEnemyId = nextCell.getActor().getId();
-        GameMap.removeEnemyFromList(defeatedEnemyId);
+        cell.getGameMap().removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
         nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
@@ -92,6 +92,10 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.CANDLE;
     }
 
+    protected boolean isUpStairs(CellType neighbourCellType) {return neighbourCellType == CellType.UP_STAIRS;}
+
+    protected boolean isDownStairs(CellType neighbourCellType) {return neighbourCellType == CellType.DOWN_STAIRS;}
+
     public int getHealth() {
         return health;
     }
@@ -106,6 +110,10 @@ public abstract class Actor implements Drawable {
 
     public Cell getCell() {
         return cell;
+    }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public int getX() {

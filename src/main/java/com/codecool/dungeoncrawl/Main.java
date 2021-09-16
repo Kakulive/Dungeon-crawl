@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -19,11 +20,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    String mapName1 = "/map.txt";
+    String mapName2 = "/map2.txt";
+//    String currentMap = mapName1;
+    GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
+    GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
+    GameMap map = map1;
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -47,7 +51,6 @@ public class Main extends Application {
         ui.setPadding(new Insets(10));
         ui.setHgap(5);
         ui.setVgap(5);
-
         ui.add(nameInput,0,0);
         nameInput.setPromptText("What's your name?");
         ui.add(nameSubmitButton,0,1);
@@ -88,23 +91,24 @@ public class Main extends Application {
             borderPane.requestFocus();
         });
 
-        final int[] rowIndex = {7};
-        pickUpButton.setOnAction(event -> {
-            if (map.getPlayer().getCell().getTileName().equals("key")){
-                map.getPlayer().setHasKey(true);
-            }
-            map.getPlayer().pickUpItem();
-            borderPane.requestFocus();
-            Label imageLabel = new Label();
-            if (map.getPlayer().getItemUrl() != null) {
-                Image image = new Image(map.getPlayer().getItemUrl());
-                imageLabel.setGraphic(new ImageView(image));
-                ui.add(imageLabel, 0, rowIndex[0]);
-                rowIndex[0]++;
-            }
-        refresh();
-        });
+        pickUpButton.setOnAction(event -> pickUpItem(ui, borderPane));
+    }
 
+    private void pickUpItem(GridPane ui, BorderPane borderPane) {
+        final int[] rowIndex = {7};
+        if (map.getPlayer().getCell().getTileName().equals("key")){
+            map.getPlayer().setHasKey(true);
+        }
+        map.getPlayer().pickUpItem();
+        borderPane.requestFocus();
+        Label imageLabel = new Label();
+        if (map.getPlayer().getItemUrl() != null) {
+            Image image = new Image(map.getPlayer().getItemUrl());
+            imageLabel.setGraphic(new ImageView(image));
+            ui.add(imageLabel, 0, rowIndex[0]);
+            rowIndex[0]++;
+        }
+        refresh();
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
@@ -127,6 +131,7 @@ public class Main extends Application {
     }
 
     private void refresh() {
+        changeCurrentMap();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -142,6 +147,23 @@ public class Main extends Application {
         healthLabel.setText("" + map.getPlayer().getHealth());
         attackLabel.setText("" + map.getPlayer().getAttack());
         armorLabel.setText("" + map.getPlayer().getArmor());
+    }
+
+    private void changeCurrentMap() {
+        Player currentPlayer = map.getPlayer();
+        if (map.getPlayer().isOnDownStairs()){
+            map.getPlayer().setOnDownStairs(false);
+            map = map2;
+            Cell currentPlayerCell = map.getCell(2,9);
+            currentPlayer.setCell(currentPlayerCell);
+            this.map.setPlayer(currentPlayer);
+        } else if (map.getPlayer().isOnUpStairs()) {
+            map.getPlayer().setOnUpStairs(false);
+            map = map1;
+            Cell currentPlayerCell = map.getCell(5,13);
+            currentPlayer.setCell(currentPlayerCell);
+            this.map.setPlayer(currentPlayer);
+        }
     }
 
 
