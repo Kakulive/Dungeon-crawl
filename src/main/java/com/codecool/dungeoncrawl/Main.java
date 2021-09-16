@@ -42,7 +42,8 @@ public class Main extends Application {
     TextField nameInput = new TextField();
     Button nameSubmitButton = new Button("Submit");
     Button pickUpButton = new Button("Pick up");
-
+    private int inventoryRowIndex = 7;
+    private int inventoryColumnIndex = 0;
     public static void main(String[] args) {
         launch(args);
     }
@@ -79,6 +80,7 @@ public class Main extends Application {
         ui.add(armorLabel, 1, 4);
         ui.add(pickUpButton, 0, 5);
         ui.add(new Label("Inventory:"), 0, 6);
+
 
         BorderPane mainBorderPane = new BorderPane();
 
@@ -118,7 +120,6 @@ public class Main extends Application {
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
-        final int[] rowIndex = {7};
         if (map.getPlayer().getCell().getTileName().equals("key")){
             map.getPlayer().setHasKey(true);
         }
@@ -128,8 +129,13 @@ public class Main extends Application {
         if (map.getPlayer().getItemUrl() != null) {
             Image image = new Image(map.getPlayer().getItemUrl());
             imageLabel.setGraphic(new ImageView(image));
-            ui.add(imageLabel, 0, rowIndex[0]);
-            rowIndex[0]++;
+            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
+            if (inventoryColumnIndex == 1) {
+                inventoryColumnIndex = 0;
+                inventoryRowIndex++;
+            } else {
+                inventoryColumnIndex++;
+            }
         }
         refresh();
     }
