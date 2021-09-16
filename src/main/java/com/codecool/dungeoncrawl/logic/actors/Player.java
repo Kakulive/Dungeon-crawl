@@ -6,6 +6,11 @@ import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
+import java.awt.*;
 import java.util.Locale;
 
 public class Player extends Actor {
@@ -34,6 +39,7 @@ public class Player extends Actor {
             } else {
                 System.out.println("You need a key!");
                 //TODO flash using javafx
+
             }
         } else if (isCandle(cellType)) {
             this.setHealth(this.getHealth() - 1);
