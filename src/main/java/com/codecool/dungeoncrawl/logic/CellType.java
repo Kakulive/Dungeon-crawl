@@ -16,6 +16,7 @@ public enum CellType {
     CANDLE("candle"),
     GRASS("grass"),
     BONES("bones"),
+    GHOST("ghost"),
     ;
 
     private final String tileName;
