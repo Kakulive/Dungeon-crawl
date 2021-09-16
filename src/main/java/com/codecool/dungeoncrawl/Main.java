@@ -5,6 +5,7 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -24,26 +25,26 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
     Stage stage = new Stage();
+    SceneSwitcher sceneSwitcher = new SceneSwitcher();
     String mapName1 = "/map.txt";
     String mapName2 = "/map2.txt";
+
     GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
     GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
+
     GameMap map = map1;
+
     private final int windowWidth = map.getWidth() * Tiles.TILE_WIDTH;
     private final int windowHeight = map.getHeight() * Tiles.TILE_WIDTH;
-    Canvas canvas = new Canvas(
-            windowWidth,
-            windowHeight);
+
+    Canvas canvas = new Canvas(windowWidth, windowHeight);
     GraphicsContext context = canvas.getGraphicsContext2D();
-    Label healthLabel = new Label();
-    Label attackLabel = new Label();
-    Label armorLabel = new Label();
+
     Label name = new Label();
-    TextField nameInput = new TextField();
-    Button nameSubmitButton = new Button("Submit");
-    Button pickUpButton = new Button("Pick up");
+
     private int inventoryRowIndex = 7;
     private int inventoryColumnIndex = 0;
+  
     public static void main(String[] args) {
         launch(args);
     }
@@ -52,71 +53,32 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         this.stage = primaryStage;
+        sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
 
-        // Start Game screen
-        BorderPane startBorderPane = new BorderPane();
-        Button startGameButton = new Button("Start Game");
-        startBorderPane.setCenter(startGameButton);
-        Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
-        stage.setScene(startGameScene);
-        stage.setTitle("Dungeon Crawl");
-        stage.show();
-
-
-        // Main Game screen
-        GridPane ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
-        ui.setHgap(5);
-        ui.setVgap(5);
-        ui.add(nameInput,0,0);
-        nameInput.setPromptText("What's your name?");
-        ui.add(nameSubmitButton,0,1);
-        ui.add(new Label("Health: "), 0, 2);
-        ui.add(healthLabel, 1, 2);
-        ui.add(new Label("Attack: "), 0, 3);
-        ui.add(attackLabel, 1, 3);
-        ui.add(new Label("Armor: "), 0, 4);
-        ui.add(armorLabel, 1, 4);
-        ui.add(pickUpButton, 0, 5);
-        ui.add(new Label("Inventory:"), 0, 6);
-
-
-        BorderPane mainBorderPane = new BorderPane();
-
-        mainBorderPane.setCenter(canvas);
-        mainBorderPane.setRight(ui);
-
-        Scene mainScene = new Scene(mainBorderPane);
-//        primaryStage.setScene(mainScene);
-//        refresh();
-        mainScene.setOnKeyPressed(this::onKeyPressed);
-//        primaryStage.setTitle("Dungeon Crawl");
-//        primaryStage.show();
-//        mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
-
-        //TODO put below code in the UserInterfaceHandler class
+        sceneSwitcher.getStartGameButton().setOnAction(event -> {
+            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
 
         startGameButton.setOnAction(event -> {
             stage.setScene(mainScene);
             refresh();
-            mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
 
-        nameSubmitButton.setOnAction(event -> {
-            String userName = nameInput.getText();
+        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
+            String userName = sceneSwitcher.getNameInput().getText();
             if (map.getPlayer().checkCheatCode(userName)){
                 map.getPlayer().setCheatMode(true);
             }
-            ui.getChildren().remove(nameInput);
-            ui.getChildren().remove(nameSubmitButton);
-            ui.add(name,0,0);
+            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
+            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
+            sceneSwitcher.getUi().add(name,0,0);
             name.setText(userName);
             name.setStyle("-fx-font-weight: bold");
-            mainBorderPane.requestFocus();
+            sceneSwitcher.getMainBorderPane().requestFocus();
         });
 
-        pickUpButton.setOnAction(event -> pickUpItem(ui, mainBorderPane));
+        sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
@@ -141,11 +103,6 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
-        // End Game screen
-        BorderPane endBorderPane = new BorderPane();
-        Label endGameLabel = new Label("YOU DIED!");
-        endBorderPane.setCenter(endGameLabel);
-        Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
@@ -161,7 +118,7 @@ public class Main extends Application {
                 break;
         }
         if (map.getPlayer().isDead()){
-            stage.setScene(endGameScene);
+            sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
         }
         refresh();
         map.moveEnemies(map);
@@ -181,9 +138,9 @@ public class Main extends Application {
                 }
             }
         }
-        healthLabel.setText("" + map.getPlayer().getHealth());
-        attackLabel.setText("" + map.getPlayer().getAttack());
-        armorLabel.setText("" + map.getPlayer().getArmor());
+        sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
+        sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
+        sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
     }
 
     private void changeCurrentMap() {

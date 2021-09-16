@@ -3,12 +3,13 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 
-public class Spider extends Actor {
-    private int health = 2;
+public class Ghost extends Actor {
+    private int health = 3;
     private final int attack = 1;
     private final int id;
+    private CellType nextMoveCellType = CellType.FLOOR;
 
-    public Spider(Cell cell) {
+    public Ghost(Cell cell) {
         super(cell);
         this.id = Actor.enemyIdCounter;
         Actor.enemyIdCounter++;
@@ -16,7 +17,7 @@ public class Spider extends Actor {
 
     @Override
     public String getTileName() {
-        return "spider";
+        return "ghost";
     }
 
     @Override
@@ -36,15 +37,15 @@ public class Spider extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-
         Cell nextCell = cell.getNeighbor(dx, dy);
+        CellType nextCellType = nextCell.getType();
         cell.setActor(null);
-        cell.setType(CellType.FLOOR);
+        cell.setType(nextMoveCellType);
+        this.nextMoveCellType = nextCellType;
         nextCell.setActor(this);
         nextCell.setType(CellType.ENEMY);
         cell = nextCell;
     }
-
 
     @Override
     public int getId() {
