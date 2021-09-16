@@ -6,10 +6,15 @@ import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
 
+import java.util.Locale;
+
 public class Player extends Actor {
     private boolean hasKey;
+
     private boolean onDownStairs;
     private boolean onUpStairs;
+    private boolean cheatMode = false;
+
 
     public Player(Cell cell) {
         super(cell);
@@ -34,12 +39,12 @@ public class Player extends Actor {
             standardMove(nextCell);
         } else if (isDownStairs(cellType)) {
             onDownStairs = true;
-            super.move(dx, dy);
         } else if (isUpStairs(cellType)){
             onUpStairs = true;
+        } else if (isCheatModeOn())  {
             super.move(dx, dy);
-        } else if (!isWall(cellType)) {
-            super.move(dx, dy);
+        } else if (!isWall(cellType)){
+            super.move(dx,dy);
         }
     }
 
@@ -57,6 +62,19 @@ public class Player extends Actor {
 
     private void openDoor(Cell nextcell) {
         nextcell.setType(CellType.OPEN_DOOR);
+    }
+
+    public boolean isCheatModeOn() {
+        return cheatMode;
+    }
+
+    public void setCheatMode(boolean cheatMode) {
+        this.cheatMode = cheatMode;
+    }
+
+    public boolean checkCheatCode(String name){
+        return name.toLowerCase().equals("adam") || name.toLowerCase().equals("marcelina")
+                || name.toLowerCase().equals("damian") || name.toLowerCase().equals("dymitr");
     }
 
     public void pickUpItem() {

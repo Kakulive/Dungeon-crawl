@@ -68,7 +68,7 @@ public abstract class Actor implements Drawable {
 
     private void killEnemyAndMove(Cell nextCell) {
         int defeatedEnemyId = nextCell.getActor().getId();
-        GameMap.removeEnemyFromList(defeatedEnemyId);
+        cell.getGameMap().removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
         nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
@@ -110,6 +110,10 @@ public abstract class Actor implements Drawable {
 
     public Cell getCell() {
         return cell;
+    }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public int getX() {

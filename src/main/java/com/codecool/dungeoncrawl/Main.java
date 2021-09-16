@@ -22,7 +22,12 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap(1);
+    String mapName1 = "/map.txt";
+    String mapName2 = "/map2.txt";
+//    String currentMap = mapName1;
+    GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
+    GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
+    GameMap map = map1;
     Canvas canvas = new Canvas(
             map.getWidth() * Tiles.TILE_WIDTH,
             map.getHeight() * Tiles.TILE_WIDTH);
@@ -75,6 +80,9 @@ public class Main extends Application {
 
         nameSubmitButton.setOnAction(event -> {
             String userName = nameInput.getText();
+            if (map.getPlayer().checkCheatCode(userName)){
+                map.getPlayer().setCheatMode(true);
+            }
             ui.getChildren().remove(nameInput);
             ui.getChildren().remove(nameSubmitButton);
             ui.add(name,0,0);
@@ -123,7 +131,7 @@ public class Main extends Application {
     }
 
     private void refresh() {
-        checkCurrentMap();
+        changeCurrentMap();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -141,19 +149,21 @@ public class Main extends Application {
         armorLabel.setText("" + map.getPlayer().getArmor());
     }
 
-    private void checkCurrentMap() {
-        int currentMapNumber = 1;
-//        Player currentPlayer = map.getPlayer();
+    private void changeCurrentMap() {
+        Player currentPlayer = map.getPlayer();
         if (map.getPlayer().isOnDownStairs()){
             map.getPlayer().setOnDownStairs(false);
-            currentMapNumber++;
-            map = MapLoader.loadMap(currentMapNumber);
+            map = map2;
+            Cell currentPlayerCell = map.getCell(2,9);
+            currentPlayer.setCell(currentPlayerCell);
+            this.map.setPlayer(currentPlayer);
         } else if (map.getPlayer().isOnUpStairs()) {
             map.getPlayer().setOnUpStairs(false);
-            currentMapNumber--;
-            map = MapLoader.loadMap(currentMapNumber);
+            map = map1;
+            Cell currentPlayerCell = map.getCell(5,13);
+            currentPlayer.setCell(currentPlayerCell);
+            this.map.setPlayer(currentPlayer);
         }
-//        this.map.setPlayer(currentPlayer);
     }
 
 
