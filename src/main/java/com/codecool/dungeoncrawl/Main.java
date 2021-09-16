@@ -44,7 +44,7 @@ public class Main extends Application {
 
     private int inventoryRowIndex = 7;
     private int inventoryColumnIndex = 0;
-  
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -55,12 +55,10 @@ public class Main extends Application {
         this.stage = primaryStage;
         sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
 
+
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
             sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
             sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
-
-        startGameButton.setOnAction(event -> {
-            stage.setScene(mainScene);
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
