@@ -14,7 +14,7 @@ public class GameMap {
     private final Cell[][] cells;
 
     private Player player;
-    public static List<Actor> enemiesList;
+    private List<Actor> enemiesList;
 
     private final Randomizer randomizer = new Randomizer();
 
@@ -115,7 +115,7 @@ public class GameMap {
         enemiesList.add(enemy);
     }
 
-    public static void removeEnemyFromList(int id) {
+    public void removeEnemyFromList(int id) {
         enemiesList.removeIf(enemy -> enemy.getId() == id);
     }
 }

@@ -12,9 +12,8 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class MapLoader {
-    public static GameMap loadMap(int currentMap) {
-        String fileAddress = getFileAddress(currentMap);
-        InputStream is = MapLoader.class.getResourceAsStream(fileAddress);
+    public static GameMap loadMap(String mapName) {
+        InputStream is = MapLoader.class.getResourceAsStream(mapName);
         Scanner scanner = new Scanner(is);
         int width = scanner.nextInt();
         int height = scanner.nextInt();
@@ -95,16 +94,6 @@ public class MapLoader {
             }
         }
         return map;
-    }
-
-    private static String getFileAddress(int currentMap) {
-        String fileAddress;
-        if (currentMap == 2) {
-            fileAddress = "/map2.txt";
-        } else {
-            fileAddress = "/map.txt";
-        }
-        return fileAddress;
     }
 
 }

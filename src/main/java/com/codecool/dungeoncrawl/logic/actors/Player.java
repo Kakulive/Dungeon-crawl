@@ -39,10 +39,8 @@ public class Player extends Actor {
             standardMove(nextCell);
         } else if (isDownStairs(cellType)) {
             onDownStairs = true;
-            super.move(dx, dy);
         } else if (isUpStairs(cellType)){
             onUpStairs = true;
-            super.move(dx, dy);
         } else if (isCheatModeOn())  {
             super.move(dx, dy);
         } else if (!isWall(cellType)){
