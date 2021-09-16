@@ -12,6 +12,7 @@ public abstract class Actor implements Drawable {
     private int armor = 0;
     public static int enemyIdCounter = 1;
     private String itemUrl;
+    protected boolean isDead;
 
     public Actor(Cell cell) {
         this.cell = cell;
@@ -34,7 +35,7 @@ public abstract class Actor implements Drawable {
                 updatePlayerHealth(player, enemy);
             }
             if (isPlayerDead(player)) {
-                // TODO game_over
+                setDead(true);
             }
         } else {
             killEnemyAndMove(nextCell);
@@ -50,7 +51,7 @@ public abstract class Actor implements Drawable {
         return enemy.getHealth() < player.getAttack();
     }
 
-    private boolean isPlayerDead(Actor player) {
+    protected boolean isPlayerDead(Actor player) {
         return player.getHealth() < 0;
     }
 
@@ -68,7 +69,7 @@ public abstract class Actor implements Drawable {
 
     private void killEnemyAndMove(Cell nextCell) {
         int defeatedEnemyId = nextCell.getActor().getId();
-        GameMap.removeEnemyFromList(defeatedEnemyId);
+        cell.getGameMap().removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
         nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
@@ -92,6 +93,10 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.CANDLE;
     }
 
+    protected boolean isUpStairs(CellType neighbourCellType) {return neighbourCellType == CellType.UP_STAIRS;}
+
+    protected boolean isDownStairs(CellType neighbourCellType) {return neighbourCellType == CellType.DOWN_STAIRS;}
+
     public int getHealth() {
         return health;
     }
@@ -106,6 +111,10 @@ public abstract class Actor implements Drawable {
 
     public Cell getCell() {
         return cell;
+    }
+
+    public void setCell(Cell cell) {
+        this.cell = cell;
     }
 
     public int getX() {
@@ -138,5 +147,13 @@ public abstract class Actor implements Drawable {
 
     public void setItemUrl(String itemUrl) {
         this.itemUrl = itemUrl;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public boolean isDead() {
+        return isDead;
     }
 }

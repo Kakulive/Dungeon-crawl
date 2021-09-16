@@ -1,8 +1,10 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -19,14 +21,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.util.Locale;
-
 
 public class Main extends Application {
-    GameMap map = MapLoader.loadMap();
+    Stage stage = new Stage();
+    String mapName1 = "/map.txt";
+    String mapName2 = "/map2.txt";
+    GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
+    GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
+    GameMap map = map1;
+    private final int windowWidth = map.getWidth() * Tiles.TILE_WIDTH;
+    private final int windowHeight = map.getHeight() * Tiles.TILE_WIDTH;
     Canvas canvas = new Canvas(
-            map.getWidth() * Tiles.TILE_WIDTH,
-            map.getHeight() * Tiles.TILE_WIDTH);
+            windowWidth,
+            windowHeight);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Label attackLabel = new Label();
@@ -42,12 +49,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        this.stage = primaryStage;
+
+        // Start Game screen
+        BorderPane startBorderPane = new BorderPane();
+        Button startGameButton = new Button("Start Game");
+        startBorderPane.setCenter(startGameButton);
+        Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
+        stage.setScene(startGameScene);
+        stage.setTitle("Dungeon Crawl");
+        stage.show();
+
+
+        // Main Game screen
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
         ui.setHgap(5);
         ui.setVgap(5);
-
         ui.add(nameInput,0,0);
         nameInput.setPromptText("What's your name?");
         ui.add(nameSubmitButton,0,1);
@@ -60,20 +80,26 @@ public class Main extends Application {
         ui.add(pickUpButton, 0, 5);
         ui.add(new Label("Inventory:"), 0, 6);
 
-        BorderPane borderPane = new BorderPane();
+        BorderPane mainBorderPane = new BorderPane();
 
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
+        mainBorderPane.setCenter(canvas);
+        mainBorderPane.setRight(ui);
 
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
-        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+        Scene mainScene = new Scene(mainBorderPane);
+//        primaryStage.setScene(mainScene);
+//        refresh();
+        mainScene.setOnKeyPressed(this::onKeyPressed);
+//        primaryStage.setTitle("Dungeon Crawl");
+//        primaryStage.show();
+//        mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
 
         //TODO put below code in the UserInterfaceHandler class
+
+        startGameButton.setOnAction(event -> {
+            stage.setScene(mainScene);
+            refresh();
+            mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+        });
 
         nameSubmitButton.setOnAction(event -> {
             String userName = nameInput.getText();
@@ -85,29 +111,35 @@ public class Main extends Application {
             ui.add(name,0,0);
             name.setText(userName);
             name.setStyle("-fx-font-weight: bold");
-            borderPane.requestFocus();
+            mainBorderPane.requestFocus();
         });
 
+        pickUpButton.setOnAction(event -> pickUpItem(ui, mainBorderPane));
+    }
+
+    private void pickUpItem(GridPane ui, BorderPane borderPane) {
         final int[] rowIndex = {7};
-        pickUpButton.setOnAction(event -> {
-            if (map.getPlayer().getCell().getTileName().equals("key")){
-                map.getPlayer().setHasKey(true);
-            }
-            map.getPlayer().pickUpItem();
-            borderPane.requestFocus();
-            Label imageLabel = new Label();
-            if (map.getPlayer().getItemUrl() != null) {
-                Image image = new Image(map.getPlayer().getItemUrl());
-                imageLabel.setGraphic(new ImageView(image));
-                ui.add(imageLabel, 0, rowIndex[0]);
-                rowIndex[0]++;
-            }
+        if (map.getPlayer().getCell().getTileName().equals("key")){
+            map.getPlayer().setHasKey(true);
+        }
+        map.getPlayer().pickUpItem();
+        borderPane.requestFocus();
+        Label imageLabel = new Label();
+        if (map.getPlayer().getItemUrl() != null) {
+            Image image = new Image(map.getPlayer().getItemUrl());
+            imageLabel.setGraphic(new ImageView(image));
+            ui.add(imageLabel, 0, rowIndex[0]);
+            rowIndex[0]++;
+        }
         refresh();
-        });
-
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        // End Game screen
+        BorderPane endBorderPane = new BorderPane();
+        Label endGameLabel = new Label("YOU DIED!");
+        endBorderPane.setCenter(endGameLabel);
+        Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
@@ -122,11 +154,15 @@ public class Main extends Application {
                 map.getPlayer().move(1,0);
                 break;
         }
+        if (map.getPlayer().isDead()){
+            stage.setScene(endGameScene);
+        }
         refresh();
         map.moveEnemies(map);
     }
 
     private void refresh() {
+        changeCurrentMap();
         context.setFill(Color.BLACK);
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         for (int x = 0; x < map.getWidth(); x++) {
@@ -142,6 +178,35 @@ public class Main extends Application {
         healthLabel.setText("" + map.getPlayer().getHealth());
         attackLabel.setText("" + map.getPlayer().getAttack());
         armorLabel.setText("" + map.getPlayer().getArmor());
+    }
+
+    private void changeCurrentMap() {
+        Player currentPlayer = map.getPlayer();
+        int X = map.getPlayer().getX();
+        int Y = map.getPlayer().getY();
+
+        if (map.getPlayer().isOnDownStairs()){
+            map.getPlayer().setOnDownStairs(false);
+            map.setPlayer(null);
+            map.getCell(X,Y).setActor(null);
+            map = map2;
+            Cell currentPlayerCell = map.getCell(2,9);
+            currentPlayer.setCell(currentPlayerCell);
+            map.setPlayer(currentPlayer);
+            currentPlayerCell.setActor(currentPlayer);
+
+        } else if (map.getPlayer().isOnUpStairs()) {
+            map.getPlayer().setOnUpStairs(false);
+            Cell oldPlayerCell = map.getCell(X,Y);
+            map.setPlayer(null);
+            oldPlayerCell.setActor(null);
+            map = map1;
+            Cell currentPlayerCell = map.getCell(5,13);
+            currentPlayer.setCell(currentPlayerCell);
+            map.setPlayer(currentPlayer);
+            currentPlayerCell.setActor(currentPlayer);
+
+        }
     }
 
 
