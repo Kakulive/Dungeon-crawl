@@ -18,7 +18,8 @@ public class Player extends Actor {
 
     public Player(Cell cell) {
         super(cell);
-        this.hasKey = false; //TODO change once inventory is implemented
+        this.hasKey = false;
+        this.isDead = false;
     }
 
     @Override
@@ -45,6 +46,9 @@ public class Player extends Actor {
             super.move(dx, dy);
         } else if (!isWall(cellType)){
             super.move(dx,dy);
+        }
+        if (isPlayerDead(this)) {
+            setDead(true);
         }
     }
 
@@ -120,4 +124,5 @@ public class Player extends Actor {
     public void setOnUpStairs(boolean onUpStairs) {
         this.onUpStairs = onUpStairs;
     }
+
 }

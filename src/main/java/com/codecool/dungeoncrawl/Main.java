@@ -22,15 +22,17 @@ import javafx.stage.Stage;
 
 
 public class Main extends Application {
+    Stage stage = new Stage();
     String mapName1 = "/map.txt";
     String mapName2 = "/map2.txt";
-//    String currentMap = mapName1;
     GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
     GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
     GameMap map = map1;
+    private final int windowWidth = map.getWidth() * Tiles.TILE_WIDTH;
+    private final int windowHeight = map.getHeight() * Tiles.TILE_WIDTH;
     Canvas canvas = new Canvas(
-            map.getWidth() * Tiles.TILE_WIDTH,
-            map.getHeight() * Tiles.TILE_WIDTH);
+            windowWidth,
+            windowHeight);
     GraphicsContext context = canvas.getGraphicsContext2D();
     Label healthLabel = new Label();
     Label attackLabel = new Label();
@@ -46,6 +48,20 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
+        this.stage = primaryStage;
+
+        // Start Game screen
+        BorderPane startBorderPane = new BorderPane();
+        Button startGameButton = new Button("Start Game");
+        startBorderPane.setCenter(startGameButton);
+        Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
+        stage.setScene(startGameScene);
+        stage.setTitle("Dungeon Crawl");
+        stage.show();
+
+
+        // Main Game screen
         GridPane ui = new GridPane();
         ui.setPrefWidth(200);
         ui.setPadding(new Insets(10));
@@ -63,20 +79,26 @@ public class Main extends Application {
         ui.add(pickUpButton, 0, 5);
         ui.add(new Label("Inventory:"), 0, 6);
 
-        BorderPane borderPane = new BorderPane();
+        BorderPane mainBorderPane = new BorderPane();
 
-        borderPane.setCenter(canvas);
-        borderPane.setRight(ui);
+        mainBorderPane.setCenter(canvas);
+        mainBorderPane.setRight(ui);
 
-        Scene scene = new Scene(borderPane);
-        primaryStage.setScene(scene);
-        refresh();
-        scene.setOnKeyPressed(this::onKeyPressed);
-        primaryStage.setTitle("Dungeon Crawl");
-        primaryStage.show();
-        borderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+        Scene mainScene = new Scene(mainBorderPane);
+//        primaryStage.setScene(mainScene);
+//        refresh();
+        mainScene.setOnKeyPressed(this::onKeyPressed);
+//        primaryStage.setTitle("Dungeon Crawl");
+//        primaryStage.show();
+//        mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
 
         //TODO put below code in the UserInterfaceHandler class
+
+        startGameButton.setOnAction(event -> {
+            stage.setScene(mainScene);
+            refresh();
+            mainBorderPane.requestFocus(); // Brings the focus back on the map, instead of user UI
+        });
 
         nameSubmitButton.setOnAction(event -> {
             String userName = nameInput.getText();
@@ -88,10 +110,10 @@ public class Main extends Application {
             ui.add(name,0,0);
             name.setText(userName);
             name.setStyle("-fx-font-weight: bold");
-            borderPane.requestFocus();
+            mainBorderPane.requestFocus();
         });
 
-        pickUpButton.setOnAction(event -> pickUpItem(ui, borderPane));
+        pickUpButton.setOnAction(event -> pickUpItem(ui, mainBorderPane));
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
@@ -112,6 +134,12 @@ public class Main extends Application {
     }
 
     private void onKeyPressed(KeyEvent keyEvent) {
+        // End Game screen
+        BorderPane endBorderPane = new BorderPane();
+        Label endGameLabel = new Label("YOU DIED!");
+        endBorderPane.setCenter(endGameLabel);
+        Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
+
         switch (keyEvent.getCode()) {
             case UP:
                 map.getPlayer().move(0, -1);
@@ -125,6 +153,9 @@ public class Main extends Application {
             case RIGHT:
                 map.getPlayer().move(1,0);
                 break;
+        }
+        if (map.getPlayer().isDead()){
+            stage.setScene(endGameScene);
         }
         refresh();
         map.moveEnemies(map);
