@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -53,7 +54,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         this.stage = primaryStage;
-        sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
+        sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
@@ -61,6 +62,12 @@ public class Main extends Application {
             sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+        });
+
+
+        sceneSwitcher.getExitButton().setOnAction(event -> {
+        Platform.exit();
+        System.exit(0);
         });
 
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {

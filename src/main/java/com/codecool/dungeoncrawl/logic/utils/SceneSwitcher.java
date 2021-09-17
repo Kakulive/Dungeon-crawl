@@ -1,18 +1,25 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+
+import java.awt.*;
 
 public class SceneSwitcher {
 
     private Button startGameButton = new Button("Start Game");
+    private Button exitButton = new Button("Exit");
+
 
     private Scene mainScene;
     private BorderPane mainBorderPane;
@@ -25,20 +32,36 @@ public class SceneSwitcher {
     private Button pickUpButton = new Button("Pick up");
 
     public void startGameScene (Stage stage, int windowWidth, int windowHeight) {
-
         BorderPane startBorderPane = new BorderPane();
-        startBorderPane.setCenter(startGameButton);
+        BorderPane bottom = new BorderPane();
+        bottom.setCenter(exitButton);
+        startBorderPane.setBottom(bottom);
+        startBorderPane.setStyle("-fx-background-color: black;"+
+                "-fx-background-repeat: no-repeat;"+
+                "-fx-background-image: url('/dungeon_masters2.jpg');" +
+        "-fx-background-position: center center");
+
         Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
+        startBorderPane.setCenter(startGameButton);
         stage.setScene(startGameScene);
         stage.setTitle("Dungeon Crawl");
         stage.show();
     }
 
+    public Button getExitButton() {
+        return exitButton;
+    }
+
     public void endGameScene (Stage stage, int windowWidth, int windowHeight) {
         BorderPane endBorderPane = new BorderPane();
-        Label endGameLabel = new Label("YOU DIED!");
-        endBorderPane.setCenter(endGameLabel);
+        BorderPane bottom = new BorderPane();
+        bottom.setCenter(exitButton);
+        endBorderPane.setStyle("-fx-background-color: black;"+
+                "-fx-background-repeat: no-repeat;"+
+                "-fx-background-image: url('/dungeon_dead.gif');" +
+                "-fx-background-position: center center");
         Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
+        endBorderPane.setBottom(bottom);
         stage.setScene(endGameScene);
     }
 
@@ -76,6 +99,7 @@ public class SceneSwitcher {
     public Button getStartGameButton() {
         return startGameButton;
     }
+
 
     public Scene getMainScene() {
         return mainScene;
