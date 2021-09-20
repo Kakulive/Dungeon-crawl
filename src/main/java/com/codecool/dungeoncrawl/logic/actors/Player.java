@@ -10,8 +10,8 @@ import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage
 public class Player extends Actor {
     private boolean hasKey;
     private String name;
-    private boolean onDownStairs;
-    private boolean onUpStairs;
+    private boolean goingDown;
+    private boolean goingUp;
     private boolean cheatMode = false;
 
 
@@ -42,9 +42,9 @@ public class Player extends Actor {
             this.setHealth(this.getHealth() - 1);
             standardMove(nextCell);
         } else if (isDownStairs(cellType)) {
-            onDownStairs = true;
+            goingDown = true;
         } else if (isUpStairs(cellType)) {
-            onUpStairs = true;
+            goingUp = true;
         } else if (isCheatModeOn()) {
             super.move(dx, dy);
         } else if (!isWall(cellType)) {
@@ -133,20 +133,20 @@ public class Player extends Actor {
         flashMessage(message);
     }
 
-    public boolean isOnDownStairs() {
-        return onDownStairs;
+    public boolean isGoingDown() {
+        return goingDown;
     }
 
-    public void setOnDownStairs(boolean onDownStairs) {
-        this.onDownStairs = onDownStairs;
+    public void setGoingDown(boolean isPlayerGoingDown) {
+        this.goingDown = isPlayerGoingDown;
     }
 
-    public boolean isOnUpStairs() {
-        return onUpStairs;
+    public boolean isGoingUp() {
+        return goingUp;
     }
 
-    public void setOnUpStairs(boolean onUpStairs) {
-        this.onUpStairs = onUpStairs;
+    public void setGoingUp(boolean isPlayerGoingUp) {
+        this.goingUp = isPlayerGoingUp;
     }
 
     public String getName() {

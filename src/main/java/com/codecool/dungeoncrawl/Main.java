@@ -2,15 +2,13 @@ package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.Cell;
-import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -29,21 +27,22 @@ import java.sql.SQLException;
 
 
 public class Main extends Application {
-    Stage stage = new Stage();
-    SceneSwitcher sceneSwitcher = new SceneSwitcher();
-    String mapName1 = "/map.txt";
-    String mapName2 = "/map2.txt";
+    public static final String MAPNAME1 = "/map.txt";
+    public static final String MAPNAME2 = "/map2.txt";
 
-    GameMap map2 = MapLoader.loadMap(mapName2); // DOWNSTAIRS
-    GameMap map1 = MapLoader.loadMap(mapName1); // UPSTAIRS
+    private Stage stage = new Stage();
+    private SceneSwitcher sceneSwitcher = new SceneSwitcher();
 
-    GameMap map = map1;
+    private GameMap map2 = MapLoader.loadMap(MAPNAME2); // DOWNSTAIRS
+    private GameMap map1 = MapLoader.loadMap(MAPNAME1); // UPSTAIRS
+
+    private GameMap map = map1;
 
     private final int windowWidth = map.getWidth() * Tiles.TILE_WIDTH;
     private final int windowHeight = map.getHeight() * Tiles.TILE_WIDTH;
 
-    Canvas canvas = new Canvas(windowWidth, windowHeight);
-    GraphicsContext context = canvas.getGraphicsContext2D();
+    private Canvas canvas = new Canvas(windowWidth, windowHeight);
+    private GraphicsContext context = canvas.getGraphicsContext2D();
 
     Label name = new Label();
 
@@ -175,35 +174,27 @@ public class Main extends Application {
     }
 
     private void changeCurrentMap() {
-        Player currentPlayer = map.getPlayer();
-        int X = map.getPlayer().getX();
-        int Y = map.getPlayer().getY();
-
-        if (map.getPlayer().isOnDownStairs()){
-            map.getPlayer().setOnDownStairs(false);
-            map.setPlayer(null);
-            map.getCell(X,Y).setActor(null);
-            map = map2;
-            Cell currentPlayerCell = map.getCell(2,9);
-            currentPlayer.setCell(currentPlayerCell);
-            map.setPlayer(currentPlayer);
-            currentPlayerCell.setActor(currentPlayer);
-
-        } else if (map.getPlayer().isOnUpStairs()) {
-            map.getPlayer().setOnUpStairs(false);
+        boolean isGoingDown = map.getPlayer().isGoingDown();
+        boolean isGoingUp = map.getPlayer().isGoingUp();
+        if (isGoingDown || isGoingUp){
+            Player currentPlayer = map.getPlayer();
+            int X = map.getPlayer().getX();
+            int Y = map.getPlayer().getY();
             Cell oldPlayerCell = map.getCell(X,Y);
             map.setPlayer(null);
             oldPlayerCell.setActor(null);
-            map = map1;
-            Cell currentPlayerCell = map.getCell(5,13);
-            currentPlayer.setCell(currentPlayerCell);
-            map.setPlayer(currentPlayer);
-            currentPlayerCell.setActor(currentPlayer);
-
+            if (isGoingDown){
+                changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(), staircaseExits.DOWNSTAIRS_Y.getValue());
+            } else {
+                changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(), staircaseExits.UPSTAIRS_Y.getValue());
+            }
+            map.getPlayer().setGoingDown(false);
+            map.getPlayer().setGoingUp(false);
         }
     }
 
     // TODO
+
     private void setupDbManager() {
         dbManager = new GameDatabaseManager();
         try {
@@ -212,8 +203,8 @@ public class Main extends Application {
             System.out.println("Cannot connect to database.");
         }
     }
-
     // TODO
+
     private void exit() {
         try {
             stop();
@@ -223,5 +214,12 @@ public class Main extends Application {
         System.exit(0);
     }
 
+    private void changeLevel(Player currentPlayer, GameMap map2, int X, int Y) {
+        map = map2;
+        Cell currentPlayerCell = map.getCell(X, Y);
+        currentPlayer.setCell(currentPlayerCell);
+        map.setPlayer(currentPlayer);
+        currentPlayerCell.setActor(currentPlayer);
+    }
 
 }

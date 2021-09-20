@@ -6,13 +6,13 @@ import com.codecool.dungeoncrawl.logic.Drawable;
 import com.codecool.dungeoncrawl.logic.GameMap;
 
 public abstract class Actor implements Drawable {
+    public static int enemyIdCounter = 1;
     protected Cell cell;
+    protected boolean isDead;
     private int health = 10;
     private int attack = 5;
     private int armor = 0;
-    public static int enemyIdCounter = 1;
     private String itemUrl;
-    protected boolean isDead;
 
     public Actor(Cell cell) {
         this.cell = cell;
