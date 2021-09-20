@@ -5,7 +5,7 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
-import static com.codecool.dungeoncrawl.Util.flashMessage;
+import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage;
 
 public class Player extends Actor {
     private boolean hasKey;
