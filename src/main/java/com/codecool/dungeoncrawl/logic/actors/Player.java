@@ -9,7 +9,7 @@ import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage
 
 public class Player extends Actor {
     private boolean hasKey;
-
+    private String name;
     private boolean onDownStairs;
     private boolean onUpStairs;
     private boolean cheatMode = false;
@@ -19,6 +19,11 @@ public class Player extends Actor {
         super(cell);
         this.hasKey = false;
         this.isDead = false;
+    }
+
+    public Player(Cell cell, String name) {
+        super(cell);
+        this.name = name;
     }
 
     @Override
@@ -144,4 +149,11 @@ public class Player extends Actor {
         this.onUpStairs = onUpStairs;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
