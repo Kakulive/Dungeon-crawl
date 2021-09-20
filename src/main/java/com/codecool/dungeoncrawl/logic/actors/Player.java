@@ -5,12 +5,11 @@ import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
-
-import java.util.Locale;
+import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage;
 
 public class Player extends Actor {
     private boolean hasKey;
-
+    private String name;
     private boolean onDownStairs;
     private boolean onUpStairs;
     private boolean cheatMode = false;
@@ -20,6 +19,11 @@ public class Player extends Actor {
         super(cell);
         this.hasKey = false;
         this.isDead = false;
+    }
+
+    public Player(Cell cell, String name) {
+        super(cell);
+        this.name = name;
     }
 
     @Override
@@ -32,20 +36,19 @@ public class Player extends Actor {
             if (this.getHasKey()) {
                 openDoor(nextCell);
             } else {
-                System.out.println("You need a key!");
-                //TODO flash using javafx
+                flashMessage("You need a key!");
             }
         } else if (isCandle(cellType)) {
             this.setHealth(this.getHealth() - 1);
             standardMove(nextCell);
         } else if (isDownStairs(cellType)) {
             onDownStairs = true;
-        } else if (isUpStairs(cellType)){
+        } else if (isUpStairs(cellType)) {
             onUpStairs = true;
-        } else if (isCheatModeOn())  {
+        } else if (isCheatModeOn()) {
             super.move(dx, dy);
-        } else if (!isWall(cellType)){
-            super.move(dx,dy);
+        } else if (!isWall(cellType)) {
+            super.move(dx, dy);
         }
         if (isPlayerDead(this)) {
             setDead(true);
@@ -76,7 +79,7 @@ public class Player extends Actor {
         this.cheatMode = cheatMode;
     }
 
-    public boolean checkCheatCode(String name){
+    public boolean checkCheatCode(String name) {
         return name.toLowerCase().equals("adam") || name.toLowerCase().equals("marcelina")
                 || name.toLowerCase().equals("damian") || name.toLowerCase().equals("dymitr");
     }
@@ -89,16 +92,18 @@ public class Player extends Actor {
                 || cellType.equals(CellType.HEART)
                 || cellType.equals(CellType.SHIELD)) {
             currentCell.setType(CellType.FLOOR);
-            switch (cellType.getTileName().toUpperCase()) {
+            String tileName = cellType.getTileName().toUpperCase();
+            showPickUpMessage(tileName);
+            switch (tileName) {
                 case "SWORD":
-                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
+                    setItemUrl("/sword.png");
                     this.setAttack(this.getAttack() + Sword.getAttack());
                     break;
                 case "KEY":
-                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
+                    setItemUrl("/key.png");
                     break;
                 case "SHIELD":
-                    setItemUrl("https://i.imgur.com/SNEwI8U.png");
+                    setItemUrl("/shield.png");
                     this.setArmor(this.getArmor() + Shield.getArmor());
                     break;
                 case "HEART":
@@ -107,6 +112,25 @@ public class Player extends Actor {
                     break;
             }
         } else setItemUrl(null);
+    }
+
+    private void showPickUpMessage(String item) {
+        String message = null;
+        switch (item) {
+            case "SWORD":
+                message = "Hmm, you found the sword. Do you think this will help you?\nAttack +" + Sword.getAttack();
+                break;
+            case "KEY":
+                message = "Some doors are best left unopened";
+                break;
+            case "SHIELD":
+                message = "Shields break as quickly as human lives\nArmor +" + Shield.getArmor();
+                break;
+            case "HEART":
+                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.health;
+                break;
+        }
+        flashMessage(message);
     }
 
     public boolean isOnDownStairs() {
@@ -125,4 +149,11 @@ public class Player extends Actor {
         this.onUpStairs = onUpStairs;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

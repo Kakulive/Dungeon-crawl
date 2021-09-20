@@ -44,7 +44,6 @@ public abstract class Actor implements Drawable {
 
     protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
-
     }
 
     private boolean isOneShot(Actor player, Actor enemy) {
@@ -52,7 +51,7 @@ public abstract class Actor implements Drawable {
     }
 
     protected boolean isPlayerDead(Actor player) {
-        return player.getHealth() < 0;
+        return player.getHealth() <= 0;
     }
 
     private boolean doesAttackHurt(Actor player, Actor enemy) {
