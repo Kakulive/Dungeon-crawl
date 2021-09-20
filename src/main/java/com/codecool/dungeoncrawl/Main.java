@@ -1,11 +1,15 @@
 package com.codecool.dungeoncrawl;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -48,7 +52,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         this.stage = primaryStage;
-        sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
+        sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
@@ -58,14 +62,20 @@ public class Main extends Application {
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
 
+
+        sceneSwitcher.getExitButton().setOnAction(event -> {
+        Platform.exit();
+        System.exit(0);
+        });
+
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
             String userName = sceneSwitcher.getNameInput().getText();
-            if (map.getPlayer().checkCheatCode(userName)) {
+            if (map.getPlayer().checkCheatCode(userName)){
                 map.getPlayer().setCheatMode(true);
             }
             sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
             sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
-            sceneSwitcher.getUi().add(name, 0, 0);
+            sceneSwitcher.getUi().add(name,0,0);
             name.setText(userName);
             name.setStyle("-fx-font-weight: bold");
             sceneSwitcher.getMainBorderPane().requestFocus();
@@ -75,7 +85,7 @@ public class Main extends Application {
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
-        if (map.getPlayer().getCell().getTileName().equals("key")) {
+        if (map.getPlayer().getCell().getTileName().equals("key")){
             map.getPlayer().setHasKey(true);
         }
         map.getPlayer().pickUpItem();
@@ -107,10 +117,10 @@ public class Main extends Application {
                 map.getPlayer().move(-1, 0);
                 break;
             case RIGHT:
-                map.getPlayer().move(1, 0);
+                map.getPlayer().move(1,0);
                 break;
         }
-        if (map.getPlayer().isDead()) {
+        if (map.getPlayer().isDead()){
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
         }
         refresh();
@@ -141,23 +151,23 @@ public class Main extends Application {
         int X = map.getPlayer().getX();
         int Y = map.getPlayer().getY();
 
-        if (map.getPlayer().isOnDownStairs()) {
+        if (map.getPlayer().isOnDownStairs()){
             map.getPlayer().setOnDownStairs(false);
             map.setPlayer(null);
-            map.getCell(X, Y).setActor(null);
+            map.getCell(X,Y).setActor(null);
             map = map2;
-            Cell currentPlayerCell = map.getCell(2, 9);
+            Cell currentPlayerCell = map.getCell(2,9);
             currentPlayer.setCell(currentPlayerCell);
             map.setPlayer(currentPlayer);
             currentPlayerCell.setActor(currentPlayer);
 
         } else if (map.getPlayer().isOnUpStairs()) {
             map.getPlayer().setOnUpStairs(false);
-            Cell oldPlayerCell = map.getCell(X, Y);
+            Cell oldPlayerCell = map.getCell(X,Y);
             map.setPlayer(null);
             oldPlayerCell.setActor(null);
             map = map1;
-            Cell currentPlayerCell = map.getCell(5, 13);
+            Cell currentPlayerCell = map.getCell(5,13);
             currentPlayer.setCell(currentPlayerCell);
             map.setPlayer(currentPlayer);
             currentPlayerCell.setActor(currentPlayer);
