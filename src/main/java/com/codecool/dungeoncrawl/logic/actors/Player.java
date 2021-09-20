@@ -91,14 +91,14 @@ public class Player extends Actor {
             showPickUpMessage(tileName);
             switch (tileName) {
                 case "SWORD":
-                    setItemUrl("https://i.imgur.com/PmvQYO3.png");
+                    setItemUrl("/sword.png");
                     this.setAttack(this.getAttack() + Sword.getAttack());
                     break;
                 case "KEY":
-                    setItemUrl("https://i.imgur.com/4kUCAMK.png");
+                    setItemUrl("/key.png");
                     break;
                 case "SHIELD":
-                    setItemUrl("https://i.imgur.com/SNEwI8U.png");
+                    setItemUrl("/shield.png");
                     this.setArmor(this.getArmor() + Shield.getArmor());
                     break;
                 case "HEART":
