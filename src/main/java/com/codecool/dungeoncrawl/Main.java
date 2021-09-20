@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl;
 
+import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
@@ -15,11 +16,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.sql.SQLException;
 
 
 public class Main extends Application {
@@ -41,6 +47,9 @@ public class Main extends Application {
 
     Label name = new Label();
 
+    // TODO
+    GameDatabaseManager dbManager;
+
     private int inventoryRowIndex = 7;
     private int inventoryColumnIndex = 0;
 
@@ -50,7 +59,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        // TODO
+        setupDbManager();
         this.stage = primaryStage;
         sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
 
@@ -58,6 +68,8 @@ public class Main extends Application {
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
             sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
             sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+            // TODO
+            // scene.setOnKeyReleased(this::onKeyReleased);
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
@@ -105,6 +117,17 @@ public class Main extends Application {
         refresh();
     }
 
+    // TODO
+    private void onKeyReleased(KeyEvent keyEvent) {
+        KeyCombination exitCombinationMac = new KeyCodeCombination(KeyCode.W, KeyCombination.SHORTCUT_DOWN);
+        KeyCombination exitCombinationWin = new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN);
+        if (exitCombinationMac.match(keyEvent)
+                || exitCombinationWin.match(keyEvent)
+                || keyEvent.getCode() == KeyCode.ESCAPE) {
+            exit();
+        }
+    }
+
     private void onKeyPressed(KeyEvent keyEvent) {
         switch (keyEvent.getCode()) {
             case UP:
@@ -118,6 +141,11 @@ public class Main extends Application {
                 break;
             case RIGHT:
                 map.getPlayer().move(1,0);
+                break;
+            // TODO case S
+            case S:
+                Player player = map.getPlayer();
+                dbManager.savePlayer(player);
                 break;
         }
         if (map.getPlayer().isDead()){
@@ -173,6 +201,26 @@ public class Main extends Application {
             currentPlayerCell.setActor(currentPlayer);
 
         }
+    }
+
+    // TODO
+    private void setupDbManager() {
+        dbManager = new GameDatabaseManager();
+        try {
+            dbManager.setup();
+        } catch (SQLException ex) {
+            System.out.println("Cannot connect to database.");
+        }
+    }
+
+    // TODO
+    private void exit() {
+        try {
+            stop();
+        } catch (Exception e) {
+            System.exit(1);
+        }
+        System.exit(0);
     }
 
 
