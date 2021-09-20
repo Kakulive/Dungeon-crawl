@@ -36,10 +36,7 @@ public class SceneSwitcher {
         BorderPane bottom = new BorderPane();
         bottom.setCenter(exitButton);
         startBorderPane.setBottom(bottom);
-        startBorderPane.setStyle("-fx-background-color: black;"+
-                "-fx-background-repeat: no-repeat;"+
-                "-fx-background-image: url('/dungeon_masters2.jpg');" +
-        "-fx-background-position: center center");
+        startBorderPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
 
         Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
         startBorderPane.setCenter(startGameButton);
@@ -56,10 +53,7 @@ public class SceneSwitcher {
         BorderPane endBorderPane = new BorderPane();
         BorderPane bottom = new BorderPane();
         bottom.setCenter(exitButton);
-        endBorderPane.setStyle("-fx-background-color: black;"+
-                "-fx-background-repeat: no-repeat;"+
-                "-fx-background-image: url('/dungeon_dead.gif');" +
-                "-fx-background-position: center center");
+        endBorderPane.setStyle(getSceneStyleString("dungeon_dead.gif"));
         Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
         endBorderPane.setBottom(bottom);
         stage.setScene(endGameScene);
@@ -68,23 +62,7 @@ public class SceneSwitcher {
     public void mainScene(Stage stage, int windowWidth, int windowHeight, Canvas canvas) {
         nameInput = new TextField();
 
-        ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
-        ui.setHgap(5);
-        ui.setVgap(5);
-        ui.add(nameInput,0,0);
-        nameInput.setPromptText("What's your name?");
-        ui.add(nameSubmitButton,0,1);
-        ui.add(new Label("Health: "), 0, 2);
-        ui.add(healthLabel, 1, 2);
-        ui.add(new Label("Attack: "), 0, 3);
-        ui.add(attackLabel, 1, 3);
-        ui.add(new Label("Armor: "), 0, 4);
-        ui.add(armorLabel, 1, 4);
-        ui.add(pickUpButton, 0, 5);
-        ui.add(new Label("Inventory:"), 0, 6);
-
+        GridPane ui = initUi();
         mainBorderPane = new BorderPane();
 
         mainBorderPane.setCenter(canvas);
@@ -93,7 +71,6 @@ public class SceneSwitcher {
         mainScene = new Scene(mainBorderPane);
 
         stage.setScene(mainScene);
-
     }
 
     public Button getStartGameButton() {
@@ -135,5 +112,35 @@ public class SceneSwitcher {
 
     public Label getArmorLabel() {
         return armorLabel;
+    }
+
+    private GridPane initUi() {
+        ui = new GridPane();
+        ui.setPrefWidth(200);
+        ui.setPadding(new Insets(10));
+        ui.setHgap(5);
+        ui.setVgap(5);
+        ui.add(nameInput,0,0);
+        nameInput.setPromptText("What's your name?");
+        ui.add(nameSubmitButton,0,1);
+        setupSingleLabel("Health: ", 2, healthLabel);
+        setupSingleLabel("Attack: ", 3, attackLabel);
+        setupSingleLabel("Armor: ", 4, armorLabel);
+        ui.add(pickUpButton, 0, 5);
+        ui.add(new Label("Inventory:"), 0, 6);
+
+        return ui;
+    }
+
+    private String getSceneStyleString(String styleString) {
+        return "-fx-background-color: black;" +
+                "-fx-background-repeat: no-repeat;" +
+                "-fx-background-image: url('" + styleString + "');"+
+                "-fx-background-position: center center";
+    }
+
+    private void setupSingleLabel(String s, int i, Label healthLabel) {
+        ui.add(new Label(s), 0, i);
+        ui.add(healthLabel, 1, i);
     }
 }
