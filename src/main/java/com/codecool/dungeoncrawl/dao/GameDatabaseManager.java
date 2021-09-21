@@ -14,31 +14,34 @@ import java.util.Map;
 public class GameDatabaseManager {
     private PlayerDao playerDao;
     static Map<String, String> env = System.getenv();
-    private Statement stat;
+    Connection conn;
 
 
-    public void getConnection(String url, String name, String password, String user) throws SQLException, ClassNotFoundException {
+    public Connection getConnection() throws SQLException {
         final String DRIVER = "org.postgresql.Driver";
-        url = env.get("APP_DB_URL");
-        name = env.get("APP_DB_NAME");
-        password = env.get("APP_DB_PASSWORD");
-        user = env.get("APP_DB_USER");
+        String url = env.get("APP_DB_URL");
+        String name = env.get("APP_DB_NAME");
+        String password = env.get("APP_DB_PASSWORD");
+        String user = env.get("APP_DB_USER");
+//        Connection conn = null;
         try {
-        Class.forName(DRIVER);} catch (ClassNotFoundException e) {
+            Class.forName(DRIVER);} catch (ClassNotFoundException e) {
             System.out.println("No JDBC Driver Found");
             e.printStackTrace();
         }
         try {
-            java.sql.Connection conn = DriverManager.getConnection(url);
-            stat = conn.createStatement();
+            conn= DriverManager.getConnection(url,user,password);
+//          Statement stat = conn.createStatement();
             System.out.println("Connection successed!");
         } catch (SQLException e) {
             System.out.println("Problem with database connection.");
             e.printStackTrace();
         }
-        Connection con= DriverManager.getConnection(url,user,password);
+        conn= DriverManager.getConnection(url,user,password);
 
+        return conn;
     };
+
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
@@ -52,7 +55,6 @@ public class GameDatabaseManager {
     }
 
     private DataSource connect() throws SQLException {
-
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = env.get("APP_DB_NAME");
         String dbUser = env.get("APP_DB_USER");
@@ -66,12 +68,13 @@ public class GameDatabaseManager {
         dataSource.setPassword(dbPassword);
         dataSource.setPortNumbers(dbPort);
 
-
         System.out.println("Trying to connect");
         dataSource.getConnection().close();
         System.out.println("Connection ok.");
         return dataSource;
     }
 
-
+    public Connection getConn() {
+        return conn;
+    }
 }
