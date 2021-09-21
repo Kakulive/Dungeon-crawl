@@ -4,16 +4,27 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 
 public class PlayerModel extends BaseModel {
     private String playerName;
-    private int hp;
+    private String hasKey;
+    private String items;
     private int x;
     private int y;
+    private int hp;
+    private int attack;
+    private int armor;
 
-    public PlayerModel(String playerName, int x, int y) {
+
+    public PlayerModel(String playerName, int hp, int x, int y, int attack, int armor, String hasKey, String items) {
         this.playerName = playerName;
+        this.hasKey = hasKey;
+        this.items = items;
+        this.hp = hp;
         this.x = x;
         this.y = y;
+        this.attack = attack;
+        this.armor = armor;
     }
 
+    // TODO in constructor which is below enter hasKey, items, attack, armor
     public PlayerModel(Player player) {
         this.playerName = player.getName();
         this.x = player.getX();
@@ -53,5 +64,37 @@ public class PlayerModel extends BaseModel {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public String getHasKey() {
+        return hasKey;
+    }
+
+    public void setHasKey(String hasKey) {
+        this.hasKey = hasKey;
+    }
+
+    public String getItems() {
+        return items;
+    }
+
+    public void setItems(String items) {
+        this.items = items;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public int getArmor() {
+        return armor;
+    }
+
+    public void setArmor(int armor) {
+        this.armor = armor;
     }
 }

@@ -12,7 +12,11 @@ CREATE TABLE public.player (
     player_name text NOT NULL,
     hp integer NOT NULL,
     x integer NOT NULL,
-    y integer NOT NULL
+    y integer NOT NULL,
+    attack integer NOT NULL,
+    armor integer NOT NULL,
+    hasKey text NOT NULL,
+    items text NOT NULL
 );
 
 ALTER TABLE ONLY public.game_state
