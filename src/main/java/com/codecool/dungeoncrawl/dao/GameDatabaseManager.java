@@ -47,9 +47,8 @@ public class GameDatabaseManager {
     }
 
     public void saveGameState(GameMap map) {
-        int playerId = playerDao.add(new PlayerModel(map.getPlayer()));
         this.gameStateModel = new GameStateModel(map);
-        gameStateModel.getPlayer().setId(playerId);
+        playerDao.add(gameStateModel.getPlayer());
         this.gameStateDao.add(gameStateModel);
     }
 
