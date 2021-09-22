@@ -15,7 +15,7 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public int add(PlayerModel player) {
+    public void add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
             String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, haskey, items ) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -25,7 +25,6 @@ public class PlayerDaoJdbc implements PlayerDao {
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
             player.setId(resultSet.getInt(1));
-            return resultSet.getInt(1);
         } catch (SQLException e) {
             // TODO Flash message? Make it in another window or in the same?
             throw new RuntimeException("Error, can't add new Player " + "'" + player.getPlayerName() + "'", e);
