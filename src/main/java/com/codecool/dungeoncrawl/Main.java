@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
+import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -24,6 +25,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
 
 
 public class Main extends Application {
@@ -148,10 +150,13 @@ public class Main extends Application {
                 dbManager.savePlayer(player);
                 break;
                 // z key for any query testing
-//            case Z:
+            case Z:
 //                Player newPlayer = map.getPlayer();
-//                dbManager.updatePlayer(newPlayer, 4);
-//                break;
+//                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
+//                System.out.println(oldPlayer);
+                List<PlayerModel> allPlayersRecords = dbManager.getAllSavedPlayers();
+                System.out.println(allPlayersRecords);
+                break;
         }
         if (map.getPlayer().isDead()){
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);

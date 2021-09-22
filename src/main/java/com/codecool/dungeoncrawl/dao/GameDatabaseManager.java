@@ -5,10 +5,9 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,6 +31,14 @@ public class GameDatabaseManager {
     public void updatePlayer(Player player, int id) {
         this.playerModel = new PlayerModel(player);
         this.playerDao.update(playerModel, id);
+    }
+
+    public PlayerModel getSavedPlayer(int id) {
+        PlayerModel playerData = this.playerDao.get(id);
+        return playerData;
+    }
+    public List<PlayerModel> getAllSavedPlayers() {
+        return this.playerDao.getAll();
     }
 
     private DataSource connect() throws SQLException {

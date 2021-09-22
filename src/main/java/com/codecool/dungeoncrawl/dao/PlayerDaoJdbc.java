@@ -58,14 +58,14 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items  " +
+            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items " +
                     "FROM player " +
                     "WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (!resultSet.next()) {
-                return  null;
+                return null;
             }
             PlayerModel playerModel = getPlayerModel(resultSet);
             playerModel.setId(id);
@@ -79,12 +79,13 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public List<PlayerModel> getAll() {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, items, haskey, id FROM player";
+            String sql = "SELECT id, player_name, hp, x, y, attack, armor, haskey, items " +
+                    "FROM player";
             ResultSet resultSet = conn.createStatement().executeQuery(sql);
             List<PlayerModel> playersModel = new ArrayList<>();
             while (resultSet.next()) {
                 PlayerModel playerModel = getPlayerModel(resultSet);
-                playerModel.setId(resultSet.getInt(9));
+                playerModel.setId(resultSet.getInt(1));
                 playersModel.add(playerModel);
             }
             return playersModel;
@@ -107,13 +108,13 @@ public class PlayerDaoJdbc implements PlayerDao {
 
     private PlayerModel getPlayerModel(ResultSet resultSet) throws SQLException {
         return new PlayerModel(
-                resultSet.getString(1),
-                resultSet.getInt(2),
+                resultSet.getString(2),
                 resultSet.getInt(3),
                 resultSet.getInt(4),
                 resultSet.getInt(5),
                 resultSet.getInt(6),
-                resultSet.getBoolean(7),
-                resultSet.getString(8));
+                resultSet.getInt(7),
+                resultSet.getBoolean(8),
+                resultSet.getString(9));
     }
 }
