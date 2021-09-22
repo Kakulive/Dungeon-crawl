@@ -14,34 +14,31 @@ import java.util.Map;
 public class GameDatabaseManager {
     private PlayerDao playerDao;
     static Map<String, String> env = System.getenv();
-    Connection conn;
+    private Statement stat;
 
 
-    public Connection getConnection() throws SQLException {
-        final String DRIVER = "org.postgresql.Driver";
-        String url = env.get("APP_DB_URL");
-        String name = env.get("APP_DB_NAME");
-        String password = env.get("APP_DB_PASSWORD");
-        String user = env.get("APP_DB_USER");
-//        Connection conn = null;
-        try {
-            Class.forName(DRIVER);} catch (ClassNotFoundException e) {
-            System.out.println("No JDBC Driver Found");
-            e.printStackTrace();
-        }
-        try {
-            conn= DriverManager.getConnection(url,user,password);
-//          Statement stat = conn.createStatement();
-            System.out.println("Connection successed!");
-        } catch (SQLException e) {
-            System.out.println("Problem with database connection.");
-            e.printStackTrace();
-        }
-        conn= DriverManager.getConnection(url,user,password);
-
-        return conn;
-    };
-
+//    public void getConnection(String url, String name, String password, String user) throws SQLException, ClassNotFoundException {
+//        final String DRIVER = "org.postgresql.Driver";
+//        url = env.get("APP_DB_URL");
+//        name = env.get("APP_DB_NAME");
+//        password = env.get("APP_DB_PASSWORD");
+//        user = env.get("APP_DB_USER");
+//        try {
+//        Class.forName(DRIVER);} catch (ClassNotFoundException e) {
+//            System.out.println("No JDBC Driver Found");
+//            e.printStackTrace();
+//        }
+//        try {
+//            java.sql.Connection conn = DriverManager.getConnection(url);
+//            stat = conn.createStatement();
+//            System.out.println("Connection successed!");
+//        } catch (SQLException e) {
+//            System.out.println("Problem with database connection.");
+//            e.printStackTrace();
+//        }
+//        Connection con= DriverManager.getConnection(url,user,password);
+//
+//    };
 
     public void setup() throws SQLException {
         DataSource dataSource = connect();
@@ -55,18 +52,17 @@ public class GameDatabaseManager {
     }
 
     private DataSource connect() throws SQLException {
+
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = env.get("APP_DB_NAME");
         String dbUser = env.get("APP_DB_USER");
         String dbPassword = env.get("APP_DB_PASSWORD");
-        String dbUrl = env.get("APP_DB_URL");
-        String dbPortString = env.get("APP_DB_PORT");
-        int [] dbPort = new int[Integer.parseInt(dbPortString)];
+        String[] dbHost = {env.get("APP_DB_HOST")};
 
         dataSource.setDatabaseName(dbName);
         dataSource.setUser(dbUser);
         dataSource.setPassword(dbPassword);
-        dataSource.setPortNumbers(dbPort);
+        dataSource.setServerNames(dbHost);
 
         System.out.println("Trying to connect");
         dataSource.getConnection().close();
@@ -74,7 +70,5 @@ public class GameDatabaseManager {
         return dataSource;
     }
 
-    public Connection getConn() {
-        return conn;
-    }
+
 }
