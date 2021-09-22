@@ -81,6 +81,7 @@ public class Main extends Application {
 
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
             String userName = sceneSwitcher.getNameInput().getText();
+            map.getPlayer().setName(userName);
             if (map.getPlayer().checkCheatCode(userName)){
                 map.getPlayer().setCheatMode(true);
             }
