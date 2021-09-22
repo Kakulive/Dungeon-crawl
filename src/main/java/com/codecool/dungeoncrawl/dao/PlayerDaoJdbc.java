@@ -17,7 +17,7 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, haskey, items) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, items, haskey) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, player.getPlayerName());
             statement.setInt(2, player.getHp());
@@ -25,8 +25,9 @@ public class PlayerDaoJdbc implements PlayerDao {
             statement.setInt(4, player.getY());
             statement.setInt(5, player.getAttack());
             statement.setInt(6, player.getArmor());
-            statement.setString(7, player.getHasKey());
-            statement.setString(8, player.getItems());
+            statement.setString(7, player.getItems());
+            statement.setBoolean(8, player.getHasKey());
+
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
@@ -40,15 +41,15 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void update(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE player SET hp = ?, x = ?, y = ?, attack = ?, armor = ?, haskey = ?, items = ? WHERE id = ?";
+            String sql = "UPDATE player SET hp = ?, x = ?, y = ?, attack = ?, armor = ?, items = ?, haskey = ? WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(2, player.getHp());
             statement.setInt(3, player.getX());
             statement.setInt(4, player.getY());
             statement.setInt(5, player.getAttack());
             statement.setInt(6, player.getArmor());
-            statement.setString(7, player.getHasKey());
-            statement.setString(8, player.getItems());
+            statement.setString(7, player.getItems());
+            statement.setBoolean(8, player.getHasKey());
             statement.executeUpdate();
         } catch (SQLException e) {
             // TODO Flash message? Make it in another window or in the same?
@@ -59,7 +60,7 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items FROM player WHERE id = ?";
+            String sql = "SELECT player_name, hp, x, y, attack, armor, items, haskey FROM player WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -74,7 +75,7 @@ public class PlayerDaoJdbc implements PlayerDao {
                     resultSet.getInt(5),
                     resultSet.getInt(6),
                     resultSet.getString(7),
-                    resultSet.getString(8));
+                    resultSet.getBoolean(8));
             playerModel.setId(id);
             return playerModel;
         } catch (SQLException e) {
@@ -86,7 +87,7 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public List<PlayerModel> getAll() {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items, id FROM player";
+            String sql = "SELECT player_name, hp, x, y, attack, armor, items, haskey, id FROM player";
             ResultSet resultSet = conn.createStatement().executeQuery(sql);
             List<PlayerModel> playersModel = new ArrayList<>();
             while (resultSet.next()) {
@@ -98,7 +99,7 @@ public class PlayerDaoJdbc implements PlayerDao {
                         resultSet.getInt(5),
                         resultSet.getInt(6),
                         resultSet.getString(7),
-                        resultSet.getString(8));
+                        resultSet.getBoolean(8));
                 playerModel.setId(resultSet.getInt(9));
                 playersModel.add(playerModel);
             }
