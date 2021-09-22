@@ -13,7 +13,7 @@ public class PlayerModel extends BaseModel {
     private int armor;
 
 
-    public PlayerModel(String playerName, int hp, int x, int y, int attack, int armor, String items, boolean hasKey) {
+    public PlayerModel(String playerName, int hp, int x, int y, int attack, int armor, boolean hasKey, String items) {
         this.playerName = playerName;
         this.hasKey = hasKey;
         this.items = items;
@@ -33,8 +33,7 @@ public class PlayerModel extends BaseModel {
         this.armor = player.getArmor();
         this.attack = player.getAttack();
         this.hasKey = player.getHasKey();
-        this.items = "abc";
-
+        this.items = "none";
     }
 
     public String getPlayerName() {

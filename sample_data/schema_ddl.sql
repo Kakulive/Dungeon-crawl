@@ -15,7 +15,7 @@ CREATE TABLE public.player (
     y integer NOT NULL,
     attack integer NOT NULL,
     armor integer NOT NULL,
-    hasKey text NOT NULL,
+    hasKey boolean NOT NULL,
     items text NOT NULL
 );
 

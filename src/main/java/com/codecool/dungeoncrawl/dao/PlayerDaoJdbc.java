@@ -17,17 +17,10 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, items, haskey) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, haskey, items ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, player.getPlayerName());
-            statement.setInt(2, player.getHp());
-            statement.setInt(3, player.getX());
-            statement.setInt(4, player.getY());
-            statement.setInt(5, player.getAttack());
-            statement.setInt(6, player.getArmor());
-            statement.setString(7, player.getItems());
-            statement.setBoolean(8, player.getHasKey());
-
+            setIntoStatement(player, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
@@ -41,15 +34,9 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void update(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE player SET hp = ?, x = ?, y = ?, attack = ?, armor = ?, items = ?, haskey = ? WHERE id = ?";
+            String sql = "UPDATE player SET hp = ?, x = ?, y = ?, attack = ?, armor = ?, haskey = ?, items = ? WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(2, player.getHp());
-            statement.setInt(3, player.getX());
-            statement.setInt(4, player.getY());
-            statement.setInt(5, player.getAttack());
-            statement.setInt(6, player.getArmor());
-            statement.setString(7, player.getItems());
-            statement.setBoolean(8, player.getHasKey());
+            setIntoStatement(player, statement);
             statement.executeUpdate();
         } catch (SQLException e) {
             // TODO Flash message? Make it in another window or in the same?
@@ -60,22 +47,14 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, items, haskey FROM player WHERE id = ?";
+            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items  FROM player WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (!resultSet.next()) {
                 return  null;
             }
-            PlayerModel playerModel = new PlayerModel(
-                    resultSet.getString(1),
-                    resultSet.getInt(2),
-                    resultSet.getInt(3),
-                    resultSet.getInt(4),
-                    resultSet.getInt(5),
-                    resultSet.getInt(6),
-                    resultSet.getString(7),
-                    resultSet.getBoolean(8));
+            PlayerModel playerModel = getPlayerModel(resultSet);
             playerModel.setId(id);
             return playerModel;
         } catch (SQLException e) {
@@ -91,15 +70,7 @@ public class PlayerDaoJdbc implements PlayerDao {
             ResultSet resultSet = conn.createStatement().executeQuery(sql);
             List<PlayerModel> playersModel = new ArrayList<>();
             while (resultSet.next()) {
-                PlayerModel playerModel = new PlayerModel(
-                        resultSet.getString(1),
-                        resultSet.getInt(2),
-                        resultSet.getInt(3),
-                        resultSet.getInt(4),
-                        resultSet.getInt(5),
-                        resultSet.getInt(6),
-                        resultSet.getString(7),
-                        resultSet.getBoolean(8));
+                PlayerModel playerModel = getPlayerModel(resultSet);
                 playerModel.setId(resultSet.getInt(9));
                 playersModel.add(playerModel);
             }
@@ -108,5 +79,27 @@ public class PlayerDaoJdbc implements PlayerDao {
             // TODO Flash message? Make it in another window or in the same?
             throw new RuntimeException("Error, cannot read all authors", e);
         }
+    }
+
+    private void setIntoStatement(PlayerModel player, PreparedStatement statement) throws SQLException {
+        statement.setInt(2, player.getHp());
+        statement.setInt(3, player.getX());
+        statement.setInt(4, player.getY());
+        statement.setInt(5, player.getAttack());
+        statement.setInt(6, player.getArmor());
+        statement.setBoolean(7, player.getHasKey());
+        statement.setString(8, player.getItems());
+    }
+
+    private PlayerModel getPlayerModel(ResultSet resultSet) throws SQLException {
+        return new PlayerModel(
+                resultSet.getString(1),
+                resultSet.getInt(2),
+                resultSet.getInt(3),
+                resultSet.getInt(4),
+                resultSet.getInt(5),
+                resultSet.getInt(6),
+                resultSet.getBoolean(7),
+                resultSet.getString(8));
     }
 }
