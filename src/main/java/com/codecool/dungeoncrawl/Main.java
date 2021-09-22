@@ -154,8 +154,7 @@ public class Main extends Application {
 //                Player newPlayer = map.getPlayer();
 //                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
 //                System.out.println(oldPlayer);
-                List<PlayerModel> allPlayersRecords = dbManager.getAllSavedPlayers();
-                System.out.println(allPlayersRecords);
+                dbManager.saveGameState(map);
                 break;
         }
         if (map.getPlayer().isDead()){
