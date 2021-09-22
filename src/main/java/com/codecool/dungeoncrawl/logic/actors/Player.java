@@ -15,6 +15,7 @@ public class Player extends Actor {
     private boolean cheatMode = false;
 
 
+
     public Player(Cell cell) {
         super(cell);
         this.hasKey = false;

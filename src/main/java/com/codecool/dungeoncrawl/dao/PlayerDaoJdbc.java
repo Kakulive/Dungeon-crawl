@@ -17,10 +17,10 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public void add(PlayerModel player) {
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, haskey, items ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO player (player_name, hp, x, y, attack, armor, haskey, items ) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, player.getPlayerName());
-            setIntoStatement(player, statement);
+            populateStatement(player, statement);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             resultSet.next();
@@ -32,11 +32,22 @@ public class PlayerDaoJdbc implements PlayerDao {
     }
 
     @Override
-    public void update(PlayerModel player) {
+    public void update(PlayerModel player, int id) { //TODO figure out how to get id to update the record
         try (Connection conn = dataSource.getConnection()) {
-            String sql = "UPDATE player SET hp = ?, x = ?, y = ?, attack = ?, armor = ?, haskey = ?, items = ? WHERE id = ?";
+            String sql = "UPDATE player " +
+                    "SET " +
+                    "player_name = ?, " +
+                    "hp = ?, " +
+                    "x = ?, " +
+                    "y = ?, " +
+                    "attack = ?, " +
+                    "armor = ?, " +
+                    "haskey = ?, " +
+                    "items = ? " +
+                    "WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
-            setIntoStatement(player, statement);
+            populateStatement(player, statement);
+            statement.setInt(9, id);
             statement.executeUpdate();
         } catch (SQLException e) {
             // TODO Flash message? Make it in another window or in the same?
@@ -47,7 +58,9 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items  FROM player WHERE id = ?";
+            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items  " +
+                    "FROM player " +
+                    "WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -81,7 +94,8 @@ public class PlayerDaoJdbc implements PlayerDao {
         }
     }
 
-    private void setIntoStatement(PlayerModel player, PreparedStatement statement) throws SQLException {
+    private void populateStatement(PlayerModel player, PreparedStatement statement) throws SQLException {
+        statement.setString(1, player.getPlayerName());
         statement.setInt(2, player.getHp());
         statement.setInt(3, player.getX());
         statement.setInt(4, player.getY());

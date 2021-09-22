@@ -147,6 +147,11 @@ public class Main extends Application {
                 Player player = map.getPlayer();
                 dbManager.savePlayer(player);
                 break;
+                // z key for any query testing
+//            case Z:
+//                Player newPlayer = map.getPlayer();
+//                dbManager.updatePlayer(newPlayer, 4);
+//                break;
         }
         if (map.getPlayer().isDead()){
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
