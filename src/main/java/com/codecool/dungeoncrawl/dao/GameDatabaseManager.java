@@ -58,11 +58,17 @@ public class GameDatabaseManager {
         String dbUser = env.get("APP_DB_USER");
         String dbPassword = env.get("APP_DB_PASSWORD");
         String[] dbHost = {env.get("APP_DB_HOST")};
+        String dbPortString = env.get("APP_DB_PORT");
+        int[] dbPort =new int[1];
+        dbPort[0] = Integer.parseInt(dbPortString);
+
 
         dataSource.setDatabaseName(dbName);
         dataSource.setUser(dbUser);
         dataSource.setPassword(dbPassword);
         dataSource.setServerNames(dbHost);
+        dataSource.setPortNumbers(dbPort);
+
 
         System.out.println("Trying to connect");
         dataSource.getConnection().close();

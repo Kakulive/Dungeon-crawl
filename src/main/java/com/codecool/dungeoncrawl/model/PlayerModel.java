@@ -4,7 +4,7 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 
 public class PlayerModel extends BaseModel {
     private String playerName;
-    private String hasKey;
+    private boolean hasKey;
     private String items;
     private int x;
     private int y;
@@ -13,7 +13,7 @@ public class PlayerModel extends BaseModel {
     private int armor;
 
 
-    public PlayerModel(String playerName, int hp, int x, int y, int attack, int armor, String hasKey, String items) {
+    public PlayerModel(String playerName, int hp, int x, int y, int attack, int armor, String items, boolean hasKey) {
         this.playerName = playerName;
         this.hasKey = hasKey;
         this.items = items;
@@ -29,8 +29,11 @@ public class PlayerModel extends BaseModel {
         this.playerName = player.getName();
         this.x = player.getX();
         this.y = player.getY();
-
         this.hp = player.getHealth();
+        this.armor = player.getArmor();
+        this.attack = player.getAttack();
+        this.hasKey = player.getHasKey();
+        this.items = "abc";
 
     }
 
@@ -66,11 +69,11 @@ public class PlayerModel extends BaseModel {
         this.y = y;
     }
 
-    public String getHasKey() {
+    public boolean getHasKey() {
         return hasKey;
     }
 
-    public void setHasKey(String hasKey) {
+    public void setHasKey(boolean hasKey) {
         this.hasKey = hasKey;
     }
 
