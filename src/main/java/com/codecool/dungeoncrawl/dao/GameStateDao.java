@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface GameStateDao {
     void add(GameStateModel state);
-    void update(GameStateModel state);
+    void update(GameStateModel state, int id);
     GameStateModel get(int id);
     List<GameStateModel> getAll();
 }

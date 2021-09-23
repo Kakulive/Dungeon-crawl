@@ -149,12 +149,9 @@ public class Main extends Application {
                 Player player = map.getPlayer();
                 dbManager.savePlayer(player);
                 break;
-                // z key for any query testing
-            case Z:
-//                Player newPlayer = map.getPlayer();
-//                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
-//                System.out.println(oldPlayer);
-                dbManager.saveGameState(map);
+
+            case Z: // z key for any query testing
+                System.out.println((dbManager.getAllSavedGames()));
                 break;
         }
         if (map.getPlayer().isDead()){
