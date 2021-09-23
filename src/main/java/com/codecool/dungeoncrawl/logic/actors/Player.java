@@ -9,10 +9,11 @@ import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage
 
 public class Player extends Actor {
     private boolean hasKey;
-    private String name;
+    private String name = "Player";
     private boolean goingDown;
     private boolean goingUp;
     private boolean cheatMode = false;
+
 
 
     public Player(Cell cell) {

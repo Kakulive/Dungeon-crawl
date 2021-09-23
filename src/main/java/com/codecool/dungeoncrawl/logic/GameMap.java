@@ -12,15 +12,17 @@ public class GameMap {
     private final int width;
     private final int height;
     private final Cell[][] cells;
+    private final String mapName;
 
     private Player player;
     private List<Actor> enemiesList;
 
     private final Randomizer randomizer = new Randomizer();
 
-    public GameMap(int width, int height, CellType defaultCellType) {
+    public GameMap(int width, int height, CellType defaultCellType, String mapName) {
         this.width = width;
         this.height = height;
+        this.mapName = mapName;
         enemiesList = new ArrayList<>();
         cells = new Cell[width][height];
         for (int x = 0; x < width; x++) {
@@ -141,5 +143,9 @@ public class GameMap {
 
     public void removeEnemyFromList(int id) {
         enemiesList.removeIf(enemy -> enemy.getId() == id);
+    }
+
+    public String getMapName() {
+        return mapName;
     }
 }
