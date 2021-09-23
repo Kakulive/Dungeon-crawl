@@ -3,8 +3,6 @@ package com.codecool.dungeoncrawl.model;
 import com.codecool.dungeoncrawl.logic.GameMap;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
