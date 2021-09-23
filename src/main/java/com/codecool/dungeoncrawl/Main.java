@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
+import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import javafx.application.Application;
@@ -32,6 +33,7 @@ public class Main extends Application {
     public static final String MAPNAME1 = "/map.txt";
     public static final String MAPNAME2 = "/map2.txt";
 
+    private Buttons buttons = new Buttons();
     private Stage stage = new Stage();
     private SceneSwitcher sceneSwitcher = new SceneSwitcher();
 
@@ -67,23 +69,65 @@ public class Main extends Application {
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
-            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+            sceneSwitcher.menuGameScene(stage, windowWidth, windowHeight);
+
+//            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+//            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             // TODO
             // scene.setOnKeyReleased(this::onKeyReleased);
+//            refresh();
+//            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+        });
+        sceneSwitcher.getSetPlayer().setOnAction( event -> {
+            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
+        });
+
+        sceneSwitcher.getAddStatHealth().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher,1, map);
+        });
+
+        sceneSwitcher.getAddStatArmor().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher, 2, map);
+        });
+
+        sceneSwitcher.getAddStatAttack().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher, 3, map);
+        });
+
+        sceneSwitcher.getSubStatHealth().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 1, map);
+        });
+
+        sceneSwitcher.getSubStatArmor().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 2, map);
+        });
+
+        sceneSwitcher.getSubStatAttack().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 3, map);
+        });
+
+        sceneSwitcher.getSubmitButton().setOnAction(event -> {
+            buttons.submitButtonDo(map, sceneSwitcher);
+            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
-
 
         sceneSwitcher.getExitButton().setOnAction(event -> {
         Platform.exit();
         System.exit(0);
         });
 
+        sceneSwitcher.getSetPlayer().setOnAction( firstMenu -> {
+            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
+        });
+
+        sceneSwitcher.getSetPlayer().setOnAction( setPlayer -> {
+            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
+        });
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
             String userName = sceneSwitcher.getNameInput().getText();
-            map.getPlayer().setName(userName);
             if (map.getPlayer().checkCheatCode(userName)){
                 map.getPlayer().setCheatMode(true);
             }
@@ -178,6 +222,7 @@ public class Main extends Application {
                 }
             }
         }
+//        sceneSwitcher.getPlayerName().setText("" + map.getPlayer().getName());
         sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
         sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
         sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
