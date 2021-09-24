@@ -147,6 +147,10 @@ public class Main extends Application {
             // TODO case S
             case S:
                 String playerName = getSaveGameWindow().get();
+                if (playerName.equals("")) {
+                    // TODO
+                    break;
+                }
 //                Player player = map.getPlayer();
 //                dbManager.savePlayer(player);
                 break;

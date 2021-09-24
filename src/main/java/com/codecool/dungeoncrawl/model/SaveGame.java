@@ -7,9 +7,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SaveGame {
     public static AtomicReference<String> getSaveGameWindow() {
-        AtomicReference<String> playerName = new AtomicReference<>("Player");
-        JDialog frame = new JDialog();
-        frame.setTitle("Save game");
+        AtomicReference<String> playerName = new AtomicReference<>();
+        JDialog dialog = new JDialog(new JFrame(), "Save game", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setTitle("Save game");
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -26,10 +26,10 @@ public class SaveGame {
         JButton submitButton = new JButton("Submit");
         submitButton.addActionListener((actionEvent) -> {
             playerName.set(nameInput.getText());
-            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
         });
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener((actionEvent) -> frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING)));
+        cancelButton.addActionListener((actionEvent) -> dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING)));
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(submitButton);
         buttonPanel.add(cancelButton);
@@ -38,13 +38,12 @@ public class SaveGame {
         mainPanel.add(inputPanel);
         mainPanel.add(buttonPanel);
 
-        frame.add(mainPanel);
-        frame.pack();
-        frame.setSize(300,150);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-        frame.getRootPane().setDefaultButton(submitButton);
-        frame.requestFocusInWindow();
+        dialog.add(mainPanel);
+        dialog.pack();
+        dialog.setSize(300,150);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+        dialog.setModal(true);
         return playerName;
     }
 }
