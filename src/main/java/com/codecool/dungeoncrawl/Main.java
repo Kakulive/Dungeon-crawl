@@ -6,6 +6,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
+import com.codecool.dungeoncrawl.logic.utils.Messages;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 
+import static com.codecool.dungeoncrawl.logic.utils.Messages.flashMessage;
 import static com.codecool.dungeoncrawl.model.SaveGame.getSaveGameWindow;
 
 
@@ -77,8 +79,8 @@ public class Main extends Application {
 
 
         sceneSwitcher.getExitButton().setOnAction(event -> {
-        Platform.exit();
-        System.exit(0);
+            Platform.exit();
+            System.exit(0);
         });
 
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
@@ -146,15 +148,9 @@ public class Main extends Application {
                 break;
             // TODO case S
             case S:
-                String playerName = getSaveGameWindow().get();
-                if (playerName.equals("")) {
-                    // TODO
-                    break;
-                }
-//                Player player = map.getPlayer();
-//                dbManager.savePlayer(player);
+                savePlayer();
                 break;
-                // z key for any query testing
+            // z key for any query testing
             case Z:
 //                Player newPlayer = map.getPlayer();
 //                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
@@ -237,4 +233,17 @@ public class Main extends Application {
         currentPlayerCell.setActor(currentPlayer);
     }
 
+    private void savePlayer() {
+        String playerName;
+        playerName = getSaveGameWindow().get();
+        if (playerName.equals("NoName")) {
+            flashMessage("The progress is not saved!");
+        } else if (playerName.equals("")) {
+        //TODO get from db the last player ID and set player name like "Player + the last ID"
+        }
+
+//        map.getPlayer().setName();
+//        Player player = map.getPlayer();
+//        dbManager.savePlayer(player);
+    }
 }

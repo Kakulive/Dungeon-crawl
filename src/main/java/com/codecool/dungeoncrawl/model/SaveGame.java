@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class SaveGame {
     public static AtomicReference<String> getSaveGameWindow() {
-        AtomicReference<String> playerName = new AtomicReference<>();
+        AtomicReference<String> playerName = new AtomicReference<>("NoName");
         JDialog dialog = new JDialog(new JFrame(), "Save game", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setTitle("Save game");
 
@@ -15,15 +15,17 @@ public class SaveGame {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JPanel headingPanel = new JPanel();
-        JLabel headingLabel = new JLabel("What is your name?");
+        JLabel headingLabel = new JLabel("Write your name to save the progress");
         headingPanel.add(headingLabel);
 
         JPanel inputPanel = new JPanel();
+        JLabel nameLabel = new JLabel("Name ");
         JTextField nameInput = new JTextField();
         nameInput.setPreferredSize(new Dimension(150,24));
+        inputPanel.add(nameLabel);
         inputPanel.add(nameInput);
 
-        JButton submitButton = new JButton("Submit");
+        JButton submitButton = new JButton("Save");
         submitButton.addActionListener((actionEvent) -> {
             playerName.set(nameInput.getText());
             dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));

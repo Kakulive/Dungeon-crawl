@@ -10,6 +10,8 @@ public class Messages {
         alert.setTitle("Message");
         alert.setContentText(message);
         alert.getButtonTypes().add(ButtonType.OK);
+        alert.setX(600);
+        alert.setY(340);
         alert.show();
     }
 }
