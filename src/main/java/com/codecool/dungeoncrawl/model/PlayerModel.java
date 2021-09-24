@@ -24,7 +24,6 @@ public class PlayerModel extends BaseModel {
         this.armor = armor;
     }
 
-    // TODO in constructor which is below enter hasKey, items, attack, armor
     public PlayerModel(Player player) {
         this.playerName = player.getName();
         this.x = player.getX();
