@@ -43,7 +43,7 @@ public class Main extends Application {
     private final int windowWidth = map.getWidth() * Tiles.TILE_WIDTH;
     private final int windowHeight = map.getHeight() * Tiles.TILE_WIDTH;
 
-    private Canvas canvas = new Canvas(windowWidth, windowHeight);
+    private Canvas canvas = new Canvas(200, 200 );
     private GraphicsContext context = canvas.getGraphicsContext2D();
 
     Label name = new Label();
@@ -67,6 +67,8 @@ public class Main extends Application {
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
+            Player player = map.getPlayer();
+
             sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
             sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             // TODO
@@ -167,8 +169,9 @@ public class Main extends Application {
     private void refresh() {
         changeCurrentMap();
         context.setFill(Color.BLACK);
+
         context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int x = 0; x < map.getWidth(); x++) {
+        for (int x =0 ; x < map.getWidth(); x++) {
             for (int y = 0; y < map.getHeight(); y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {

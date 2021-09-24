@@ -1,5 +1,7 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
+import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.logic.actors.Player;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -66,9 +68,12 @@ public class SceneSwitcher {
         mainBorderPane = new BorderPane();
 
         mainBorderPane.setCenter(canvas);
+//        mainBorderPane.getChildren().add(canvas);
         mainBorderPane.setRight(ui);
 
-        mainScene = new Scene(mainBorderPane);
+
+        mainScene = new Scene(mainBorderPane, windowWidth, windowHeight);
+
 
         stage.setScene(mainScene);
     }
