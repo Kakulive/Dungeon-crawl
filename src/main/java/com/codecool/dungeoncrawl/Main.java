@@ -6,7 +6,6 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
-import com.codecool.dungeoncrawl.logic.utils.Messages;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -27,7 +26,7 @@ import javafx.stage.Stage;
 import java.sql.SQLException;
 
 import static com.codecool.dungeoncrawl.logic.utils.Messages.flashMessage;
-import static com.codecool.dungeoncrawl.model.SaveGame.getSaveGameWindow;
+import static com.codecool.dungeoncrawl.model.SaveGame.getPlayerName;
 
 
 public class Main extends Application {
@@ -235,7 +234,7 @@ public class Main extends Application {
 
     private void savePlayer() {
         String playerName;
-        playerName = getSaveGameWindow().get();
+        playerName = getPlayerName().get();
         if (playerName.equals("NoName")) {
             flashMessage("The progress is not saved!");
         } else if (playerName.equals("")) {

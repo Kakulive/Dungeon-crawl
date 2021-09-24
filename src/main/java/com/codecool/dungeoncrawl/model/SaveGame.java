@@ -6,7 +6,7 @@ import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class SaveGame {
-    public static AtomicReference<String> getSaveGameWindow() {
+    public static AtomicReference<String> getPlayerName() {
         AtomicReference<String> playerName = new AtomicReference<>("NoName");
         JDialog dialog = new JDialog(new JFrame(), "Save game", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setTitle("Save game");
