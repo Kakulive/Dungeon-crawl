@@ -11,7 +11,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 
-import static com.codecool.dungeoncrawl.logic.utils.Messages.getSaveGameWindow;
+import static com.codecool.dungeoncrawl.model.SaveGame.getSaveGameWindow;
 
 
 public class Main extends Application {
