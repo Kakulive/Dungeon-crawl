@@ -81,8 +81,8 @@ public class Player extends Actor {
     }
 
     public boolean checkCheatCode(String name) {
-        return name.toLowerCase().equals("adam") || name.toLowerCase().equals("marcelina")
-                || name.toLowerCase().equals("damian") || name.toLowerCase().equals("dymitr");
+        return name.equalsIgnoreCase("adam") || name.equalsIgnoreCase("marcelina")
+                || name.equalsIgnoreCase("damian") || name.equalsIgnoreCase("dymitr");
     }
 
     public void pickUpItem() {
