@@ -255,7 +255,7 @@ public class Main extends Application {
             } else {
                 String updateChoice = overwriteMessage().get();
                 if (updateChoice.equals("Yes")) {
-                    // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+                    // TODO updateCurrentPlayer() - Update the current state (current map, player position, and inventory content) in the database.
                     flashMessage("Your progress has been updated");
                 } else {
                     savePlayer();
