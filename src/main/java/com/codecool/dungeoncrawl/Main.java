@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.codecool.dungeoncrawl.logic.utils.Messages.flashMessage;
@@ -145,7 +146,7 @@ public class Main extends Application {
             case RIGHT:
                 map.getPlayer().move(1,0);
                 break;
-            // TODO case S
+            // TODO move to key released
             case S:
                 savePlayer();
                 break;
@@ -237,8 +238,13 @@ public class Main extends Application {
         playerName = getPlayerName().get();
         if (playerName.equals("NoName")) {
             flashMessage("The progress is not saved!");
+            return;
         } else if (playerName.equals("")) {
-        //TODO get from db the last player ID and set player name like "Player + the last ID"
+            int lastId = dbManager.getTheLastPlayerId();
+            //TODO get from db the last player ID and set player name like "Player + the last ID"
+            playerName = "Player" + (lastId + 1);
+            flashMessage("Your progress has been saved under the name " + "'" + playerName + "'");
+
         }
 
 //        map.getPlayer().setName();

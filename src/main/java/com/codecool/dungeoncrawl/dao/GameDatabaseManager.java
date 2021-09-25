@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -45,6 +46,8 @@ public class GameDatabaseManager {
     public List<PlayerModel> getAllSavedPlayers() {
         return this.playerDao.getAll();
     }
+
+    public int getTheLastPlayerId(){ return this.playerDao.getTheLastPlayerId(); }
 
     public void saveGameState(GameMap map) {
         this.gameStateModel = new GameStateModel(map);

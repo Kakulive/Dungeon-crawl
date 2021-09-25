@@ -1,10 +1,12 @@
 package com.codecool.dungeoncrawl.dao;
 
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import org.postgresql.jdbc.PgResultSet;
 
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlayerDaoJdbc implements PlayerDao {
@@ -94,6 +96,26 @@ public class PlayerDaoJdbc implements PlayerDao {
             throw new RuntimeException("Error, cannot read all authors", e);
         }
     }
+
+    @Override
+    public int getTheLastPlayerId() {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, player_name, hp, x, y, attack, armor, haskey, items FROM player ORDER BY id DESC LIMIT 1";
+            ResultSet resultSet = conn.createStatement().executeQuery(sql);
+            List<PlayerModel> playerModel = new ArrayList<>();
+            while (resultSet.next()) {
+                PlayerModel lastPlayer = getPlayerModel(resultSet);
+                lastPlayer.setId(resultSet.getInt(1));
+                playerModel.add(lastPlayer);
+            }
+            int x = playerModel.get(0).getId();
+            return x;
+        } catch (SQLException e){
+            // TODO Flash message? Make it in another window or in the same?
+            throw new RuntimeException("Error, can't get the latest players ID", e);
+        }
+    }
+
 
     private void populateStatement(PlayerModel player, PreparedStatement statement) throws SQLException {
         statement.setString(1, player.getPlayerName());
