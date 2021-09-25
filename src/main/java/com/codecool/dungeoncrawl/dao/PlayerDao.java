@@ -11,4 +11,5 @@ public interface PlayerDao {
     PlayerModel get(int id);
     List<PlayerModel> getAll();
     int getTheLastPlayerId();
+    int getPlayerIdIfPlayerNameExist(String name);
 }

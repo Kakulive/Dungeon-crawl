@@ -23,11 +23,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.codecool.dungeoncrawl.logic.utils.Messages.flashMessage;
 import static com.codecool.dungeoncrawl.model.SaveGame.getPlayerName;
+import static com.codecool.dungeoncrawl.model.SaveGame.overwriteMessage;
 
 
 public class Main extends Application {
@@ -239,12 +239,28 @@ public class Main extends Application {
         if (playerName.equals("NoName")) {
             flashMessage("The progress is not saved!");
             return;
-        } else if (playerName.equals("")) {
+        }
+        else if (playerName.equals("")) {
             int lastId = dbManager.getTheLastPlayerId();
-            //TODO get from db the last player ID and set player name like "Player + the last ID"
             playerName = "Player" + (lastId + 1);
             flashMessage("Your progress has been saved under the name " + "'" + playerName + "'");
-
+            // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+        }
+        else {
+            int playerId = dbManager.getPlayerIdIfPlayerNameExist(playerName);
+            if (playerId == -1){
+                // new Player
+                // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+                flashMessage("Your progress has been saved");
+            } else {
+                String updateChoice = overwriteMessage().get();
+                if (updateChoice.equals("Yes")) {
+                    // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+                    flashMessage("Your progress has been updated");
+                } else {
+                    savePlayer();
+                }
+            }
         }
 
 //        map.getPlayer().setName();

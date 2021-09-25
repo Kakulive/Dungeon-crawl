@@ -49,6 +49,8 @@ public class GameDatabaseManager {
 
     public int getTheLastPlayerId(){ return this.playerDao.getTheLastPlayerId(); }
 
+    public int getPlayerIdIfPlayerNameExist(String name) {return  this.playerDao.getPlayerIdIfPlayerNameExist(name); }
+
     public void saveGameState(GameMap map) {
         this.gameStateModel = new GameStateModel(map);
         playerDao.add(gameStateModel.getPlayer());

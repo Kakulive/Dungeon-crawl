@@ -108,8 +108,30 @@ public class PlayerDaoJdbc implements PlayerDao {
                 lastPlayer.setId(resultSet.getInt(1));
                 playerModel.add(lastPlayer);
             }
-            int x = playerModel.get(0).getId();
-            return x;
+            int id = playerModel.get(0).getId();
+            return id;
+        } catch (SQLException e){
+            // TODO Flash message? Make it in another window or in the same?
+            throw new RuntimeException("Error, can't get the latest players ID", e);
+        }
+    }
+
+    @Override
+    public int getPlayerIdIfPlayerNameExist(String name) {
+        try (Connection conn = dataSource.getConnection()) {
+            String sql = "SELECT id, player_name, hp, x, y, attack, armor, haskey, items FROM player WHERE player_name = ? ";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return -1;
+            }
+            List<PlayerModel> playerModel = new ArrayList<>();
+            PlayerModel player = getPlayerModel(resultSet);
+            player.setId(resultSet.getInt(1));
+            playerModel.add(player);
+            int id = playerModel.get(0).getId();
+            return id;
         } catch (SQLException e){
             // TODO Flash message? Make it in another window or in the same?
             throw new RuntimeException("Error, can't get the latest players ID", e);
