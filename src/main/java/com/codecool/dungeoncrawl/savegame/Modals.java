@@ -1,15 +1,15 @@
-package com.codecool.dungeoncrawl.model;
+package com.codecool.dungeoncrawl.savegame;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class SaveGame {
-    public static AtomicReference<String> getPlayerName() {
+public class Modals {
+    protected static AtomicReference<String> getPlayerName() {
         AtomicReference<String> playerName = new AtomicReference<>("NoName");
-        JDialog dialog = new JDialog(new JFrame(), "Save game", Dialog.ModalityType.APPLICATION_MODAL);
-        dialog.setTitle("Save game");
+        JDialog dialog = new JDialog(new JFrame(), "SaveGame game", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setTitle("SaveGame game");
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -25,7 +25,7 @@ public class SaveGame {
         inputPanel.add(nameLabel);
         inputPanel.add(nameInput);
 
-        JButton submitButton = new JButton("Save");
+        JButton submitButton = new JButton("SaveGame");
         submitButton.addActionListener((actionEvent) -> {
             playerName.set(nameInput.getText());
             dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
@@ -49,7 +49,7 @@ public class SaveGame {
         return playerName;
     }
 
-    public static AtomicReference<String> overwriteMessage(){
+    protected static AtomicReference<String> overwriteMessage(){
         AtomicReference<String> result = new AtomicReference<>("No");
         JDialog dialog = new JDialog(new JFrame(), "Overwrite game state", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setTitle("Overwrite game state");
