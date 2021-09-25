@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -151,7 +152,8 @@ public class Main extends Application {
                 break;
 
             case Z: // z key for any query testing
-                System.out.println((dbManager.getAllSavedGames()));
+//                System.out.println((dbManager.getAllSavedGames()));
+                this.showSaveModal();
                 break;
         }
         if (map.getPlayer().isDead()){
@@ -227,6 +229,17 @@ public class Main extends Application {
         currentPlayer.setCell(currentPlayerCell);
         map.setPlayer(currentPlayer);
         currentPlayerCell.setActor(currentPlayer);
+    }
+
+    private void showSaveModal(){
+        TextInputDialog saveDialog = new TextInputDialog();
+        saveDialog.setTitle("Save Game");
+        saveDialog.setHeaderText("Would you like to save your game?");
+        saveDialog.setContentText("Save Game name: ");
+
+        Optional<String> result = saveDialog.showAndWait();
+        result.ifPresent(name -> System.out.println("Your name: " + name));
+
     }
 
 }
