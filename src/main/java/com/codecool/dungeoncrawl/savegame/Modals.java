@@ -6,7 +6,7 @@ import java.awt.event.WindowEvent;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Modals {
-    protected static AtomicReference<String> getPlayerName() {
+    protected static AtomicReference<String> saveModal() {
         AtomicReference<String> playerName = new AtomicReference<>("NoName");
         JDialog dialog = new JDialog(new JFrame(), "SaveGame game", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setTitle("SaveGame game");
@@ -49,7 +49,7 @@ public class Modals {
         return playerName;
     }
 
-    protected static AtomicReference<String> overwriteMessage(){
+    protected static AtomicReference<String> overwriteModal(){
         AtomicReference<String> result = new AtomicReference<>("No");
         JDialog dialog = new JDialog(new JFrame(), "Overwrite game state", Dialog.ModalityType.APPLICATION_MODAL);
         dialog.setTitle("Overwrite game state");

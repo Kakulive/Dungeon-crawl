@@ -1,48 +1,57 @@
 package com.codecool.dungeoncrawl.savegame;
 
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.logic.GameMap;
 
 import static com.codecool.dungeoncrawl.logic.utils.Messages.flashMessage;
-import static com.codecool.dungeoncrawl.savegame.Modals.getPlayerName;
-import static com.codecool.dungeoncrawl.savegame.Modals.overwriteMessage;
+import static com.codecool.dungeoncrawl.savegame.Modals.saveModal;
+import static com.codecool.dungeoncrawl.savegame.Modals.overwriteModal;
 
 public class SaveGame {
 
-    public static void saveGame(GameDatabaseManager dbManager) {
+    public static void saveGame(GameDatabaseManager dbManager, GameMap map) {
         String playerName;
-        playerName = getPlayerName().get();
+        playerName = saveModal().get();
         if (playerName.equals("NoName")) { flashMessage("The progress is not saved!"); }
-        else if (playerName.equals("")) { saveWhenNameNotEntered(dbManager); }
-        else { saveWhenNameEntered(dbManager, playerName); }
-
-        // TODO
-//        map.getPlayer().setName();
-//        Player player = map.getPlayer();
-//        dbManager.savePlayer(player);
+        else if (playerName.equals("")) { saveWhenNameNotEntered(dbManager, map); }
+        else { saveWhenNameEntered(dbManager, map, playerName); }
     }
 
-    private static void saveWhenNameNotEntered(GameDatabaseManager dbManager) {
+    private static void saveWhenNameNotEntered(GameDatabaseManager dbManager, GameMap map) {
         String playerName;
         int lastId = dbManager.getTheLastPlayerId();
         playerName = "Player" + (lastId + 1);
         flashMessage("Your progress has been saved under the name " + "'" + playerName + "'");
-        // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+        saveCurrentGame(dbManager, map, playerName);
     }
 
-    private static void saveWhenNameEntered(GameDatabaseManager dbManager, String playerName) {
+    private static void saveWhenNameEntered(GameDatabaseManager dbManager, GameMap map, String playerName) {
         int playerId = dbManager.getPlayerIdIfPlayerNameExist(playerName);
         if (playerId == -1){
             // new Player
-            // TODO saveNewPlayer() - Saves the current state (current map, player position, and inventory content) in the database.
+            saveCurrentGame(dbManager, map, playerName);
             flashMessage("Your progress has been saved!");
         } else {
-            String updateChoice = overwriteMessage().get();
-            if (updateChoice.equals("Yes")) {
-                // TODO updateCurrentPlayer() - Update the current state (current map, player position, and inventory content) in the database.
-                flashMessage("Your progress has been updated!");
+            // existing Player
+            String choiceToUpdate = overwriteModal().get();
+            if (choiceToUpdate.equals("Yes")) {
+                updateCurrentGame(dbManager, map, playerName, playerId);
             } else {
-                saveGame(dbManager);
+                saveGame(dbManager, map);
             }
         }
+    }
+
+    private static void saveCurrentGame(GameDatabaseManager dbManager, GameMap map, String playerName) {
+        map.getPlayer().setName(playerName);
+        dbManager.savePlayer(map.getPlayer());
+        dbManager.saveGameState(map);
+    }
+
+    private static void updateCurrentGame(GameDatabaseManager dbManager, GameMap map, String playerName, int playerId) {
+        map.getPlayer().setName(playerName);
+        dbManager.updatePlayer(map.getPlayer(), playerId);
+        dbManager.updateGameState(map, playerId);
+        flashMessage("Your progress has been updated!");
     }
 }

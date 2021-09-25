@@ -146,7 +146,7 @@ public class Main extends Application {
                 break;
             // TODO move to key released
             case S:
-                saveGame(dbManager);
+                saveGame(dbManager, map);
                 break;
             case Z: // z key for any query testing
                 System.out.println((dbManager.getAllSavedGames()));
