@@ -35,6 +35,18 @@ public class PlayerModel extends BaseModel {
         this.items = "none";
     }
 
+    public PlayerModel(PlayerModel playerModel) {
+        this.playerName = playerModel.getPlayerName();
+        this.x = playerModel.getX();
+        this.y = playerModel.getY();
+        this.hp = playerModel.getHp();
+        this.armor = playerModel.getArmor();
+        this.attack = playerModel.getAttack();
+        this.hasKey = playerModel.getHasKey();
+        this.items = "none";
+        this.setId(playerModel.getId());
+    }
+
     public String getPlayerName() {
         return playerName;
     }

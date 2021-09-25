@@ -57,6 +57,21 @@ public class GameDatabaseManager {
         this.gameStateDao.add(gameStateModel);
     }
 
+    public void updateGameState(GameMap map , int id) {
+        this.gameStateModel = new GameStateModel(map);
+        playerDao.add(gameStateModel.getPlayer());
+        this.gameStateDao.update(gameStateModel, id);
+    }
+
+    public GameStateModel getSavedGameState(int id) {
+        GameStateModel gameStateModel = this.gameStateDao.get(id);
+        return gameStateModel;
+    }
+
+    public List<GameStateModel> getAllSavedGames() {
+        return this.gameStateDao.getAll();
+    }
+
     private DataSource connect() throws SQLException {
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();

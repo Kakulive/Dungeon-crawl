@@ -1,19 +1,13 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
-
-import java.awt.*;
 
 public class SceneSwitcher {
 
@@ -40,6 +34,7 @@ public class SceneSwitcher {
 
         Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
         startBorderPane.setCenter(startGameButton);
+        startGameButton.requestFocus();
         stage.setScene(startGameScene);
         stage.setTitle("Dungeon Crawl");
         stage.show();

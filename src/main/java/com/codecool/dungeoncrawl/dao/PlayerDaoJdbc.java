@@ -60,7 +60,7 @@ public class PlayerDaoJdbc implements PlayerDao {
     @Override
     public PlayerModel get(int id) {
         try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT player_name, hp, x, y, attack, armor, haskey, items " +
+            String sql = "SELECT id, player_name, hp, x, y, attack, armor, haskey, items " +
                     "FROM player " +
                     "WHERE id = ?";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -84,13 +84,13 @@ public class PlayerDaoJdbc implements PlayerDao {
             String sql = "SELECT id, player_name, hp, x, y, attack, armor, haskey, items " +
                     "FROM player";
             ResultSet resultSet = conn.createStatement().executeQuery(sql);
-            List<PlayerModel> playersModel = new ArrayList<>();
+            List<PlayerModel> playersModelList = new ArrayList<>();
             while (resultSet.next()) {
                 PlayerModel playerModel = getPlayerModel(resultSet);
                 playerModel.setId(resultSet.getInt(1));
-                playersModel.add(playerModel);
+                playersModelList.add(playerModel);
             }
-            return playersModel;
+            return playersModelList;
         } catch (SQLException e) {
             // TODO Flash message? Make it in another window or in the same?
             throw new RuntimeException("Error, cannot read all authors", e);
