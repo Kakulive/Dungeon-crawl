@@ -66,7 +66,7 @@ public class Main extends Application {
         // TODO
         setupDbManager();
         this.stage = primaryStage;
-        sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
+        sceneSwitcher.startGameScene(stage, windowWidth + 200, windowHeight);
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
@@ -80,19 +80,19 @@ public class Main extends Application {
 
 
         sceneSwitcher.getExitButton().setOnAction(event -> {
-        Platform.exit();
-        System.exit(0);
+            Platform.exit();
+            System.exit(0);
         });
 
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
             String userName = sceneSwitcher.getNameInput().getText();
             map.getPlayer().setName(userName);
-            if (map.getPlayer().checkCheatCode(userName)){
+            if (map.getPlayer().checkCheatCode(userName)) {
                 map.getPlayer().setCheatMode(true);
             }
             sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
             sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
-            sceneSwitcher.getUi().add(name,0,0);
+            sceneSwitcher.getUi().add(name, 0, 0);
             name.setText(userName);
             name.setStyle("-fx-font-weight: bold");
             sceneSwitcher.getMainBorderPane().requestFocus();
@@ -102,7 +102,7 @@ public class Main extends Application {
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
-        if (map.getPlayer().getCell().getTileName().equals("key")){
+        if (map.getPlayer().getCell().getTileName().equals("key")) {
             map.getPlayer().setHasKey(true);
         }
         map.getPlayer().pickUpItem();
@@ -138,15 +138,19 @@ public class Main extends Application {
             case UP:
                 map.getPlayer().move(0, -1);
                 break;
+
             case DOWN:
                 map.getPlayer().move(0, 1);
                 break;
+
             case LEFT:
                 map.getPlayer().move(-1, 0);
                 break;
+
             case RIGHT:
-                map.getPlayer().move(1,0);
+                map.getPlayer().move(1, 0);
                 break;
+
             // TODO case S
 //            case S:
 //                Player player = map.getPlayer();
@@ -157,7 +161,7 @@ public class Main extends Application {
                 this.showSaveModal();
                 break;
         }
-        if (map.getPlayer().isDead()){
+        if (map.getPlayer().isDead()) {
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
         }
         refresh();
@@ -186,14 +190,14 @@ public class Main extends Application {
     private void changeCurrentMap() {
         boolean isGoingDown = map.getPlayer().isGoingDown();
         boolean isGoingUp = map.getPlayer().isGoingUp();
-        if (isGoingDown || isGoingUp){
+        if (isGoingDown || isGoingUp) {
             Player currentPlayer = map.getPlayer();
             int X = map.getPlayer().getX();
             int Y = map.getPlayer().getY();
-            Cell oldPlayerCell = map.getCell(X,Y);
+            Cell oldPlayerCell = map.getCell(X, Y);
             map.setPlayer(null);
             oldPlayerCell.setActor(null);
-            if (isGoingDown){
+            if (isGoingDown) {
                 changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(), staircaseExits.DOWNSTAIRS_Y.getValue());
             } else {
                 changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(), staircaseExits.UPSTAIRS_Y.getValue());
@@ -232,18 +236,18 @@ public class Main extends Application {
         currentPlayerCell.setActor(currentPlayer);
     }
 
-    private void showSaveModal(){
+    private void showSaveModal() {
         TextInputDialog saveDialog = createSaveModal();
 
         Optional<String> result = saveDialog.showAndWait();
-        if (result.isPresent()){
+        if (result.isPresent()) {
             String saveName = result.get();
             SavedGameModel previouslySavedGame = dbManager.getSavedGame(saveName);
 
-            if (previouslySavedGame != null){
+            if (previouslySavedGame != null) {
                 Alert overwriteAlert = createOverwriteAlert();
                 Optional<ButtonType> confirmationResult = overwriteAlert.showAndWait();
-                if (confirmationResult.get() == ButtonType.OK){
+                if (confirmationResult.get() == ButtonType.OK) {
                     dbManager.saveGameState(map);
                     dbManager.updateSavedGame(saveName);
                 } else {

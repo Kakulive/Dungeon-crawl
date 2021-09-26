@@ -11,7 +11,7 @@ public class Inventory {
         this.inventory = new ArrayList<>();
     }
 
-    public List<String> getInventory() {
+    public List<String> getInventoryList() {
         return inventory;
     }
 

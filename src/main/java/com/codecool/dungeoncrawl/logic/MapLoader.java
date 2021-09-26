@@ -44,24 +44,29 @@ public class MapLoader {
                         case 'd':
                             cell.setType(CellType.CLOSED_DOOR);
                             break;
+                        case '@':
+                            cell.setType(CellType.FLOOR);
+                            map.setPlayer(new Player(cell));
+                            break;
                         case 's':
-                            cell.setType(CellType.ENEMY);
+                            cell.setType(CellType.FLOOR);
                             Skeleton skeleton = new Skeleton(cell);
                             map.addEnemyToList(skeleton);
                             break;
                         case 'p':
-                            cell.setType(CellType.ENEMY);
+                            cell.setType(CellType.FLOOR);
                             Spider spider = new Spider(cell);
                             map.addEnemyToList(spider);
                             break;
                         case 'w':
-                            cell.setType(CellType.ENEMY);
+                            cell.setType(CellType.FLOOR);
                             Wizard wizard = new Wizard(cell);
                             map.addEnemyToList(wizard);
                             break;
-                        case '@':
+                        case 'g':
                             cell.setType(CellType.FLOOR);
-                            map.setPlayer(new Player(cell));
+                            Ghost ghost = new Ghost(cell);
+                            map.addEnemyToList(ghost);
                             break;
                         case 'k':
                             cell.setType(CellType.KEY);
@@ -87,11 +92,6 @@ public class MapLoader {
                             break;
                         case 'b':
                             cell.setType(CellType.BONES);
-                            break;
-                        case 'g':
-                            cell.setType(CellType.GHOST);
-                            Ghost ghost = new Ghost(cell);
-                            map.addEnemyToList(ghost);
                             break;
                         default:
                             throw new RuntimeException("Unrecognized character: '" + line.charAt(x) + "'");

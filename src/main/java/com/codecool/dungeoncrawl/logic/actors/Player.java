@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
+import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 
@@ -34,9 +35,12 @@ public class Player extends Actor {
 
     @Override
     public void move(int dx, int dy) {
+        if (!isPlayerMoveValid(cell.getGameMap(), cell, dx, dy)){
+            return;
+        }
         Cell nextCell = cell.getNeighbor(dx, dy);
         CellType cellType = nextCell.getType();
-        if (isEnemy(cellType)) {
+        if (isEnemy(nextCell)) {
             battleMove(nextCell);
         } else if (isClosedDoor(cellType)) {
             if (this.getHasKey()) {
@@ -147,5 +151,12 @@ public class Player extends Actor {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    public boolean isPlayerMoveValid(GameMap map, Cell cell, int dx, int dy) {
+        return ((cell.getX() + dx < map.getWidth()) &&
+                (cell.getX() + dx >= 0) &&
+                (cell.getY() + dy < map.getHeight()) &&
+                (cell.getY() + dy >= 0));
     }
 }
