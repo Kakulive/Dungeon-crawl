@@ -9,6 +9,7 @@ import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -27,6 +28,7 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Main extends Application {
@@ -114,21 +116,16 @@ public class Main extends Application {
             sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
 
+
         sceneSwitcher.getExitButton().setOnAction(event -> {
         Platform.exit();
         System.exit(0);
         });
 
-        sceneSwitcher.getSetPlayer().setOnAction( firstMenu -> {
-            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
-        });
-
-        sceneSwitcher.getSetPlayer().setOnAction( setPlayer -> {
-            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
-        });
         sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
             String userName = sceneSwitcher.getNameInput().getText();
-            if (map.getPlayer().checkCheatCode(userName)){
+            map.getPlayer().setName(userName);
+            if (map.getPlayer().checkCheatCode(userName)) {
                 map.getPlayer().setCheatMode(true);
             }
             sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
@@ -189,19 +186,16 @@ public class Main extends Application {
                 map.getPlayer().move(1,0);
                 break;
             // TODO case S
-            case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
-                break;
-                // z key for any query testing
-            case Z:
-//                Player newPlayer = map.getPlayer();
-//                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
-//                System.out.println(oldPlayer);
-                dbManager.saveGameState(map);
+//            case S:
+//                Player player = map.getPlayer();
+//                dbManager.savePlayer(player);
+//                break;
+
+            case Z: // z key for any query testing
+                this.showSaveModal();
                 break;
         }
-        if (map.getPlayer().isDead()){
+        if (map.getPlayer().isDead()) {
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
         }
         refresh();
@@ -222,7 +216,6 @@ public class Main extends Application {
                 }
             }
         }
-//        sceneSwitcher.getPlayerName().setText("" + map.getPlayer().getName());
         sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
         sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
         sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
@@ -275,6 +268,47 @@ public class Main extends Application {
         currentPlayer.setCell(currentPlayerCell);
         map.setPlayer(currentPlayer);
         currentPlayerCell.setActor(currentPlayer);
+    }
+
+    private void showSaveModal() {
+        TextInputDialog saveDialog = createSaveModal();
+
+        Optional<String> result = saveDialog.showAndWait();
+        if (result.isPresent()) {
+            String saveName = result.get();
+            SavedGameModel previouslySavedGame = dbManager.getSavedGame(saveName);
+
+            if (previouslySavedGame != null) {
+                Alert overwriteAlert = createOverwriteAlert();
+                Optional<ButtonType> confirmationResult = overwriteAlert.showAndWait();
+                if (confirmationResult.get() == ButtonType.OK) {
+                    dbManager.saveGameState(map);
+                    dbManager.updateSavedGame(saveName);
+                } else {
+                    overwriteAlert.close();
+                }
+            } else {
+                dbManager.saveGameState(map);
+                dbManager.addSavedGame(saveName);
+            }
+        }
+
+    }
+
+    private TextInputDialog createSaveModal() {
+        TextInputDialog saveDialog = new TextInputDialog();
+        saveDialog.setTitle("Save Game");
+        saveDialog.setHeaderText("Would you like to save your game?");
+        saveDialog.setContentText("Save Game name: ");
+        return saveDialog;
+    }
+
+    private Alert createOverwriteAlert() {
+        Alert overwriteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        overwriteAlert.setTitle("Save Game");
+        overwriteAlert.setHeaderText("Previous save found!");
+        overwriteAlert.setContentText("Would you like to overwrite existing save?");
+        return overwriteAlert;
     }
 
 }

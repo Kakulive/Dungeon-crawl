@@ -3,12 +3,15 @@ package com.codecool.dungeoncrawl.logic.items;
 import com.codecool.dungeoncrawl.logic.Cell;
 
 public class Heart extends Item{
-    public static final int health = 5;
+    private static final int health = 5;
 
-    protected Heart(Cell cell) {
+    public Heart(Cell cell) {
         super(cell);
     }
 
+    public static int getHealth() {
+        return health;
+    }
 
     @Override
     public String getTileName() {
