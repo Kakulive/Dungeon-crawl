@@ -1,8 +1,10 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.items.Heart;
 import com.codecool.dungeoncrawl.logic.items.Shield;
 import com.codecool.dungeoncrawl.logic.items.Sword;
+import com.codecool.dungeoncrawl.logic.items.Key;
 
 
 import java.io.InputStream;
@@ -42,9 +44,6 @@ public class MapLoader {
                         case 'd':
                             cell.setType(CellType.CLOSED_DOOR);
                             break;
-                        case 'k':
-                            cell.setType(CellType.KEY);
-                            break;
                         case 's':
                             cell.setType(CellType.ENEMY);
                             Skeleton skeleton = new Skeleton(cell);
@@ -64,6 +63,14 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             map.setPlayer(new Player(cell));
                             break;
+                        case 'k':
+                            cell.setType(CellType.KEY);
+                            new Key(cell);
+                            break;
+                        case 'x':
+                            cell.setType(CellType.HEART);
+                            new Heart(cell);
+                            break;
                         case 'i':
                             cell.setType(CellType.SWORD);
                             new Sword(cell);
@@ -74,9 +81,6 @@ public class MapLoader {
                             break;
                         case 'n':
                             cell.setType(CellType.CANDLE);
-                            break;
-                        case 'x':
-                            cell.setType(CellType.HEART);
                             break;
                         case 'z':
                             cell.setType(CellType.GRASS);
