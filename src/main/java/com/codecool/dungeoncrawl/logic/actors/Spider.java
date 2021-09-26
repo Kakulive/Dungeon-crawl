@@ -36,15 +36,8 @@ public class Spider extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-
-        Cell nextCell = cell.getNeighbor(dx, dy);
-        cell.setActor(null);
-        cell.setType(CellType.FLOOR);
-        nextCell.setActor(this);
-        nextCell.setType(CellType.ENEMY);
-        cell = nextCell;
+        super.move(dx, dy);
     }
-
 
     @Override
     public int getId() {
