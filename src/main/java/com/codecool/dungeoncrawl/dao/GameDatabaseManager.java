@@ -4,6 +4,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SavedGameModel;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
@@ -18,6 +19,8 @@ public class GameDatabaseManager {
     private PlayerModel playerModel;
     private GameStateDao gameStateDao;
     private GameStateModel gameStateModel;
+    private SavedGameModel savedGameModel;
+    private SavedGamesDao savedGamesDao;
     static Map<String, String> env = System.getenv();
     private Statement stat;
 
@@ -25,6 +28,7 @@ public class GameDatabaseManager {
         DataSource dataSource = connect();
         this.playerDao = new PlayerDaoJdbc(dataSource);
         this.gameStateDao = new GameStateDaoJdbc(dataSource);
+        this.savedGamesDao = new SavedGamesDaoJdbc(dataSource);
     }
 
     public void savePlayer(Player player) {
@@ -65,6 +69,29 @@ public class GameDatabaseManager {
 
     public List<GameStateModel> getAllSavedGames() {
         return this.gameStateDao.getAll();
+    }
+
+    public void addSavedGame(String saveName) {
+        int gameStateId = getLastSavedGameId();
+        SavedGameModel newlySavedGame = new SavedGameModel(gameStateId, saveName);
+        savedGamesDao.add(newlySavedGame);
+    }
+
+    public void updateSavedGame(String saveName) {
+        int gameStateId = getLastSavedGameId();
+        SavedGameModel savedGameModel = getSavedGame(saveName);
+        savedGameModel.setGameStateId(gameStateId);
+        this.savedGamesDao.update(savedGameModel);
+    }
+
+    public SavedGameModel getSavedGame(String saveName) {
+        SavedGameModel savedGameModel = this.savedGamesDao.get(saveName);
+        return savedGameModel;
+    }
+
+    private int getLastSavedGameId() {
+        List<GameStateModel> allSavedGames = this.getAllSavedGames();
+        return allSavedGames.get(allSavedGames.size() - 1).getId();
     }
 
     private DataSource connect() throws SQLException {
