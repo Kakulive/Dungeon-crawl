@@ -7,7 +7,9 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
+import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -232,14 +234,44 @@ public class Main extends Application {
     }
 
     private void showSaveModal(){
+        TextInputDialog saveDialog = createSaveModal();
+
+        Optional<String> result = saveDialog.showAndWait();
+        if (result.isPresent()){
+            String saveName = result.get();
+            SavedGameModel previouslySavedGame = dbManager.getSavedGame(saveName);
+
+            if (previouslySavedGame != null){
+                Alert overwriteAlert = createOverwriteAlert();
+                Optional<ButtonType> confirmationResult = overwriteAlert.showAndWait();
+                if (confirmationResult.get() == ButtonType.OK){
+                    dbManager.saveGameState(map);
+                    dbManager.updateSavedGame(saveName);
+                } else {
+                    overwriteAlert.close();
+                }
+            } else {
+                dbManager.saveGameState(map);
+                dbManager.addSavedGame(saveName);
+            }
+        }
+
+    }
+
+    private TextInputDialog createSaveModal() {
         TextInputDialog saveDialog = new TextInputDialog();
         saveDialog.setTitle("Save Game");
         saveDialog.setHeaderText("Would you like to save your game?");
         saveDialog.setContentText("Save Game name: ");
+        return saveDialog;
+    }
 
-        Optional<String> result = saveDialog.showAndWait();
-        result.ifPresent(name -> System.out.println("Your name: " + name));
-
+    private Alert createOverwriteAlert() {
+        Alert overwriteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        overwriteAlert.setTitle("Save Game");
+        overwriteAlert.setHeaderText("Previous save found!");
+        overwriteAlert.setContentText("Would you like to overwrite existing save?");
+        return overwriteAlert;
     }
 
 }
