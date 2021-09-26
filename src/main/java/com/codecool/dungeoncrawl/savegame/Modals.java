@@ -25,7 +25,7 @@ public class Modals {
         inputPanel.add(nameLabel);
         inputPanel.add(nameInput);
 
-        JButton submitButton = new JButton("SaveGame");
+        JButton submitButton = new JButton("Save");
         submitButton.addActionListener((actionEvent) -> {
             playerName.set(nameInput.getText());
             dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));

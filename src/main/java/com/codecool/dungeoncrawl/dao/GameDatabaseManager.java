@@ -53,13 +53,13 @@ public class GameDatabaseManager {
 
     public void saveGameState(GameMap map) {
         this.gameStateModel = new GameStateModel(map);
-        playerDao.add(gameStateModel.getPlayer());
+//        playerDao.add(gameStateModel.getPlayer());
         this.gameStateDao.add(gameStateModel);
     }
 
     public void updateGameState(GameMap map , int id) {
         this.gameStateModel = new GameStateModel(map);
-        playerDao.add(gameStateModel.getPlayer());
+//        playerDao.add(gameStateModel.getPlayer());
         this.gameStateDao.update(gameStateModel, id);
     }
 
