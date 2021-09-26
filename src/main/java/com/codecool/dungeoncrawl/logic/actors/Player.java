@@ -2,24 +2,29 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
-import com.codecool.dungeoncrawl.logic.items.Heart;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Sword;
+import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
+
+import java.util.List;
+import java.util.Locale;
+
 import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage;
 
 public class Player extends Actor {
     private boolean hasKey;
-    private String name = "Player";
     private boolean goingDown;
     private boolean goingUp;
     private boolean cheatMode = false;
+    private Inventory inventory;
+    private String name = "Player";
 
-
+    MessageFlashing messageFlashing = new MessageFlashing();
 
     public Player(Cell cell) {
         super(cell);
         this.hasKey = false;
         this.isDead = false;
+        this.inventory = new Inventory();
     }
 
     public Player(Cell cell, String name) {
@@ -92,9 +97,10 @@ public class Player extends Actor {
                 || cellType.equals(CellType.KEY)
                 || cellType.equals(CellType.HEART)
                 || cellType.equals(CellType.SHIELD)) {
+            inventory.addItemToInventory(currentCell.getItem());
             currentCell.setType(CellType.FLOOR);
             String tileName = cellType.getTileName().toUpperCase();
-            showPickUpMessage(tileName);
+            messageFlashing.showPickUpMessage(tileName);
             switch (tileName) {
                 case "SWORD":
                     setItemUrl("/sword.png");
@@ -108,30 +114,11 @@ public class Player extends Actor {
                     this.setArmor(this.getArmor() + Shield.getArmor());
                     break;
                 case "HEART":
-                    this.setHealth(this.getHealth() + Heart.health);
+                    this.setHealth(this.getHealth() + Heart.getHealth());
                     setItemUrl(null);
                     break;
             }
         } else setItemUrl(null);
-    }
-
-    private void showPickUpMessage(String item) {
-        String message = null;
-        switch (item) {
-            case "SWORD":
-                message = "Hmm, you found the sword. Do you think this will help you?\nAttack +" + Sword.getAttack();
-                break;
-            case "KEY":
-                message = "Some doors are best left unopened";
-                break;
-            case "SHIELD":
-                message = "Shields break as quickly as human lives\nArmor +" + Shield.getArmor();
-                break;
-            case "HEART":
-                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.health;
-                break;
-        }
-        flashMessage(message);
     }
 
     public boolean isGoingDown() {
@@ -156,5 +143,9 @@ public class Player extends Actor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 }

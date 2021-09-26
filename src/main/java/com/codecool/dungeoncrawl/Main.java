@@ -148,13 +148,12 @@ public class Main extends Application {
                 map.getPlayer().move(1,0);
                 break;
             // TODO case S
-            case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
-                break;
+//            case S:
+//                Player player = map.getPlayer();
+//                dbManager.savePlayer(player);
+//                break;
 
             case Z: // z key for any query testing
-//                System.out.println((dbManager.getAllSavedGames()));
                 this.showSaveModal();
                 break;
         }
