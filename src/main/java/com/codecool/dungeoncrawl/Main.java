@@ -50,12 +50,11 @@ public class Main extends Application {
     private Canvas canvas = new Canvas(windowWidth, windowHeight);
     private GraphicsContext context = canvas.getGraphicsContext2D();
 
-    Label name = new Label();
 
     // TODO
     GameDatabaseManager dbManager;
 
-    private int inventoryRowIndex = 7;
+    private int inventoryRowIndex = 9;
     private int inventoryColumnIndex = 0;
 
     public static void main(String[] args) {
@@ -67,7 +66,7 @@ public class Main extends Application {
         // TODO
         setupDbManager();
         this.stage = primaryStage;
-        sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
+        sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
@@ -111,10 +110,14 @@ public class Main extends Application {
         sceneSwitcher.getSubmitButton().setOnAction(event -> {
             if ( buttons.validInputsAddingMenu(sceneSwitcher)) {
                 buttons.submitButtonDo(map, sceneSwitcher);
+                String userName = sceneSwitcher.getPlayerNameInput().getText();
+                map.getPlayer().setName(userName);
+                sceneSwitcher.getName().setText(userName);
                 sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
                 sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
                 refresh();
                 sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+
             }
 
         });
@@ -125,19 +128,22 @@ public class Main extends Application {
         System.exit(0);
         });
 
-        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
-            String userName = sceneSwitcher.getNameInput().getText();
-            map.getPlayer().setName(userName);
-            if (map.getPlayer().checkCheatCode(userName)) {
-                map.getPlayer().setCheatMode(true);
-            }
-            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
-            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
-            sceneSwitcher.getUi().add(name,0,0);
-            name.setText(userName);
-            name.setStyle("-fx-font-weight: bold");
-            sceneSwitcher.getMainBorderPane().requestFocus();
-        });
+        //NA RAZIE TYLKO ZAKOMENTOWANE, ALE OSTATECZNIE WYRZUCIMY NA 99%
+
+//
+//        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
+//            String userName = sceneSwitcher.getNameInput().getText();
+//            map.getPlayer().setName(userName);
+//            if (map.getPlayer().checkCheatCode(userName)) {
+//                map.getPlayer().setCheatMode(true);
+//            }
+//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
+//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
+//            sceneSwitcher.getUi().add(name,0,0);
+//            name.setText(userName);
+//            name.setStyle("-fx-font-weight: bold");
+//            sceneSwitcher.getMainBorderPane().requestFocus();
+//        });
 
         sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
     }

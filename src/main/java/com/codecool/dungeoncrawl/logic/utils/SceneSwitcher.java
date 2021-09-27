@@ -31,6 +31,14 @@ public class SceneSwitcher {
 //    private Label maxSepPoints = new Label();
 //    private Label inputName = new Label();
 //    private Label setLive = new Label();
+
+    public Label getName() {
+        return name;
+    }
+
+    public void setName(Label name) {
+        this.name = name;
+    }
 //    private Label setAttack = new Label();
 //    private Label setArmor = new Label();
 
@@ -45,6 +53,7 @@ public class SceneSwitcher {
     private Label healthLabel = new Label();
     private Label attackLabel = new Label();
     private Label armorLabel = new Label();
+    private Label name = new Label();
     private Button nameSubmitButton = new Button("Submit");
     private Button pickUpButton = new Button("Pick up");
 
@@ -55,7 +64,7 @@ public class SceneSwitcher {
         startBorderPane.setBottom(bottom);
         startBorderPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
 
-        Scene startGameScene = new Scene(startBorderPane, windowWidth, windowHeight);
+        Scene startGameScene = new Scene(startBorderPane, windowWidth + 200, windowHeight);
         startBorderPane.setCenter(startGameButton);
         startGameButton.requestFocus();
         stage.setScene(startGameScene);
@@ -72,7 +81,7 @@ public class SceneSwitcher {
         menuBorderPane.setCenter(center);
 
         menuBorderPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
-        Scene menuScene = new Scene(menuBorderPane, windowWidth, windowHeight);
+        Scene menuScene = new Scene(menuBorderPane, windowWidth + 200, windowHeight);
         stage.setScene(menuScene);
         stage.setTitle("Dungeon Crawl");
         stage.show();
@@ -87,7 +96,7 @@ public class SceneSwitcher {
         BorderPane bottom = new BorderPane();
         bottom.setCenter(exitButton);
         endBorderPane.setStyle(getSceneStyleString("dungeon_dead.gif"));
-        Scene endGameScene = new Scene(endBorderPane, windowWidth, windowHeight);
+        Scene endGameScene = new Scene(endBorderPane, windowWidth + 200, windowHeight);
         endBorderPane.setBottom(bottom);
         stage.setScene(endGameScene);
     }
@@ -229,18 +238,13 @@ public class SceneSwitcher {
 
     private GridPane initUi() {
         ui = setUiToMethods();
-
-
-        ui.add(nameInput, 0, 1);
-        nameInput.setPromptText("What's your name?");
-        ui.add(nameSubmitButton,0,2);
-        ui.add(new Label(playerNameToString()), 0, 3);
+        ui.add(name,0,0);
+        name.setStyle("-fx-font-weight: bold");
         setupSingleLabel("Health: ", 4, healthLabel);
         setupSingleLabel("Attack: ", 5, attackLabel);
         setupSingleLabel("Armor: ", 6, armorLabel);
         ui.add(pickUpButton, 0, 7);
         ui.add(new Label("Inventory:"), 0, 8);
-
         return ui;
     }
 
@@ -274,7 +278,7 @@ public class SceneSwitcher {
         setPlayerPane.setCenter(center);
         setPlayerPane.setRight(right);
 
-        Scene startGameScene = new Scene(setPlayerPane, windowWidth, windowHeight);
+        Scene startGameScene = new Scene(setPlayerPane, windowWidth + 200 , windowHeight);
         stage.setScene(startGameScene);
         stage.setTitle("Dungeon Crawl");
         stage.show();
