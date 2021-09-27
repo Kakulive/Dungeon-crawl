@@ -13,13 +13,14 @@ import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage
 
 public class Player extends Actor {
     private boolean hasKey;
+    private String name = "Player";
     private boolean goingDown;
     private boolean goingUp;
     private boolean cheatMode = false;
     private Inventory inventory;
-    private String name = "Player";
 
-    MessageFlashing messageFlashing = new MessageFlashing();
+
+
 
     public Player(Cell cell) {
         super(cell);
@@ -90,8 +91,8 @@ public class Player extends Actor {
     }
 
     public boolean checkCheatCode(String name) {
-        return name.equalsIgnoreCase("adam") || name.equalsIgnoreCase("marcelina")
-                || name.equalsIgnoreCase("damian") || name.equalsIgnoreCase("dymitr");
+        return name.toLowerCase().equals("adam") || name.toLowerCase().equals("marcelina")
+                || name.toLowerCase().equals("damian") || name.toLowerCase().equals("dymitr");
     }
 
     public void pickUpItem() {
@@ -104,7 +105,7 @@ public class Player extends Actor {
             inventory.addItemToInventory(currentCell.getItem());
             currentCell.setType(CellType.FLOOR);
             String tileName = cellType.getTileName().toUpperCase();
-            messageFlashing.showPickUpMessage(tileName);
+            showPickUpMessage(tileName);
             switch (tileName) {
                 case "SWORD":
                     setItemUrl("/sword.png");
@@ -123,6 +124,25 @@ public class Player extends Actor {
                     break;
             }
         } else setItemUrl(null);
+    }
+
+    private void showPickUpMessage(String item) {
+        String message = null;
+        switch (item) {
+            case "SWORD":
+                message = "Hmm, you found the sword. Do you think this will help you?\nAttack +" + Sword.getAttack();
+                break;
+            case "KEY":
+                message = "Some doors are best left unopened";
+                break;
+            case "SHIELD":
+                message = "Shields break as quickly as human lives\nArmor +" + Shield.getArmor();
+                break;
+            case "HEART":
+                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.getHealth();
+                break;
+        }
+        flashMessage(message);
     }
 
     public boolean isGoingDown() {

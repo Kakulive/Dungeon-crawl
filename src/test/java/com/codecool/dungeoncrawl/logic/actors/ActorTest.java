@@ -6,7 +6,7 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import com.sun.javafx.application.PlatformImpl;
-import javafx.embed.swing.JFXPanel;
+//import javafx.embed.swing.JFXPanel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
