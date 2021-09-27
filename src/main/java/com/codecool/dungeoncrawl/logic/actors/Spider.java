@@ -14,6 +14,7 @@ public class Spider extends Actor {
         Actor.enemyIdCounter++;
     }
 
+
     @Override
     public String getTileName() {
         return "spider";
