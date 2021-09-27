@@ -90,6 +90,9 @@ public class GameMap {
     }
 
     private boolean isGhostMoveValid(GameMap map, int x, int y, int dx, int dy) {
+        if (x + dx > (width - 1) || x + dx < 0 || y + dy > (height - 1) || y + dy < 0) {
+            return false;
+        }
         CellType cellType = map.getCell(x + dx, y + dy).getType();
         return map.getCell(x + dx, y + dy).getActor() == null && (cellType == CellType.FLOOR ||
                 cellType == CellType.WALL || cellType == CellType.EMPTY);
@@ -148,4 +151,6 @@ public class GameMap {
     public String getMapName() {
         return mapName;
     }
+
+
 }
