@@ -208,9 +208,28 @@ public class Main extends Application {
     private void refresh() {
         changeCurrentMap();
         context.setFill(Color.BLACK);
-        context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
+        context.fillRect(0, 0, windowWidth, windowHeight);
+        int mapLeftOffset = 2;
+        int mapRightOffset = 3;
+
+        int playerX = map.getPlayer().getX();
+        int playerY = map.getPlayer().getY();
+
+        if (playerX - mapLeftOffset < 0){
+            playerX = mapLeftOffset;
+        }
+        if (playerX + mapRightOffset > map.getWidth()){
+            playerX = map.getWidth() - mapRightOffset;
+        }
+        if (playerY - mapLeftOffset < 0){
+            playerY = mapLeftOffset;
+        }
+        if (playerY + mapRightOffset > map.getHeight()){
+            playerY = map.getHeight() - mapRightOffset;
+        }
+
+        for (int x = playerX- mapLeftOffset ; x < playerX + mapRightOffset; x++) {
+            for (int y = playerY - mapLeftOffset ; y < playerY + mapRightOffset; y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
