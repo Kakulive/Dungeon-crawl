@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class SceneSwitcher {
@@ -22,7 +23,7 @@ public class SceneSwitcher {
 
     private Button submitButton = new Button("Submit");
     private Button addStatHealth = new Button();
-    private Button subStatHealth  = new Button();
+    private Button subStatHealth = new Button();
     private Button addStatArmor = new Button();
     private Button subStatArmor = new Button();
     private Button addStatAttack = new Button();
@@ -56,8 +57,9 @@ public class SceneSwitcher {
     private Label name = new Label();
     private Button nameSubmitButton = new Button("Submit");
     private Button pickUpButton = new Button("Pick up");
+    private Button exportGameStateButton = new Button("Export game state");
 
-    public void startGameScene (Stage stage, int windowWidth, int windowHeight) {
+    public void startGameScene(Stage stage, int windowWidth, int windowHeight) {
         BorderPane startBorderPane = new BorderPane();
         BorderPane bottom = new BorderPane();
         bottom.setCenter(exitButton);
@@ -74,12 +76,9 @@ public class SceneSwitcher {
 
     public void menuGameScene(Stage stage, int windowWidth, int windowHeight) {
         BorderPane menuBorderPane = new BorderPane();
-
         GridPane center = initMenu();
-
         center.setAlignment(Pos.CENTER);
         menuBorderPane.setCenter(center);
-
         menuBorderPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
         Scene menuScene = new Scene(menuBorderPane, windowWidth + 200, windowHeight);
         stage.setScene(menuScene);
@@ -87,11 +86,7 @@ public class SceneSwitcher {
         stage.show();
     }
 
-    public Button getExitButton() {
-        return exitButton;
-    }
-
-    public void endGameScene (Stage stage, int windowWidth, int windowHeight) {
+    public void endGameScene(Stage stage, int windowWidth, int windowHeight) {
         BorderPane endBorderPane = new BorderPane();
         BorderPane bottom = new BorderPane();
         bottom.setCenter(exitButton);
@@ -113,6 +108,32 @@ public class SceneSwitcher {
         mainScene = new Scene(mainBorderPane);
 
         stage.setScene(mainScene);
+    }
+
+    public void exportGameStateMenu(){
+        Stage stage = new Stage();
+        int modalWidth = 500;
+        int modalHeight = 300;
+        BorderPane exportGameStateBorderPane = new BorderPane();
+        Scene exportGameStateScene = new Scene(exportGameStateBorderPane, modalWidth, modalHeight);
+        stage.setScene(exportGameStateScene);
+        stage.setTitle("Export game state into the file...");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
+
+
+    }
+
+    public Button getExportGameStateButton() {
+        return exportGameStateButton;
+    }
+
+    public void setExportGameStateButton(Button exportGameStateButton) {
+        this.exportGameStateButton = exportGameStateButton;
+    }
+
+    public Button getExitButton() {
+        return exitButton;
     }
 
     public Button getStartGameButton() {
@@ -156,27 +177,59 @@ public class SceneSwitcher {
         return armorLabel;
     }
 
-    public Button getSetPlayer() { return setPlayer; }
+    public Button getSetPlayer() {
+        return setPlayer;
+    }
 
-    public TextField getNameInput() { return nameInput; }
+    public TextField getNameInput() {
+        return nameInput;
+    }
 
-    public TextField getPlayerNameInput() { return playerNameInput; }
+    public TextField getPlayerNameInput() {
+        return playerNameInput;
+    }
 
-    public Button getAddStatHealth() { return addStatHealth; }
-    public Button getSubStatHealth() { return subStatHealth; }
-    public Button getAddStatArmor() { return  addStatArmor; }
-    public Button getSubStatArmor() { return  subStatArmor; }
-    public Button getAddStatAttack() { return addStatAttack; }
-    public Button getSubStatAttack() { return subStatAttack; }
-    public Button getSubmitButton() { return submitButton; }
+    public Button getAddStatHealth() {
+        return addStatHealth;
+    }
 
-    public int getSeparationStatistic() { return separationStatistic; }
-    public void setSeparationStatistic(int numberToSeparation) { this.separationStatistic = numberToSeparation; }
+    public Button getSubStatHealth() {
+        return subStatHealth;
+    }
+
+    public Button getAddStatArmor() {
+        return addStatArmor;
+    }
+
+    public Button getSubStatArmor() {
+        return subStatArmor;
+    }
+
+    public Button getAddStatAttack() {
+        return addStatAttack;
+    }
+
+    public Button getSubStatAttack() {
+        return subStatAttack;
+    }
+
+    public Button getSubmitButton() {
+        return submitButton;
+    }
+
+    public int getSeparationStatistic() {
+        return separationStatistic;
+    }
+
+    public void setSeparationStatistic(int numberToSeparation) {
+        this.separationStatistic = numberToSeparation;
+    }
 
 //    public Label getMaxSepPoints() {return maxSepPoints;}
 //    public Label getSetLive() { return setLive; }
 //    public Label getSetAttack() { return setAttack; }
 //    public Label getSetArmor() { return  setAttack; }
+
     private String playerNameToString() {
         String name = playerName.getText();
         return name;
@@ -197,7 +250,7 @@ public class SceneSwitcher {
         ui.setHgap(18);
         ui.setVgap(18);
 
-        ui.add(playerNameInput,0,0);
+        ui.add(playerNameInput, 0, 0);
         playerNameInput.setPromptText("What's your name?");
 
         setupSingleLabel("Health: ", 2, healthLabel);
@@ -206,6 +259,7 @@ public class SceneSwitcher {
         ui.add(submitButton, 0, 10);
         return ui;
     }
+
     private GridPane setUiToMethods() {
         ui = new GridPane();
         ui.setPrefWidth(200);
@@ -214,6 +268,7 @@ public class SceneSwitcher {
         ui.setVgap(5);
         return ui;
     }
+
     private GridPane initButtons() {
         ui = setUiToMethods();
 
@@ -238,20 +293,22 @@ public class SceneSwitcher {
 
     private GridPane initUi() {
         ui = setUiToMethods();
-        ui.add(name,0,0);
+        ui.add(name, 0, 0);
         name.setStyle("-fx-font-weight: bold");
         setupSingleLabel("Health: ", 4, healthLabel);
         setupSingleLabel("Attack: ", 5, attackLabel);
         setupSingleLabel("Armor: ", 6, armorLabel);
-        ui.add(pickUpButton, 0, 7);
-        ui.add(new Label("Inventory:"), 0, 8);
+        ui.add(exportGameStateButton,0, 7);
+        ui.add(exitButton, 0, 8);
+        ui.add(pickUpButton, 0, 10);
+        ui.add(new Label("Inventory:"), 0, 11);
         return ui;
     }
 
     private String getSceneStyleString(String styleString) {
         return "-fx-background-color: black;" +
                 "-fx-background-repeat: no-repeat;" +
-                "-fx-background-image: url('" + styleString + "');"+
+                "-fx-background-image: url('" + styleString + "');" +
                 "-fx-background-position: center center";
     }
 
@@ -278,7 +335,7 @@ public class SceneSwitcher {
         setPlayerPane.setCenter(center);
         setPlayerPane.setRight(right);
 
-        Scene startGameScene = new Scene(setPlayerPane, windowWidth + 200 , windowHeight);
+        Scene startGameScene = new Scene(setPlayerPane, windowWidth + 200, windowHeight);
         stage.setScene(startGameScene);
         stage.setTitle("Dungeon Crawl");
         stage.show();
