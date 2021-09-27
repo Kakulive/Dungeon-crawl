@@ -2,9 +2,13 @@ package com.codecool.dungeoncrawl.logic.actors;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
-import com.codecool.dungeoncrawl.logic.items.Heart;
-import com.codecool.dungeoncrawl.logic.items.Shield;
-import com.codecool.dungeoncrawl.logic.items.Sword;
+import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.items.*;
+import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
+
+import java.util.List;
+import java.util.Locale;
+
 import static com.codecool.dungeoncrawl.logic.utils.MessageFlashing.flashMessage;
 
 public class Player extends Actor {
@@ -13,6 +17,8 @@ public class Player extends Actor {
     private boolean goingDown;
     private boolean goingUp;
     private boolean cheatMode = false;
+    private Inventory inventory;
+
 
 
 
@@ -20,6 +26,7 @@ public class Player extends Actor {
         super(cell);
         this.hasKey = false;
         this.isDead = false;
+        this.inventory = new Inventory();
     }
 
     public Player(Cell cell, String name) {
@@ -29,9 +36,12 @@ public class Player extends Actor {
 
     @Override
     public void move(int dx, int dy) {
+        if (!isPlayerMoveValid(cell.getGameMap(), cell, dx, dy)){
+            return;
+        }
         Cell nextCell = cell.getNeighbor(dx, dy);
         CellType cellType = nextCell.getType();
-        if (isEnemy(cellType)) {
+        if (isEnemy(nextCell)) {
             battleMove(nextCell);
         } else if (isClosedDoor(cellType)) {
             if (this.getHasKey()) {
@@ -92,6 +102,7 @@ public class Player extends Actor {
                 || cellType.equals(CellType.KEY)
                 || cellType.equals(CellType.HEART)
                 || cellType.equals(CellType.SHIELD)) {
+            inventory.addItemToInventory(currentCell.getItem());
             currentCell.setType(CellType.FLOOR);
             String tileName = cellType.getTileName().toUpperCase();
             showPickUpMessage(tileName);
@@ -108,7 +119,7 @@ public class Player extends Actor {
                     this.setArmor(this.getArmor() + Shield.getArmor());
                     break;
                 case "HEART":
-                    this.setHealth(this.getHealth() + Heart.health);
+                    this.setHealth(this.getHealth() + Heart.getHealth());
                     setItemUrl(null);
                     break;
             }
@@ -128,7 +139,7 @@ public class Player extends Actor {
                 message = "Shields break as quickly as human lives\nArmor +" + Shield.getArmor();
                 break;
             case "HEART":
-                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.health;
+                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.getHealth();
                 break;
         }
         flashMessage(message);
@@ -156,5 +167,16 @@ public class Player extends Actor {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public boolean isPlayerMoveValid(GameMap map, Cell cell, int dx, int dy) {
+        return ((cell.getX() + dx < map.getWidth()) &&
+                (cell.getX() + dx >= 0) &&
+                (cell.getY() + dy < map.getHeight()) &&
+                (cell.getY() + dy >= 0));
     }
 }

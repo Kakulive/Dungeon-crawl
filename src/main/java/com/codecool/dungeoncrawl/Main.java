@@ -6,8 +6,10 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
+import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
@@ -26,12 +28,14 @@ import javafx.stage.Stage;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 
 public class Main extends Application {
     public static final String MAPNAME1 = "/map.txt";
     public static final String MAPNAME2 = "/map2.txt";
 
+    private Buttons buttons = new Buttons();
     private Stage stage = new Stage();
     private SceneSwitcher sceneSwitcher = new SceneSwitcher();
 
@@ -46,12 +50,11 @@ public class Main extends Application {
     private Canvas canvas = new Canvas(windowWidth, windowHeight);
     private GraphicsContext context = canvas.getGraphicsContext2D();
 
-    Label name = new Label();
 
     // TODO
     GameDatabaseManager dbManager;
 
-    private int inventoryRowIndex = 7;
+    private int inventoryRowIndex = 9;
     private int inventoryColumnIndex = 0;
 
     public static void main(String[] args) {
@@ -63,16 +66,60 @@ public class Main extends Application {
         // TODO
         setupDbManager();
         this.stage = primaryStage;
-        sceneSwitcher.startGameScene(stage, windowWidth+200, windowHeight);
+        sceneSwitcher.startGameScene(stage, windowWidth, windowHeight);
 
 
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
-            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+            sceneSwitcher.menuGameScene(stage, windowWidth, windowHeight);
+
+//            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+//            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             // TODO
             // scene.setOnKeyReleased(this::onKeyReleased);
-            refresh();
-            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+//            refresh();
+//            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+        });
+        sceneSwitcher.getSetPlayer().setOnAction( event -> {
+            sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
+        });
+
+        sceneSwitcher.getAddStatHealth().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher,1, map);
+        });
+
+        sceneSwitcher.getAddStatArmor().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher, 2, map);
+        });
+
+        sceneSwitcher.getAddStatAttack().setOnAction(event -> {
+            buttons.addStatButtons(sceneSwitcher, 3, map);
+        });
+
+        sceneSwitcher.getSubStatHealth().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 1, map);
+        });
+
+        sceneSwitcher.getSubStatArmor().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 2, map);
+        });
+
+        sceneSwitcher.getSubStatAttack().setOnAction(event -> {
+            buttons.subStatButtons(sceneSwitcher, 3, map);
+        });
+
+        sceneSwitcher.getSubmitButton().setOnAction(event -> {
+            if ( buttons.validInputsAddingMenu(sceneSwitcher)) {
+                buttons.submitButtonDo(map, sceneSwitcher);
+                String userName = sceneSwitcher.getPlayerNameInput().getText();
+                map.getPlayer().setName(userName);
+                sceneSwitcher.getName().setText(userName);
+                sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+                sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+                refresh();
+                sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+
+            }
+
         });
 
 
@@ -81,19 +128,22 @@ public class Main extends Application {
         System.exit(0);
         });
 
-        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
-            String userName = sceneSwitcher.getNameInput().getText();
-            map.getPlayer().setName(userName);
-            if (map.getPlayer().checkCheatCode(userName)){
-                map.getPlayer().setCheatMode(true);
-            }
-            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
-            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
-            sceneSwitcher.getUi().add(name,0,0);
-            name.setText(userName);
-            name.setStyle("-fx-font-weight: bold");
-            sceneSwitcher.getMainBorderPane().requestFocus();
-        });
+        //NA RAZIE TYLKO ZAKOMENTOWANE, ALE OSTATECZNIE WYRZUCIMY NA 99%
+
+//
+//        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
+//            String userName = sceneSwitcher.getNameInput().getText();
+//            map.getPlayer().setName(userName);
+//            if (map.getPlayer().checkCheatCode(userName)) {
+//                map.getPlayer().setCheatMode(true);
+//            }
+//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
+//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
+//            sceneSwitcher.getUi().add(name,0,0);
+//            name.setText(userName);
+//            name.setStyle("-fx-font-weight: bold");
+//            sceneSwitcher.getMainBorderPane().requestFocus();
+//        });
 
         sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
     }
@@ -145,19 +195,16 @@ public class Main extends Application {
                 map.getPlayer().move(1,0);
                 break;
             // TODO case S
-            case S:
-                Player player = map.getPlayer();
-                dbManager.savePlayer(player);
-                break;
-                // z key for any query testing
-            case Z:
-//                Player newPlayer = map.getPlayer();
-//                PlayerModel oldPlayer = dbManager.getSavedPlayer(4);
-//                System.out.println(oldPlayer);
-                dbManager.saveGameState(map);
+//            case S:
+//                Player player = map.getPlayer();
+//                dbManager.savePlayer(player);
+//                break;
+
+            case Z: // z key for any query testing
+                this.showSaveModal();
                 break;
         }
-        if (map.getPlayer().isDead()){
+        if (map.getPlayer().isDead()) {
             sceneSwitcher.endGameScene(stage, windowWidth, windowHeight);
         }
         refresh();
@@ -167,9 +214,28 @@ public class Main extends Application {
     private void refresh() {
         changeCurrentMap();
         context.setFill(Color.BLACK);
-        context.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
+        context.fillRect(0, 0, windowWidth, windowHeight);
+        int mapLeftOffset = 2;
+        int mapRightOffset = 3;
+
+        int playerX = map.getPlayer().getX();
+        int playerY = map.getPlayer().getY();
+
+        if (playerX - mapLeftOffset < 0){
+            playerX = mapLeftOffset;
+        }
+        if (playerX + mapRightOffset > map.getWidth()){
+            playerX = map.getWidth() - mapRightOffset;
+        }
+        if (playerY - mapLeftOffset < 0){
+            playerY = mapLeftOffset;
+        }
+        if (playerY + mapRightOffset > map.getHeight()){
+            playerY = map.getHeight() - mapRightOffset;
+        }
+
+        for (int x = playerX- mapLeftOffset ; x < playerX + mapRightOffset; x++) {
+            for (int y = playerY - mapLeftOffset ; y < playerY + mapRightOffset; y++) {
                 Cell cell = map.getCell(x, y);
                 if (cell.getActor() != null) {
                     Tiles.drawTile(context, cell.getActor(), x, y);
@@ -230,6 +296,47 @@ public class Main extends Application {
         currentPlayer.setCell(currentPlayerCell);
         map.setPlayer(currentPlayer);
         currentPlayerCell.setActor(currentPlayer);
+    }
+
+    private void showSaveModal() {
+        TextInputDialog saveDialog = createSaveModal();
+
+        Optional<String> result = saveDialog.showAndWait();
+        if (result.isPresent()) {
+            String saveName = result.get();
+            SavedGameModel previouslySavedGame = dbManager.getSavedGame(saveName);
+
+            if (previouslySavedGame != null) {
+                Alert overwriteAlert = createOverwriteAlert();
+                Optional<ButtonType> confirmationResult = overwriteAlert.showAndWait();
+                if (confirmationResult.get() == ButtonType.OK) {
+                    dbManager.saveGameState(map);
+                    dbManager.updateSavedGame(saveName);
+                } else {
+                    overwriteAlert.close();
+                }
+            } else {
+                dbManager.saveGameState(map);
+                dbManager.addSavedGame(saveName);
+            }
+        }
+
+    }
+
+    private TextInputDialog createSaveModal() {
+        TextInputDialog saveDialog = new TextInputDialog();
+        saveDialog.setTitle("Save Game");
+        saveDialog.setHeaderText("Would you like to save your game?");
+        saveDialog.setContentText("Save Game name: ");
+        return saveDialog;
+    }
+
+    private Alert createOverwriteAlert() {
+        Alert overwriteAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        overwriteAlert.setTitle("Save Game");
+        overwriteAlert.setHeaderText("Previous save found!");
+        overwriteAlert.setContentText("Would you like to overwrite existing save?");
+        return overwriteAlert;
     }
 
 }

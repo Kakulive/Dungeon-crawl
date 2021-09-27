@@ -3,7 +3,6 @@ package com.codecool.dungeoncrawl.logic.actors;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.Drawable;
-import com.codecool.dungeoncrawl.logic.GameMap;
 
 public abstract class Actor implements Drawable {
     public static int enemyIdCounter = 1;
@@ -26,7 +25,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    protected void battleMove(Cell nextCell) {
+    public void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
         if (!isOneShot(player, enemy)) {
@@ -41,6 +40,7 @@ public abstract class Actor implements Drawable {
             killEnemyAndMove(nextCell);
         }
     }
+
 
     protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
@@ -70,7 +70,7 @@ public abstract class Actor implements Drawable {
         int defeatedEnemyId = nextCell.getActor().getId();
         cell.getGameMap().removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
-        nextCell.setType(CellType.FLOOR);
+//        nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
     }
 
@@ -84,8 +84,8 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.WALL;
     }
 
-    protected boolean isEnemy(CellType neighbourCellType) {
-        return neighbourCellType == CellType.ENEMY;
+    protected boolean isEnemy(Cell nextCell) {
+        return nextCell.getActor() != null;
     }
 
     protected boolean isCandle(CellType neighbourCellType) {

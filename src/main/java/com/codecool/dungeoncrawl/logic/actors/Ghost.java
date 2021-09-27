@@ -7,7 +7,6 @@ public class Ghost extends Actor {
     private int health = 3;
     private final int attack = 1;
     private final int id;
-    private CellType nextMoveCellType = CellType.FLOOR;
 
     public Ghost(Cell cell) {
         super(cell);
@@ -37,14 +36,7 @@ public class Ghost extends Actor {
 
     @Override
     public void move(int dx, int dy) {
-        Cell nextCell = cell.getNeighbor(dx, dy);
-        CellType nextCellType = nextCell.getType();
-        cell.setActor(null);
-        cell.setType(nextMoveCellType);
-        this.nextMoveCellType = nextCellType;
-        nextCell.setActor(this);
-        nextCell.setType(CellType.ENEMY);
-        cell = nextCell;
+        super.move(dx, dy);
     }
 
     @Override

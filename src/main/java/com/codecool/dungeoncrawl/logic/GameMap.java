@@ -2,6 +2,7 @@ package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.monster_move.MonsterMoveLogic;
 import com.codecool.dungeoncrawl.logic.utils.Randomizer;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class GameMap {
     private final int height;
     private final Cell[][] cells;
     private final String mapName;
-
+    private MonsterMoveLogic monsterMoveLogic = new MonsterMoveLogic();
     private Player player;
     private List<Actor> enemiesList;
 
@@ -38,23 +39,26 @@ public class GameMap {
             int x = enemy.getX();
             int y = enemy.getY();
             int dx, dy;
-            if (Objects.equals(enemy.getTileName(), "spider")) {
-                int[] moveCoordinates = getSpiderMoveCoordinates(map, x, y);
-                dx = moveCoordinates[0];
-                dy = moveCoordinates[1];
-            } else if (Objects.equals(enemy.getTileName(), "wizard")) {
+
+            if (Objects.equals(enemy.getTileName(), "wizard")) {
                 int[] moveCoordinates = getWizardMoveCoordinates(map, x, y);
                 dx = moveCoordinates[0];
                 dy = moveCoordinates[1];
+                enemy.move(dx, dy);
             } else if (Objects.equals(enemy.getTileName(), "ghost")) {
                 int[] moveCoordinates = getGhostMoveCoordinates(map, x, y);
                 dx = moveCoordinates[0];
                 dy = moveCoordinates[1];
+                enemy.move(dx, dy);
+            } else if (Objects.equals(enemy.getTileName(), "spider")) {
+                Cell monsterCell = enemy.getCell();
+                int[] moveCoordinates = getSpiderMoveCoordinates(map, x, y);
+                monsterMoveLogic.moveFollow(map, monsterCell, moveCoordinates[0], moveCoordinates[1], enemy);
             } else {
                 dx = 0;
                 dy = 0;
+                enemy.move(dx, dy);
             }
-            enemy.move(dx, dy);
         }
     }
 
@@ -90,6 +94,9 @@ public class GameMap {
     }
 
     private boolean isGhostMoveValid(GameMap map, int x, int y, int dx, int dy) {
+        if (x + dx > (width - 1) || x + dx < 0 || y + dy > (height - 1) || y + dy < 0) {
+            return false;
+        }
         CellType cellType = map.getCell(x + dx, y + dy).getType();
         return map.getCell(x + dx, y + dy).getActor() == null && (cellType == CellType.FLOOR ||
                 cellType == CellType.WALL || cellType == CellType.EMPTY);
@@ -148,4 +155,6 @@ public class GameMap {
     public String getMapName() {
         return mapName;
     }
+
+
 }
