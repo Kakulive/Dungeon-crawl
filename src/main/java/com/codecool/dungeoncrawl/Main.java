@@ -109,11 +109,14 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getSubmitButton().setOnAction(event -> {
-            buttons.submitButtonDo(map, sceneSwitcher);
-            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
-            refresh();
-            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+            if ( buttons.validInputsAddingMenu(sceneSwitcher)) {
+                buttons.submitButtonDo(map, sceneSwitcher);
+                sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+                sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+                refresh();
+                sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
+            }
+
         });
 
 

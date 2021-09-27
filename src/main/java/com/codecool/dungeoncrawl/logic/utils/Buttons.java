@@ -73,7 +73,40 @@ public class Buttons {
     }
 
     public void submitButtonDo(GameMap map, SceneSwitcher sceneSwitcher) {
-        map.getPlayer().setName(sceneSwitcher.getPlayerNameInput().getText());
-        sceneSwitcher.getPlayerName().setText("" + map.getPlayer().getName());
+        int addingStatisticNumber = sceneSwitcher.getSeparationStatistic();
+
+        if (addingStatisticNumber > 0) {
+            MessageFlashing.flashMessage("You have some stat points to add.");
+        } else {
+            if (sceneSwitcher.getPlayerNameInput().getText().equals("")) {
+                MessageFlashing.flashMessage("All heroes have name. Don't be anonymous.");
+            } else {
+                map.getPlayer().setName(sceneSwitcher.getPlayerNameInput().getText());
+                sceneSwitcher.getPlayerName().setText("" + map.getPlayer().getName());
+            }
+        }
     }
+
+    public boolean validInputsAddingMenu(SceneSwitcher sceneSwitcher) {
+        int addingStatisticNumber = sceneSwitcher.getSeparationStatistic();
+
+        if (addingStatisticNumber > 0 && sceneSwitcher.getPlayerNameInput().getText().equals("")) {
+            MessageFlashing.flashMessage("You have some stat points to add and set heroes name");
+            return false;
+        }
+        else if (addingStatisticNumber > 0) {
+            MessageFlashing.flashMessage("You have some stat points to add.");
+            return false;
+        }
+        else if (sceneSwitcher.getPlayerNameInput().getText().equals("")) {
+            MessageFlashing.flashMessage("All heroes have name. Don't be anonymous.");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+
+
 }
