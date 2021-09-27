@@ -25,7 +25,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    protected void battleMove(Cell nextCell) {
+    public void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
         if (!isOneShot(player, enemy)) {
@@ -40,6 +40,7 @@ public abstract class Actor implements Drawable {
             killEnemyAndMove(nextCell);
         }
     }
+
 
     protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
