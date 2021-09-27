@@ -7,12 +7,18 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.actors.Skeleton;
 import com.sun.javafx.application.PlatformImpl;
 //import javafx.embed.swing.JFXPanel;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ActorTest {
-    GameMap gameMap = new GameMap(3, 3, CellType.FLOOR, "/map.txt");
+    GameMap gameMap;
+
+    @BeforeEach
+    void testInit() {
+        gameMap = new GameMap(3, 3, CellType.FLOOR, "/map.txt");
+    }
 
     @Test
     void moveUpdatesCells() {
@@ -106,5 +112,42 @@ class ActorTest {
         player.move(1, 0);
         //then
         assertTrue(player.isDead());
+    }
+
+    @Test
+    void whenPlayerAttacksEnemy_BattleHappensPlayerLoosesHPEnemySurvives() {
+        //given
+        Player player = new Player(gameMap.getCell(1,1));
+        Ghost ghost = new Ghost(gameMap.getCell(1,2));
+        player.setAttack(1);
+        player.setHealth(10);
+        ghost.setAttack(1);
+        ghost.setHealth(2);
+        //when
+        player.move(0,1);
+        //then
+        assertEquals(1, ghost.getHealth());
+        assertEquals(9, player.getHealth());
+        assertFalse(player.isDead());
+        assertEquals(player.getCell(), gameMap.getCell(1,1));
+    }
+
+    @Test
+    void whenPlayerAttacksEnemy_BattleHappensPlayerLoosesHPEnemyDies() {
+        //given
+        Player player = new Player(gameMap.getCell(1,1));
+        Ghost ghost = new Ghost(gameMap.getCell(1,2));
+        player.setAttack(1);
+        player.setHealth(10);
+        ghost.setAttack(1);
+        ghost.setHealth(1);
+        //when
+        player.move(0,1);
+        //then
+        assertEquals(10, player.getHealth());
+        assertFalse(gameMap.getEnemiesList().contains(ghost));
+        assertFalse(player.isDead());
+        assertEquals(1, player.getX());
+        assertEquals(2, player.getY());
     }
 }
