@@ -18,7 +18,7 @@ public class Player extends Actor {
     private boolean goingUp;
     private boolean cheatMode = false;
     private Inventory inventory;
-
+    private final MessageFlashing messageFlashing = new MessageFlashing();
 
 
 
@@ -105,7 +105,7 @@ public class Player extends Actor {
             inventory.addItemToInventory(currentCell.getItem());
             currentCell.setType(CellType.FLOOR);
             String tileName = cellType.getTileName().toUpperCase();
-            showPickUpMessage(tileName);
+            messageFlashing.showPickUpMessage(tileName);
             switch (tileName) {
                 case "SWORD":
                     setItemUrl("/sword.png");
@@ -124,25 +124,6 @@ public class Player extends Actor {
                     break;
             }
         } else setItemUrl(null);
-    }
-
-    private void showPickUpMessage(String item) {
-        String message = null;
-        switch (item) {
-            case "SWORD":
-                message = "Hmm, you found the sword. Do you think this will help you?\nAttack +" + Sword.getAttack();
-                break;
-            case "KEY":
-                message = "Some doors are best left unopened";
-                break;
-            case "SHIELD":
-                message = "Shields break as quickly as human lives\nArmor +" + Shield.getArmor();
-                break;
-            case "HEART":
-                message = "You are lucky. Usually lives are lost rather than found in the dungeon\nHealth +" + Heart.getHealth();
-                break;
-        }
-        flashMessage(message);
     }
 
     public boolean isGoingDown() {

@@ -47,7 +47,7 @@ public abstract class Actor implements Drawable {
     }
 
     private boolean isOneShot(Actor player, Actor enemy) {
-        return enemy.getHealth() < player.getAttack();
+        return enemy.getHealth() <= player.getAttack();
     }
 
     protected boolean isPlayerDead(Actor player) {

@@ -9,7 +9,9 @@ import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
+import com.codecool.dungeoncrawl.model.LoadMenu;
 import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.SavedGameModel;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -207,7 +209,8 @@ public class Main extends Application {
 //                break;
 
             case Z: // z key for any query testing
-                this.showSaveModal();
+                // this.showSaveModal();
+                LoadMenu.load(dbManager);
                 break;
         }
         if (map.getPlayer().isDead()) {
