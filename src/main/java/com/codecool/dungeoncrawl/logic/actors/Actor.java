@@ -25,7 +25,7 @@ public abstract class Actor implements Drawable {
         cell = nextCell;
     }
 
-    protected void battleMove(Cell nextCell) {
+    public void battleMove(Cell nextCell) {
         Actor player = cell.getActor();
         Actor enemy = nextCell.getActor();
         if (!isOneShot(player, enemy)) {
@@ -41,12 +41,13 @@ public abstract class Actor implements Drawable {
         }
     }
 
+
     protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;
     }
 
     private boolean isOneShot(Actor player, Actor enemy) {
-        return enemy.getHealth() < player.getAttack();
+        return enemy.getHealth() <= player.getAttack();
     }
 
     protected boolean isPlayerDead(Actor player) {
@@ -69,7 +70,7 @@ public abstract class Actor implements Drawable {
         int defeatedEnemyId = nextCell.getActor().getId();
         cell.getGameMap().removeEnemyFromList(defeatedEnemyId);
         nextCell.setActor(null);
-        nextCell.setType(CellType.FLOOR);
+//        nextCell.setType(CellType.FLOOR);
         standardMove(nextCell);
     }
 
@@ -83,8 +84,8 @@ public abstract class Actor implements Drawable {
         return neighbourCellType == CellType.WALL;
     }
 
-    protected boolean isEnemy(CellType neighbourCellType) {
-        return neighbourCellType == CellType.ENEMY;
+    protected boolean isEnemy(Cell nextCell) {
+        return nextCell.getActor() != null;
     }
 
     protected boolean isCandle(CellType neighbourCellType) {

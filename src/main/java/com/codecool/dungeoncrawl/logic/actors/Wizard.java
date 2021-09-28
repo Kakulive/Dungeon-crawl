@@ -38,13 +38,11 @@ public class Wizard extends Actor {
     }
 
     @Override
-    public void move(int dx, int dy) {
+    public void move(int x, int y) {
         if (moveCounter == wizardIsMoving) {
-        Cell nextCell = cell.getSpecificCell(dx, dy);
+        Cell nextCell = cell.getSpecificCell(x, y);
         cell.setActor(null);
-        cell.setType(CellType.FLOOR);
         nextCell.setActor(this);
-        nextCell.setType(CellType.ENEMY);
         cell = nextCell;
         this.moveCounter = moveFrequency;
     } else {
