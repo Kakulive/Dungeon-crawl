@@ -7,8 +7,7 @@ import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
-import com.codecool.dungeoncrawl.model.GameStateModel;
-import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.LoadMenu;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -27,7 +26,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -155,7 +153,8 @@ public class Main extends Application {
 
             case Z: // z key for any query testing
 //                System.out.println((dbManager.getAllSavedGames()));
-                this.showSaveModal();
+//                this.showSaveModal();
+                LoadMenu.load(dbManager);
                 break;
         }
         if (map.getPlayer().isDead()){
