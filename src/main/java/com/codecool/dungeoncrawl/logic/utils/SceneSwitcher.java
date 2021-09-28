@@ -115,7 +115,7 @@ public class SceneSwitcher {
         stage.setScene(mainScene);
     }
 
-    public void exportGameStateMenu(){
+    public void exportGameStateMenu() {
         Stage stage = new Stage();
         int modalWidth = 500;
         int modalHeight = 300;
@@ -130,7 +130,7 @@ public class SceneSwitcher {
     }
 
 
-//    public Label getMaxSepPoints() {return maxSepPoints;}
+    //    public Label getMaxSepPoints() {return maxSepPoints;}
 //    public Label getSetLive() { return setLive; }
 //    public Label getSetAttack() { return setAttack; }
 //    public Label getSetArmor() { return  setAttack; }
@@ -202,8 +202,8 @@ public class SceneSwitcher {
         setupSingleLabel("Health: ", 4, healthLabel);
         setupSingleLabel("Attack: ", 5, attackLabel);
         setupSingleLabel("Armor: ", 6, armorLabel);
-        ui.add(exportGameStateButton,0, 7);
-        ui.add(importGameStateButton,0 ,8);
+        ui.add(exportGameStateButton, 0, 7);
+        ui.add(importGameStateButton, 0, 8);
         ui.add(exitButton, 0, 9);
         ui.add(pickUpButton, 0, 11);
         ui.add(new Label("Inventory:"), 0, 12);
@@ -251,9 +251,6 @@ public class SceneSwitcher {
         return exportGameStateButton;
     }
 
-    public void setExportGameStateButton(Button exportGameStateButton) {
-        this.exportGameStateButton = exportGameStateButton;
-    }
 
     public Button getExitButton() {
         return exitButton;
@@ -304,9 +301,6 @@ public class SceneSwitcher {
         return setPlayer;
     }
 
-    public TextField getNameInput() {
-        return nameInput;
-    }
 
     public TextField getPlayerNameInput() {
         return playerNameInput;
