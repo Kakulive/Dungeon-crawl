@@ -126,11 +126,11 @@ public class Main extends Application {
 
         });
 
-        sceneSwitcher.getExportGameStateButton().setOnAction(event ->{
+        sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
             exportGameStateDao.chooseLocationToSave();
         });
 
-                sceneSwitcher.getImportGameStateButton().setOnAction(event ->{
+        sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
             exportGameStateDao.chooseLocationToLoad();
         });
 

@@ -17,15 +17,15 @@ public class ExportGameStateDao extends JPanel {
         prepareLocationSelectWindow("Select directory and insert filename to save.");
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
-                FileWriter myWriter = new FileWriter(chooser.getSelectedFile()+".json");
+                FileWriter myWriter = new FileWriter(chooser.getSelectedFile() + ".json");
                 myWriter.write("Tralalal");
                 myWriter.close();
                 System.out.println("Successfully wrote to the file.");
-        } catch (IOException e) {
+            } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
-            }}
-        else {
+            }
+        } else {
             System.out.println("No Selection ");
         }
     }
@@ -36,7 +36,7 @@ public class ExportGameStateDao extends JPanel {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 
             try {
-                File myObj = new File(chooser.getSelectedFile()+".json");
+                File myObj = new File(chooser.getSelectedFile() + ".json");
                 Scanner myReader = new Scanner(myObj);
                 while (myReader.hasNextLine()) {
                     String data = myReader.nextLine();
