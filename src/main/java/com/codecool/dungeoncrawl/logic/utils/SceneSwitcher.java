@@ -1,5 +1,6 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
+import com.codecool.dungeoncrawl.dao.ExportGameStateDao;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,6 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import javax.swing.*;
 
 public class SceneSwitcher {
     private int separationStatistic = 10;
@@ -58,6 +61,8 @@ public class SceneSwitcher {
     private Button nameSubmitButton = new Button("Submit");
     private Button pickUpButton = new Button("Pick up");
     private Button exportGameStateButton = new Button("Export game state");
+    private Button importGameStateButton = new Button("Import game state");
+
 
     public void startGameScene(Stage stage, int windowWidth, int windowHeight) {
         BorderPane startBorderPane = new BorderPane();
@@ -121,6 +126,124 @@ public class SceneSwitcher {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.show();
 
+
+    }
+
+
+//    public Label getMaxSepPoints() {return maxSepPoints;}
+//    public Label getSetLive() { return setLive; }
+//    public Label getSetAttack() { return setAttack; }
+//    public Label getSetArmor() { return  setAttack; }
+    private String playerNameToString() {
+        String name = playerName.getText();
+        return name;
+    }
+
+    private GridPane initMenu() {
+        ui = setUiToMethods();
+        ui.add(setPlayer, 0, 1);
+        ui.add(loadGame, 0, 3);
+        ui.add(exitButton, 0, 5);
+        return ui;
+    }
+
+    private GridPane initSetPlayer() {
+        ui = new GridPane();
+        ui.setPrefWidth(200);
+        ui.setPadding(new Insets(20));
+        ui.setHgap(18);
+        ui.setVgap(18);
+
+        ui.add(playerNameInput, 0, 0);
+        playerNameInput.setPromptText("What's your name?");
+
+        setupSingleLabel("Health: ", 2, healthLabel);
+        setupSingleLabel("Armor: ", 5, armorLabel);
+        setupSingleLabel("Attack: ", 8, attackLabel);
+        ui.add(submitButton, 0, 10);
+        return ui;
+    }
+
+    private GridPane setUiToMethods() {
+        ui = new GridPane();
+        ui.setPrefWidth(200);
+        ui.setPadding(new Insets(10));
+        ui.setHgap(5);
+        ui.setVgap(5);
+        return ui;
+    }
+
+    private GridPane initButtons() {
+        ui = setUiToMethods();
+
+        addStatHealth.setText("Health UP");
+        addStatArmor.setText("Armor UP");
+        addStatAttack.setText("Attack UP");
+
+        subStatHealth.setText("Health Down");
+        subStatArmor.setText("Armor Down");
+        subStatAttack.setText("Attack Down");
+
+        ui.add(addStatHealth, 0, 1);
+        ui.add(subStatHealth, 0, 3);
+
+        ui.add(addStatArmor, 0, 4);
+        ui.add(subStatArmor, 0, 6);
+
+        ui.add(addStatAttack, 0, 7);
+        ui.add(subStatAttack, 0, 9);
+        return ui;
+    }
+
+    private GridPane initUi() {
+        ui = setUiToMethods();
+        ui.add(name, 0, 0);
+        name.setStyle("-fx-font-weight: bold");
+        setupSingleLabel("Health: ", 4, healthLabel);
+        setupSingleLabel("Attack: ", 5, attackLabel);
+        setupSingleLabel("Armor: ", 6, armorLabel);
+        ui.add(exportGameStateButton,0, 7);
+        ui.add(importGameStateButton,0 ,8);
+        ui.add(exitButton, 0, 9);
+        ui.add(pickUpButton, 0, 11);
+        ui.add(new Label("Inventory:"), 0, 12);
+        return ui;
+    }
+
+    private String getSceneStyleString(String styleString) {
+        return "-fx-background-color: black;" +
+                "-fx-background-repeat: no-repeat;" +
+                "-fx-background-image: url('" + styleString + "');" +
+                "-fx-background-position: center center";
+    }
+
+    private void setupSingleLabel(String s, int i, Label healthLabel) {
+        ui.add(new Label(s), 0, i);
+        ui.add(healthLabel, 1, i);
+    }
+
+    public void changeMenuIfStart(Stage stage, int windowWidth, int windowHeight) {
+        BorderPane setPlayerPane = new BorderPane();
+        GridPane center = initSetPlayer();
+        GridPane right = initButtons();
+        GridPane left = new GridPane();
+
+        left.setAlignment(Pos.CENTER);
+        right.setAlignment(Pos.CENTER);
+        center.setAlignment(Pos.CENTER);
+
+        left.add(startGameButton, 0, 0);
+        left.add(loadGame, 0, 1);
+
+        setPlayerPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
+        setPlayerPane.setLeft(left);
+        setPlayerPane.setCenter(center);
+        setPlayerPane.setRight(right);
+
+        Scene startGameScene = new Scene(setPlayerPane, windowWidth + 200, windowHeight);
+        stage.setScene(startGameScene);
+        stage.setTitle("Dungeon Crawl");
+        stage.show();
 
     }
 
@@ -225,120 +348,7 @@ public class SceneSwitcher {
         this.separationStatistic = numberToSeparation;
     }
 
-//    public Label getMaxSepPoints() {return maxSepPoints;}
-//    public Label getSetLive() { return setLive; }
-//    public Label getSetAttack() { return setAttack; }
-//    public Label getSetArmor() { return  setAttack; }
-
-    private String playerNameToString() {
-        String name = playerName.getText();
-        return name;
-    }
-
-    private GridPane initMenu() {
-        ui = setUiToMethods();
-        ui.add(setPlayer, 0, 1);
-        ui.add(loadGame, 0, 3);
-        ui.add(exitButton, 0, 5);
-        return ui;
-    }
-
-    private GridPane initSetPlayer() {
-        ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(20));
-        ui.setHgap(18);
-        ui.setVgap(18);
-
-        ui.add(playerNameInput, 0, 0);
-        playerNameInput.setPromptText("What's your name?");
-
-        setupSingleLabel("Health: ", 2, healthLabel);
-        setupSingleLabel("Armor: ", 5, armorLabel);
-        setupSingleLabel("Attack: ", 8, attackLabel);
-        ui.add(submitButton, 0, 10);
-        return ui;
-    }
-
-    private GridPane setUiToMethods() {
-        ui = new GridPane();
-        ui.setPrefWidth(200);
-        ui.setPadding(new Insets(10));
-        ui.setHgap(5);
-        ui.setVgap(5);
-        return ui;
-    }
-
-    private GridPane initButtons() {
-        ui = setUiToMethods();
-
-        addStatHealth.setText("Health UP");
-        addStatArmor.setText("Armor UP");
-        addStatAttack.setText("Attack UP");
-
-        subStatHealth.setText("Health Down");
-        subStatArmor.setText("Armor Down");
-        subStatAttack.setText("Attack Down");
-
-        ui.add(addStatHealth, 0, 1);
-        ui.add(subStatHealth, 0, 3);
-
-        ui.add(addStatArmor, 0, 4);
-        ui.add(subStatArmor, 0, 6);
-
-        ui.add(addStatAttack, 0, 7);
-        ui.add(subStatAttack, 0, 9);
-        return ui;
-    }
-
-    private GridPane initUi() {
-        ui = setUiToMethods();
-        ui.add(name, 0, 0);
-        name.setStyle("-fx-font-weight: bold");
-        setupSingleLabel("Health: ", 4, healthLabel);
-        setupSingleLabel("Attack: ", 5, attackLabel);
-        setupSingleLabel("Armor: ", 6, armorLabel);
-        ui.add(exportGameStateButton,0, 7);
-        ui.add(exitButton, 0, 8);
-        ui.add(pickUpButton, 0, 10);
-        ui.add(new Label("Inventory:"), 0, 11);
-        return ui;
-    }
-
-    private String getSceneStyleString(String styleString) {
-        return "-fx-background-color: black;" +
-                "-fx-background-repeat: no-repeat;" +
-                "-fx-background-image: url('" + styleString + "');" +
-                "-fx-background-position: center center";
-    }
-
-    private void setupSingleLabel(String s, int i, Label healthLabel) {
-        ui.add(new Label(s), 0, i);
-        ui.add(healthLabel, 1, i);
-    }
-
-    public void changeMenuIfStart(Stage stage, int windowWidth, int windowHeight) {
-        BorderPane setPlayerPane = new BorderPane();
-        GridPane center = initSetPlayer();
-        GridPane right = initButtons();
-        GridPane left = new GridPane();
-
-        left.setAlignment(Pos.CENTER);
-        right.setAlignment(Pos.CENTER);
-        center.setAlignment(Pos.CENTER);
-
-        left.add(startGameButton, 0, 0);
-        left.add(loadGame, 0, 1);
-
-        setPlayerPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
-        setPlayerPane.setLeft(left);
-        setPlayerPane.setCenter(center);
-        setPlayerPane.setRight(right);
-
-        Scene startGameScene = new Scene(setPlayerPane, windowWidth + 200, windowHeight);
-        stage.setScene(startGameScene);
-        stage.setTitle("Dungeon Crawl");
-        stage.show();
-
+    public Button getImportGameStateButton() {
+        return importGameStateButton;
     }
 }

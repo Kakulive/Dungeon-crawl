@@ -41,6 +41,7 @@ public class Main extends Application {
     private Buttons buttons = new Buttons();
     private Stage stage = new Stage();
     private SceneSwitcher sceneSwitcher = new SceneSwitcher();
+    private ExportGameStateDao exportGameStateDao = new ExportGameStateDao();
 
     private GameMap map2 = MapLoader.loadMap(MAPNAME2); // DOWNSTAIRS
     private GameMap map1 = MapLoader.loadMap(MAPNAME1); // UPSTAIRS
@@ -57,7 +58,7 @@ public class Main extends Application {
     // TODO
     GameDatabaseManager dbManager;
 
-    private int inventoryRowIndex = 12;
+    private int inventoryRowIndex = 10;
     private int inventoryColumnIndex = 0;
 
     public static void main(String[] args) {
@@ -126,8 +127,11 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event ->{
-        ExportGameStateDao.selectLocation();
+            exportGameStateDao.chooseLocationToSave();
+        });
 
+                sceneSwitcher.getImportGameStateButton().setOnAction(event ->{
+            exportGameStateDao.chooseLocationToLoad();
         });
 
 
@@ -136,22 +140,6 @@ public class Main extends Application {
             System.exit(0);
         });
 
-        //NA RAZIE TYLKO ZAKOMENTOWANE, ALE OSTATECZNIE WYRZUCIMY NA 99%
-
-//
-//        sceneSwitcher.getNameSubmitButton().setOnAction(event -> {
-//            String userName = sceneSwitcher.getNameInput().getText();
-//            map.getPlayer().setName(userName);
-//            if (map.getPlayer().checkCheatCode(userName)) {
-//                map.getPlayer().setCheatMode(true);
-//            }
-//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameInput());
-//            sceneSwitcher.getUi().getChildren().remove(sceneSwitcher.getNameSubmitButton());
-//            sceneSwitcher.getUi().add(name,0,0);
-//            name.setText(userName);
-//            name.setStyle("-fx-font-weight: bold");
-//            sceneSwitcher.getMainBorderPane().requestFocus();
-//        });
 
         sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
     }
