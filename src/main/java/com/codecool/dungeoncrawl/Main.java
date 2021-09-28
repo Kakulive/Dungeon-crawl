@@ -58,7 +58,7 @@ public class Main extends Application {
     // TODO
     GameDatabaseManager dbManager;
 
-    private int inventoryRowIndex = 10;
+    private int inventoryRowIndex = 13;
     private int inventoryColumnIndex = 0;
 
     public static void main(String[] args) {
