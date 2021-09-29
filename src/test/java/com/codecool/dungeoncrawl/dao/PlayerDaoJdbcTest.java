@@ -16,6 +16,8 @@ import static org.junit.jupiter.api.Assertions.*;
     environment variables for the test are also set
  */
 
+// TODO uncommented all
+
 class PlayerDaoJdbcTest {
     private GameDatabaseManager databaseManager;
     private PlayerDao playerDao;
@@ -47,7 +49,7 @@ class PlayerDaoJdbcTest {
     @Test
     void add_whenAddingNewPlayerViaDao_addsPlayerCorrectlyAndSetItsId() {
         // given
-        PlayerModel player = new PlayerModel("John", 10, 5, 15, 15, 5, true, "sword;shield;");
+        PlayerModel player = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
         // when
 //        playerDao.add(player);
         // then
@@ -61,13 +63,13 @@ class PlayerDaoJdbcTest {
         assertEquals(15, testedPlayer.getY());
         assertEquals(15, testedPlayer.getAttack());
         assertEquals(5, testedPlayer.getArmor());
-        assertTrue(testedPlayer.getHasKey());
+        assertFalse(testedPlayer.getHasKey());
         assertEquals("sword;shield;", testedPlayer.getItems());
         assertNotNull(testedPlayer.getId());
     }
 
     @Test
-    void whenAuthorIsNull_ThrowsNullPointerException(){
+    void whenAuthorIsNull_ThrowsNullPointerException() {
         // given
         PlayerModel player = null;
         //when
@@ -77,10 +79,27 @@ class PlayerDaoJdbcTest {
         assertNull(exception.getMessage());
     }
 
-
     @Test
     void update() {
-
+        // given
+        PlayerModel player = new PlayerModel("Brad Pitt", 50, 10, 10, 30, 40, true, "sword;shield;key;");
+        add_whenAddingNewPlayerViaDao_addsPlayerCorrectlyAndSetItsId();
+        List<PlayerModel> addedPlayer = databaseManager.getAllSavedPlayers();
+        int playerId = addedPlayer.get(addedPlayer.size() - 1).getId();
+        // when
+        playerDao.update(player, playerId);
+        // then
+        List<PlayerModel> updatedPlayer = databaseManager.getAllSavedPlayers();
+        PlayerModel testedPlayer = updatedPlayer.get(updatedPlayer.size() - 1);
+        assertEquals("Brad Pitt", testedPlayer.getPlayerName());
+        assertEquals(50, testedPlayer.getHp());
+        assertEquals(10, testedPlayer.getX());
+        assertEquals(10, testedPlayer.getY());
+        assertEquals(30, testedPlayer.getAttack());
+        assertEquals(40, testedPlayer.getArmor());
+        assertTrue(testedPlayer.getHasKey());
+        assertEquals("sword;shield;key;", testedPlayer.getItems());
+        assertEquals(playerId, testedPlayer.getId());
     }
 
     @Test
