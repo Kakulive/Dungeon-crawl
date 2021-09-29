@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl.dao;
 import com.codecool.dungeoncrawl.model.PlayerModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -64,6 +65,18 @@ class PlayerDaoJdbcTest {
         assertEquals("sword;shield;", testedPlayer.getItems());
         assertNotNull(testedPlayer.getId());
     }
+
+    @Test
+    void whenAuthorIsNull_ThrowsNullPointerException(){
+        // given
+        PlayerModel player = null;
+        //when
+        Executable e = () -> playerDao.add(player);
+        //then
+        NullPointerException exception = assertThrows(NullPointerException.class, e);
+        assertNull(exception.getMessage());
+    }
+
 
     @Test
     void update() {
