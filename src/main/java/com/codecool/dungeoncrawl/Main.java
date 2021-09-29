@@ -1,7 +1,8 @@
 package com.codecool.dungeoncrawl;
 
-import com.codecool.dungeoncrawl.dao.ExportGameStateDao;
+import com.codecool.dungeoncrawl.gamestateLocal.ExportGameState;
 import com.codecool.dungeoncrawl.dao.GameDatabaseManager;
+import com.codecool.dungeoncrawl.gamestateLocal.ImportGameState;
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
@@ -10,8 +11,6 @@ import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import com.codecool.dungeoncrawl.model.LoadMenu;
-import com.codecool.dungeoncrawl.model.PlayerModel;
-import com.codecool.dungeoncrawl.model.SavedGameModel;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,7 +29,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -41,7 +39,8 @@ public class Main extends Application {
     private Buttons buttons = new Buttons();
     private Stage stage = new Stage();
     private SceneSwitcher sceneSwitcher = new SceneSwitcher();
-    private ExportGameStateDao exportGameStateDao = new ExportGameStateDao();
+    private ExportGameState exportGameState = new ExportGameState();
+    private ImportGameState importGameState = new ImportGameState();
 
     private GameMap map2 = MapLoader.loadMap(MAPNAME2); // DOWNSTAIRS
     private GameMap map1 = MapLoader.loadMap(MAPNAME1); // UPSTAIRS
@@ -127,11 +126,11 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
-            exportGameStateDao.chooseLocationToSave();
+            exportGameState.chooseLocationToSave(map.getPlayer());
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            exportGameStateDao.chooseLocationToLoad();
+            importGameState.chooseLocationToImport();
         });
 
 
