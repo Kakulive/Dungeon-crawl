@@ -1,7 +1,5 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
-import com.codecool.dungeoncrawl.dao.ExportGameStateDao;
-import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,8 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import javax.swing.*;
 
 public class SceneSwitcher {
     private int separationStatistic = 10;
