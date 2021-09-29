@@ -94,7 +94,7 @@ public class GameDatabaseManager {
         return allSavedGames.get(allSavedGames.size() - 1).getId();
     }
 
-    private DataSource connect() throws SQLException {
+    public DataSource connect() throws SQLException {
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = env.get("APP_DB_NAME");
