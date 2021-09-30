@@ -10,6 +10,10 @@ public abstract class Item implements Drawable {
     private int armor;
     private int health;
 
+    public Cell getCell() {
+        return cell;
+    }
+
     protected Item(Cell cell) {
         this.cell = cell;
         this.cell.setItem(this);
