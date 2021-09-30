@@ -15,9 +15,9 @@ public class MonsterMoveLogic {
     public void moveFollow(GameMap gameMap, Cell monsterCell, int dx, int dy, Actor enemy) {
         Cell cellNeighbor = monsterCell.getNeighbor(dx, dy);
         if (monsterFollow.checkIfPlayer(gameMap, monsterCell)) {
-            Cell playerCell = monsterFollow.findPlayer(gameMap, monsterCell);
+            Cell playerCell = gameMap.getPlayer().getCell();
             int[] differenceInCords = monsterFollow.calculateDifference(playerCell, monsterCell);
-            monsterFollow.monsterGo(differenceInCords, monsterCell, cellNeighbor);
+            monsterFollow.monsterGo(differenceInCords, monsterCell, cellNeighbor, dx, dy);
         } else {
             onlyMove(dx, dy, enemy);
         }

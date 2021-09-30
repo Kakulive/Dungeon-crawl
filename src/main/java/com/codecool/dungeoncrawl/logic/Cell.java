@@ -56,6 +56,10 @@ public class Cell implements Drawable {
         return y;
     }
 
+    public Cell setX(int x) { this.x = x; return this; }
+
+    public Cell setY(int y) { this.y = y; return  this; }
+
     public GameMap getGameMap() {
         return gameMap;
     }

@@ -41,6 +41,19 @@ public abstract class Actor implements Drawable {
         }
     }
 
+    public void onlyMonsterAttack(Cell nextCell, Cell monsterCell, int dx, int dy) {
+        Actor player = nextCell.getActor();
+        Actor enemy = monsterCell.getActor();
+        if (doesAttackHurt(player, enemy)) {
+            updatePlayerHealth(player, enemy);
+            if (isPlayerDead(player)) {
+                setDead(true);
+            }
+        } else {
+            monsterCell.getActor().move(dx, dy);
+        }
+    }
+
 
     protected boolean isClosedDoor(CellType neighbourCellType) {
         return neighbourCellType == CellType.CLOSED_DOOR;

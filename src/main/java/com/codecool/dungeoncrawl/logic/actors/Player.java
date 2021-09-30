@@ -160,4 +160,5 @@ public class Player extends Actor {
                 (cell.getY() + dy < map.getHeight()) &&
                 (cell.getY() + dy >= 0));
     }
+
 }
