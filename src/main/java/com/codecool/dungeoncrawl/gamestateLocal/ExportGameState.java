@@ -11,8 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+
 import com.codecool.dungeoncrawl.logic.items.Inventory;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
@@ -27,7 +30,6 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2) {
         playerModel = new PlayerModel(player);
         state = new GameStateModel(map);
-
         JSONObject jo = new JSONObject();
         prepareLocationSelectWindow("Select directory and insert filename to save.");
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -40,7 +42,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
                 } else {
                     myWriter = new FileWriter(chooser.getSelectedFile() + ".json");
                 }
-                export(playerModel, jo, state);
+                export(playerModel, jo, state, map1, map2);
                 myWriter.write(jo.toString());
                 myWriter.close();
                 messageFlashing.showImportAndExportAlerts("Successfully wrote to the file.");
@@ -65,7 +67,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     }
 
     @Override
-    public void export(PlayerModel player, JSONObject jo, GameStateModel state) {
+    public void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2) {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = df.format(date);
@@ -79,6 +81,10 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
         jo.put("hasKey", player.getHasKey());
         jo.put("items", player.getItems());
         jo.put("current map", state.getCurrentMap());
+        jo.put("map 1 enemy list", map1.getEnemiesList().toString());
+        jo.put("map 1 item list", map1.getItemsList().toString());
+        jo.put("map 2 enemy list", map2.getEnemiesList().toString());
+        jo.put("map 2 item list", map2.getItemsList().toString());
     }
 
     @Override

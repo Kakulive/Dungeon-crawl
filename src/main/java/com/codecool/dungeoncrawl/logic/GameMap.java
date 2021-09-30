@@ -18,6 +18,7 @@ public class GameMap {
     private MonsterMoveLogic monsterMoveLogic = new MonsterMoveLogic();
     private Player player;
     private List<Actor> enemiesList;
+    private List<Actor> allEnemiesList;
     private List<Item> itemsList;
 
     private final Randomizer randomizer = new Randomizer();
@@ -27,6 +28,7 @@ public class GameMap {
         this.height = height;
         this.mapName = mapName;
         enemiesList = new ArrayList<>();
+        allEnemiesList = new ArrayList<>();
         itemsList = new ArrayList<>();
         cells = new Cell[width][height];
         for (int x = 0; x < width; x++) {
@@ -151,6 +153,10 @@ public class GameMap {
         enemiesList.add(enemy);
     }
 
+    public void addAllEnemyToList(Actor enemy) {
+        allEnemiesList.add(enemy);
+    }
+
     public void addItemToList(Item item) {
         itemsList.add(item);
     }
@@ -167,5 +173,11 @@ public class GameMap {
         return mapName;
     }
 
+    public List<Item> getItemsList() {
+        return itemsList;
+    }
 
+    public List<Actor> getAllEnemiesList() {
+        return allEnemiesList;
+    }
 }

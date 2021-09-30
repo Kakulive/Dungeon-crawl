@@ -5,10 +5,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,11 +39,23 @@ public class ImportGameState extends JPanel {
                 player.setArmor(Integer.parseInt(String.valueOf((Long) gameState.get("Armor"))));
                 player.setAttack(Integer.parseInt(String.valueOf((Long) gameState.get("Attack"))));
                 player.setHasKey((Boolean) gameState.get("hasKey"));
+                clearMaps(map1, map2);
+
+                String map1Enemies = (String) gameState.get("map 1 enemy list");
+                String map2Enemies = (String) gameState.get("map 2 enemy list");
+                String map1Items = (String) gameState.get("map 1 item list");
+                String map2Items = (String) gameState.get("map 2 item list");
+
+                String[] map1EnemiesList = map1Enemies.split(";");
+                String[] map2EnemiesList = map2Enemies.split(";");
+                String[] map1ItemsList = map1Items.split(";");
+                String[] map2ItemsList = map2Items.split(";");
+
+
                 String mapName = (String) gameState.get("current map");
-                if (mapName == "/map2.txt"){
+                if (mapName == "/map2.txt") {
                     map = map2;
-                }
-                else{
+                } else {
                     map = map1;
                 }
                 int playerX = (Integer.parseInt(String.valueOf((Long) gameState.get("X"))));
@@ -69,7 +85,8 @@ public class ImportGameState extends JPanel {
             System.out.println("No Selection ");
         }
 
-}
+    }
+
     private void prepareLocationSelectWindow(String title) {
 
         chooser.setCurrentDirectory(new java.io.File("."));
@@ -80,12 +97,28 @@ public class ImportGameState extends JPanel {
         chooser.addChoosableFileFilter(filter);
     }
 
-    private void deletePlayerFromOldMap(GameMap map, Player player){
+    private void deletePlayerFromOldMap(GameMap map, Player player) {
         int X = player.getX();
         int Y = player.getY();
         Cell oldPlayerCell = map.getCell(X, Y);
         map.setPlayer(null);
         oldPlayerCell.setActor(null);
+    }
+
+    private void deleteEnemiesFromMap(GameMap map) {
+        List<Actor> enemyList = map.getEnemiesList();
+        for (Actor enemy : enemyList) {
+            Cell enemyCell = map.getCell(enemy.getX(), enemy.getY());
+            enemyCell.setActor(null);
+        }
+    }
+
+    private void deleteItemsFromMap(GameMap map) {
+        List<Item> itemList = map.getItemsList();
+        for (Item item : itemList) {
+            Cell itemCell = item.getCell();
+            itemCell.setItem(null);
+        }
     }
 
     private void setPlayerOnMap(Player player, GameMap map, int X, int Y) {
@@ -95,9 +128,38 @@ public class ImportGameState extends JPanel {
         currentPlayerCell.setActor(player);
     }
 
+    private void clearMaps(GameMap map1, GameMap map2) {
+        deleteItemsFromMap(map1);
+        deleteItemsFromMap(map2);
+        deleteEnemiesFromMap(map1);
+        deleteItemsFromMap(map2);
+        map1.getEnemiesList().clear();
+        map2.getEnemiesList().clear();
+    }
 
+    private void setEnemiesOnMap(GameMap map, String[] enemies) {
+        List<Actor> allEnemiesList = map.getAllEnemiesList();
+        for (String enemy : enemies) {
+            for (Actor enemyToCompare : allEnemiesList) {
+                if (enemyToCompare.toString().equals(enemy)) {
+                    Cell enemyCell = map.getCell(enemyToCompare.getX(), enemyToCompare.getY());
+                    enemyCell.setActor(enemyToCompare);
+                    map.addEnemyToList(enemyToCompare);
+                }
+            }
+        }
+    }
 
-    private void drawItems () {
-
+    private void setItemsOnMap(GameMap map, String[] items) {
+        List<Item> itemList = map.getItemsList();
+        for (String item : items) {
+            for (Item itemToCompare : itemList) {
+                if (itemToCompare.toString().equals(item)) {
+                    itemToCompare.getCell().setItem(itemToCompare);
+                }
+            }
+        }
     }
 }
+
+
