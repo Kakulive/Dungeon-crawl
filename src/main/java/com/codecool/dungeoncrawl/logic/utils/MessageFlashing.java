@@ -33,4 +33,8 @@ public class MessageFlashing {
         }
         flashMessage(message);
     }
+
+    public void showImportAndExportAlerts(String message){
+        flashMessage(message);
+    }
 }

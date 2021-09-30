@@ -2,11 +2,11 @@ package com.codecool.dungeoncrawl.logic.monster_move;
 
 import java.util.Random;
 
-public class ChoiceDirection  {
+public class ChoiceDirection {
 
 
     private int pickNumber() {
-        return new Random().nextInt((4 -1) +1);
+        return new Random().nextInt((4 - 1) + 1);
     }
 
     public int[] ChangeNumber() {
