@@ -24,7 +24,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     private PlayerModel playerModel;
     private GameStateModel state;
 
-    public void chooseLocationToSave(Player player, GameMap map) {
+    public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2) {
         playerModel = new PlayerModel(player);
         state = new GameStateModel(map);
 

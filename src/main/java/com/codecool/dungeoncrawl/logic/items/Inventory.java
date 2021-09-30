@@ -27,6 +27,9 @@ public class Inventory {
         }
     }
 
+    public void clearTnventory(){
+        this.inventory.clear();
+    }
 
     @Override
     public String toString() {
