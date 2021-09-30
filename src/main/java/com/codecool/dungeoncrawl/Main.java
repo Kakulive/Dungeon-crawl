@@ -126,11 +126,15 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
-            exportGameState.chooseLocationToSave(map.getPlayer());
+            exportGameState.chooseLocationToSave(map.getPlayer(), map);
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            importGameState.chooseLocationToImport();
+            importGameState.chooseLocationToImport(map);
+            String userName = map.getPlayer().getName();
+            sceneSwitcher.getName().setText(userName);
+            refresh();
+            sceneSwitcher.getMainBorderPane().requestFocus();
         });
 
 
