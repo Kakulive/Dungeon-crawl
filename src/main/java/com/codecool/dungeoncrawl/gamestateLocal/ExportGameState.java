@@ -54,7 +54,6 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
 
 
     private void prepareLocationSelectWindow(String title) {
-
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle(title);
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
