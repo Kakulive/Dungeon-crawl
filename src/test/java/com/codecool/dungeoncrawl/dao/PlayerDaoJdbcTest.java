@@ -117,7 +117,7 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void get_whenGetPlayerByIdViaDao_ReturnRequiredPlayerWithActualData() {
+    void get_whenGetPlayerByIdViaDao_ReturnRequiredPlayer() {
         // given
         PlayerModel playerToAdd = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
         playerDao.add(playerToAdd);
@@ -135,10 +135,17 @@ class PlayerDaoJdbcTest {
         assertEquals(5, testedPlayer.getArmor());
         assertFalse(testedPlayer.getHasKey());
         assertEquals("sword;shield;", testedPlayer.getItems());
-        assertNotNull(testedPlayer.getId());
     }
 
-    // TODO when given -1 to get throws
+    @Test
+    void whenGetPlayerByInvalidId_ReturnNull() {
+        // given
+        int playerId = -1;
+        // when
+        PlayerModel testedPlayer = playerDao.get(playerId);
+        // then
+        assertNull(testedPlayer);
+    }
 
     @Test
     void getAll() {
