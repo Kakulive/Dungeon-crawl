@@ -75,12 +75,6 @@ public class Main extends Application {
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
             sceneSwitcher.menuGameScene(stage, windowWidth, windowHeight);
 
-//            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-//            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
-            // TODO
-            // scene.setOnKeyReleased(this::onKeyReleased);
-//            refresh();
-//            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
         sceneSwitcher.getSetPlayer().setOnAction(event -> {
             sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
@@ -114,7 +108,11 @@ public class Main extends Application {
             if (buttons.validInputsAddingMenu(sceneSwitcher)) {
                 buttons.submitButtonDo(map, sceneSwitcher);
                 String userName = sceneSwitcher.getPlayerNameInput().getText();
-                map.getPlayer().setName(userName);
+                Player player = map.getPlayer();
+                if (player.checkCheatCode(userName)) {
+                    player.setCheatMode(true);
+                }
+                player.setName(userName);
                 sceneSwitcher.getName().setText(userName);
                 sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
                 sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
@@ -282,9 +280,11 @@ public class Main extends Application {
             map.setPlayer(null);
             oldPlayerCell.setActor(null);
             if (isGoingDown) {
-                changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(), staircaseExits.DOWNSTAIRS_Y.getValue());
+                changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(),
+                        staircaseExits.DOWNSTAIRS_Y.getValue());
             } else {
-                changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(), staircaseExits.UPSTAIRS_Y.getValue());
+                changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(),
+                        staircaseExits.UPSTAIRS_Y.getValue());
             }
             map.getPlayer().setGoingDown(false);
             map.getPlayer().setGoingUp(false);
