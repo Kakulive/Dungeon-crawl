@@ -1,6 +1,5 @@
 package com.codecool.dungeoncrawl.logic.utils;
 
-import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
