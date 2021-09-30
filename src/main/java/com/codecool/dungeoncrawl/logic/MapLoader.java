@@ -70,19 +70,23 @@ public class MapLoader {
                             break;
                         case 'k':
                             cell.setType(CellType.KEY);
-                            new Key(cell);
+                            Key key = new Key(cell);
+                            map.addItemToList(key);
                             break;
                         case 'x':
                             cell.setType(CellType.HEART);
-                            new Heart(cell);
+                            Heart heart = new Heart(cell);
+                            map.addItemToList(heart);
                             break;
                         case 'i':
                             cell.setType(CellType.SWORD);
-                            new Sword(cell);
+                            Sword sword = new Sword(cell);
+                            map.addItemToList(sword);
                             break;
                         case 'h':
                             cell.setType(CellType.SHIELD);
-                            new Shield(cell);
+                            Shield shield = new Shield(cell);
+                            map.addItemToList(shield);
                             break;
                         case 'n':
                             cell.setType(CellType.CANDLE);

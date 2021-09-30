@@ -126,11 +126,12 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
-            exportGameState.chooseLocationToSave(map.getPlayer(), map);
+            exportGameState.chooseLocationToSave(map.getPlayer(), map, map1, map2);
+            sceneSwitcher.getMainBorderPane().requestFocus();
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            importGameState.chooseLocationToImport(map);
+            importGameState.chooseLocationToImport(map, map1, map2);
             String userName = map.getPlayer().getName();
             sceneSwitcher.getName().setText(userName);
             refresh();
@@ -167,6 +168,27 @@ public class Main extends Application {
         }
         refresh();
     }
+
+    private void drawItems (GridPane ui, BorderPane borderPane) {
+
+        borderPane.requestFocus();
+        Label imageLabel = new Label();
+        if (map.getPlayer().getItemUrl() != null) {
+            Image image = new Image(map.getPlayer().getItemUrl());
+            imageLabel.setGraphic(new ImageView(image));
+            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
+            if (inventoryColumnIndex == 1) {
+                inventoryColumnIndex = 0;
+                inventoryRowIndex++;
+            } else {
+                inventoryColumnIndex++;
+            }
+        }
+        refresh();
+    }
+
+
+
 
     // TODO
     private void onKeyReleased(KeyEvent keyEvent) {

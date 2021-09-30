@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
@@ -23,7 +24,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     private PlayerModel playerModel;
     private GameStateModel state;
 
-    public void chooseLocationToSave(Player player, GameMap map) {
+    public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2) {
         playerModel = new PlayerModel(player);
         state = new GameStateModel(map);
 
@@ -82,7 +83,6 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
 
     @Override
     public void load(PlayerModel player) {
-
     }
 
     @Override
