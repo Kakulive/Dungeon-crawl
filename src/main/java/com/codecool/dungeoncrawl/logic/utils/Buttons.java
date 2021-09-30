@@ -54,17 +54,29 @@ public class Buttons {
 
         if (sumStatsPlayer > sumStatsConstant) {
             if (numberAddButtons == 1) {
-                map.getPlayer().setHealth(health - maxSub);
-                sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
-                sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
+                if (validStats(map)) {
+                    map.getPlayer().setHealth(health - maxSub);
+                    sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
+                    sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
+                } else {
+                    MessageFlashing.flashMessage("That game is hard to play. Is better when you have more HP");
+                }
             } else if (numberAddButtons == 2) {
-                map.getPlayer().setArmor(armor - maxSub);
-                sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
-                sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
+                if (validStats(map)) {
+                    map.getPlayer().setArmor(armor - maxSub);
+                    sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
+                    sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
+                } else {
+                    MessageFlashing.flashMessage("0 armor is small value. And you want have smaller value???");
+                }
             } else if (numberAddButtons == 3){
-                map.getPlayer().setAttack(attack - maxSub);
-                sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
-                sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
+                if (validStats(map)) {
+                    map.getPlayer().setAttack(attack - maxSub);
+                    sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
+                    sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
+                } else {
+                    MessageFlashing.flashMessage("Don't subtract attack!!!");
+                }
             }
         } else {
             MessageFlashing.flashMessage("You can't subtract stats");
@@ -107,6 +119,16 @@ public class Buttons {
         }
     }
 
+    private boolean validStats(GameMap gameMap) {
+        if (gameMap.getPlayer().getHealth() <= PlayerStats.HEALTH.getValueStat()) {
+            return false;
+        } else if (gameMap.getPlayer().getArmor() <= PlayerStats.ARMOR.getValueStat()) {
+            return false;
+        } else if (gameMap.getPlayer().getAttack() <= PlayerStats.ATTACK.getValueStat()) {
+            return false;
+        }
+        return true;
+    }
 
 
 }
