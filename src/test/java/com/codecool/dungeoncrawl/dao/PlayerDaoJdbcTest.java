@@ -51,7 +51,7 @@ class PlayerDaoJdbcTest {
         // given
         PlayerModel player = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
         // when
-//        playerDao.add(player);
+        playerDao.add(player);
         // then
         List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
         assertNotNull(savedPlayers);
@@ -117,7 +117,7 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void get_whenGetPlayerByIdViaDao_ReturnRequiredPlayer() {
+    void get_whenGetPlayerByIdViaDao_ReturnRequiredPlayerCorrectly() {
         // given
         PlayerModel playerToAdd = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
         playerDao.add(playerToAdd);
@@ -148,11 +148,16 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void getAll() {
+    void getAll_WhenGetAllPlayersViaDao_ReturnListOfAllPlayersCorrectly() {
         // given
-
+        PlayerModel firstPlayer = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
+        PlayerModel secondPlayer = new PlayerModel("Brad Pitt", 50, 10, 10, 30, 40, true, "sword;shield;key;");
+        playerDao.add(firstPlayer);
+        playerDao.add(secondPlayer);
         // when
-
+        List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
         // then
+        assertNotNull(savedPlayers);
+//        assertEquals(2, savedPlayers.size());
     }
 }
