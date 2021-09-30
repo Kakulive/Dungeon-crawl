@@ -67,7 +67,7 @@ public class GameDatabaseManager {
         return gameStateModel;
     }
 
-    public List<GameStateModel> getAllSavedGames() {
+    public List<GameStateModel> getAllSavedStatesOfGames() {
         return this.gameStateDao.getAll();
     }
 
@@ -90,8 +90,12 @@ public class GameDatabaseManager {
     }
 
     private int getLastSavedGameId() {
-        List<GameStateModel> allSavedGames = this.getAllSavedGames();
+        List<GameStateModel> allSavedGames = this.getAllSavedStatesOfGames();
         return allSavedGames.get(allSavedGames.size() - 1).getId();
+    }
+
+    public List<SavedGameModel> getAllSavedGames() {
+        return this.savedGamesDao.getAll();
     }
 
     public DataSource connect() throws SQLException {
