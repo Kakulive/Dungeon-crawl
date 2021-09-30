@@ -53,10 +53,10 @@ class PlayerDaoJdbcTest {
         // when
 //        playerDao.add(player);
         // then
-        List<PlayerModel> allPlayers = databaseManager.getAllSavedPlayers();
-        assertNotNull(allPlayers);
-//        assertEquals(1, allPlayers.size());  //
-        PlayerModel testedPlayer = allPlayers.get(allPlayers.size() - 1);
+        List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
+        assertNotNull(savedPlayers);
+//        assertEquals(1, savedPlayers.size());  //
+        PlayerModel testedPlayer = savedPlayers.get(savedPlayers.size() - 1);
         assertEquals("John", testedPlayer.getPlayerName());
         assertEquals(10, testedPlayer.getHp());
         assertEquals(5, testedPlayer.getX());
@@ -69,7 +69,7 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void whenAuthorIsNull_ThrowsNullPointerException() {
+    void whenAddPlayerThatIsNull_ThrowsNullPointerException() {
         // given
         PlayerModel player = null;
         //when
@@ -80,14 +80,15 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void update() {
+    void update_whenUpdatePlayerDataViaDao_dataUpdatesCorrectly() {
         // given
-        PlayerModel player = new PlayerModel("Brad Pitt", 50, 10, 10, 30, 40, true, "sword;shield;key;");
-        add_whenAddingNewPlayerViaDao_addsPlayerCorrectlyAndSetItsId();
-        List<PlayerModel> addedPlayer = databaseManager.getAllSavedPlayers();
-        int playerId = addedPlayer.get(addedPlayer.size() - 1).getId();
+        PlayerModel playerToAdd = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
+        playerDao.add(playerToAdd);
+        PlayerModel playerToUpdate = new PlayerModel("Brad Pitt", 50, 10, 10, 30, 40, true, "sword;shield;key;");
+        List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
+        int playerId = savedPlayers.get(savedPlayers.size() - 1).getId();
         // when
-        playerDao.update(player, playerId);
+        playerDao.update(playerToUpdate, playerId);
         // then
         List<PlayerModel> updatedPlayer = databaseManager.getAllSavedPlayers();
         PlayerModel testedPlayer = updatedPlayer.get(updatedPlayer.size() - 1);
@@ -103,10 +104,48 @@ class PlayerDaoJdbcTest {
     }
 
     @Test
-    void get() {
+    void whenUpdatePlayerDataWithPlayerThatIsNull_ThrowsNullPointerException() {
+        // given
+        PlayerModel player = null;
+        List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
+        int playerId = savedPlayers.get(savedPlayers.size() - 1).getId();
+        //when
+        Executable e = () -> playerDao.update(player, playerId);
+        //then
+        NullPointerException exception = assertThrows(NullPointerException.class, e);
+        assertNull(exception.getMessage());
     }
 
     @Test
+    void get_whenGetPlayerByIdViaDao_ReturnRequiredPlayerWithActualData() {
+        // given
+        PlayerModel playerToAdd = new PlayerModel("John", 10, 5, 15, 15, 5, false, "sword;shield;");
+        playerDao.add(playerToAdd);
+        List<PlayerModel> savedPlayers = databaseManager.getAllSavedPlayers();
+        int playerId = savedPlayers.get(savedPlayers.size() - 1).getId();
+        // when
+        PlayerModel testedPlayer = playerDao.get(playerId);
+        // then
+        assertNotNull(testedPlayer);
+        assertEquals("John", testedPlayer.getPlayerName());
+        assertEquals(10, testedPlayer.getHp());
+        assertEquals(5, testedPlayer.getX());
+        assertEquals(15, testedPlayer.getY());
+        assertEquals(15, testedPlayer.getAttack());
+        assertEquals(5, testedPlayer.getArmor());
+        assertFalse(testedPlayer.getHasKey());
+        assertEquals("sword;shield;", testedPlayer.getItems());
+        assertNotNull(testedPlayer.getId());
+    }
+
+    // TODO when given -1 to get throws
+
+    @Test
     void getAll() {
+        // given
+
+        // when
+
+        // then
     }
 }
