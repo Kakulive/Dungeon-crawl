@@ -3,6 +3,7 @@ package com.codecool.dungeoncrawl.dao;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -43,7 +44,7 @@ class SavedGamesDaoJdbcTest {
     }
 
     @Test
-    void add() {
+    void add_whenSavedNewGameViaDao_addsNewGameCorrectlyAndSetItsId() {
         // given
         String name = "New saved Game";
         int gameStateId = databaseManager.getLastSavedGameId();
@@ -57,6 +58,17 @@ class SavedGamesDaoJdbcTest {
         SavedGameModel testedGame = savedGames.get(savedGames.size() - 1);
         checkAssertions(gameModel, testedGame);
         assertNotNull(testedGame.getGameStateId());
+    }
+
+    @Test
+    void whenSavedNewGameThatIsNull_ThrowsNullPointerException(){
+        // given
+        SavedGameModel gameModel = null;
+        // when
+        Executable e = () -> savedGamesDao.add(gameModel);
+        //then
+        NullPointerException exception = assertThrows(NullPointerException.class, e);
+        assertNull(exception.getMessage());
     }
 
     @Test
