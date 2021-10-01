@@ -37,6 +37,7 @@ import java.util.Optional;
 public class Main extends Application {
     public static final String MAPNAME1 = "/map.txt";
     public static final String MAPNAME2 = "/map2.txt";
+    Inventory inventory = new Inventory();
 
     private Buttons buttons = new Buttons();
     private Stage stage = new Stage();
@@ -126,12 +127,12 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
-            exportGameState.chooseLocationToSave(map.getPlayer(), map, map1, map2);
+            exportGameState.chooseLocationToSave(map.getPlayer(), map, map1, map2, inventory);
             sceneSwitcher.getMainBorderPane().requestFocus();
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            map = importGameState.chooseLocationToImport(map, map1, map2);
+            map = importGameState.chooseLocationToImport(map, map1, map2, inventory);
             String userName = map.getPlayer().getName();
             sceneSwitcher.getName().setText(userName);
             drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
@@ -157,8 +158,7 @@ public class Main extends Application {
         if (map.getPlayer().getCell().getTileName().equals("key")) {
             map.getPlayer().setHasKey(true);
         }
-        map.getPlayer().pickUpItem();
-        borderPane.requestFocus();
+        map.getPlayer().pickUpItem(map);
         Label imageLabel = new Label();
         if (map.getPlayer().getItemUrl() != null) {
             Image image = new Image(map.getPlayer().getItemUrl());
@@ -175,7 +175,6 @@ public class Main extends Application {
     }
 
     private void drawItems(GridPane ui, BorderPane borderPane) {
-        Inventory inventory = new Inventory();
         int inventoryRowIndex = 13;
         int inventoryColumnIndex = 0;
         List<String> items = inventory.getInventoryList();

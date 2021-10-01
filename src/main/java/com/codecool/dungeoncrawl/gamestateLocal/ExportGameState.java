@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
+import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import com.codecool.dungeoncrawl.model.GameStateModel;
@@ -26,8 +28,9 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     private JFileChooser chooser = new JFileChooser();
     private PlayerModel playerModel;
     private GameStateModel state;
+    private Inventory inventory = new Inventory();
 
-    public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2) {
+    public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2, Inventory inventory) {
         playerModel = new PlayerModel(player);
         state = new GameStateModel(map);
         JSONObject jo = new JSONObject();
@@ -78,7 +81,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
         jo.put("Armor", player.getArmor());
         jo.put("Attack", player.getAttack());
         jo.put("hasKey", player.getHasKey());
-        jo.put("items", player.getItems());
+        jo.put("items", inventory.getInventoryList());
         jo.put("current map", state.getCurrentMap());
         String[] enemyList1 = toStringConverter(map1.getEnemiesList());
         String[] enemyList2 = toStringConverter(map2.getEnemiesList());
@@ -92,18 +95,25 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     }
     private String[] toStringConverter(List<Actor> list){
         ArrayList<String> listToReturn = new ArrayList<>();
-    for (Object obj : list)
+    for (Actor obj : list)
     {
-        listToReturn.add(obj.toString());
+        String x = String.valueOf(obj.getCell().getX());
+        String y = String.valueOf(obj.getCell().getY());
+        String name = obj.getTileName();
+        listToReturn.add(name+';'+x+';'+y);
     }
         return listToReturn.toArray(new String[0]);
     }
 
     private String[] toStringConverterItem(List<Item> list){
         ArrayList<String> listToReturn = new ArrayList<>();
-        for (Object obj : list)
+        for (Item obj : list)
         {
-            listToReturn.add(obj.toString());
+            String name = obj.getTileName();
+            String x = String.valueOf(obj.getCell().getX());
+            String y = String.valueOf(obj.getCell().getY());
+
+            listToReturn.add(name+';'+x+';'+y);
         }
         return listToReturn.toArray(new String[0]);
     }
