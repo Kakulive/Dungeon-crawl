@@ -21,40 +21,30 @@ class SavedGamesDaoJdbcTest {
     private GameDatabaseManager databaseManager;
     private SavedGamesDao savedGamesDao;
 
-//    @BeforeEach
-//    public void clearDB() throws SQLException {
-//        databaseManager = new GameDatabaseManager();
-//        databaseManager.setup();
-//        savedGamesDao = new SavedGamesDaoJdbc(databaseManager.connect());
-//        try (Connection connection = databaseManager.connect().getConnection()) {
-//            String sql = "TRUNCATE saved_games CASCADE;";
-//            PreparedStatement statement = connection.prepareStatement(sql);
-//            statement.executeUpdate();
-//        } catch (SQLException e) {
-//            throw new RuntimeException("Error, cannot connect database", e);
-//        }
-//    }
-
-    // Just for test
     @BeforeEach
-    private void connectDB() throws SQLException{
+    public void clearDB() throws SQLException {
         databaseManager = new GameDatabaseManager();
         databaseManager.setup();
         savedGamesDao = new SavedGamesDaoJdbc(databaseManager.connect());
+        try (Connection connection = databaseManager.connect().getConnection()) {
+            String sql = "TRUNCATE saved_games CASCADE;";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error, cannot connect database", e);
+        }
     }
 
     @Test
     void add_whenSavedNewGameViaDao_addsNewGameCorrectlyAndSetItsId() {
         // given
-        String name = "New saved Game";
-        int gameStateId = databaseManager.getLastSavedGameId();
-        SavedGameModel gameModel = new SavedGameModel(gameStateId, name);
+        SavedGameModel gameModel = getModel();
         // when
         savedGamesDao.add(gameModel);
         // then
         List<SavedGameModel> savedGames = databaseManager.getAllSavedGames();
         assertNotNull(savedGames);
-//        assertEquals(1, savedGames.size());
+        assertEquals(1, savedGames.size());
         SavedGameModel testedGame = savedGames.get(savedGames.size() - 1);
         checkAssertions(gameModel, testedGame);
         assertNotNull(testedGame.getGameStateId());
@@ -72,12 +62,34 @@ class SavedGamesDaoJdbcTest {
     }
 
     @Test
-    void update() {
+    void update_whenUpdateSavedGameDataViaDao_dataUpdatesCorrectly() {
         // given
-
+        SavedGameModel gameModel = getModel();
+        savedGamesDao.add(gameModel);
+        SavedGameModel savedGame = databaseManager.getSavedGame(gameModel.getSaveName());
+        int savedGameId = savedGame.getId();
+        int newGameStateId = 5;
+        SavedGameModel gameToUpdate = new SavedGameModel(savedGameId, newGameStateId, gameModel.getSaveName());
         // when
-
+        savedGamesDao.update(gameToUpdate);
         // then
+        List<SavedGameModel> savedGames = databaseManager.getAllSavedGames();
+        SavedGameModel testedGame = savedGames.get(savedGames.size() - 1);
+        checkAssertions(gameToUpdate, testedGame);
+        assertEquals(testedGame.getId(), gameToUpdate.getId());
+    }
+
+    @Test
+    void test(){
+        // given
+        SavedGameModel gameModel = getModel();
+        savedGamesDao.add(gameModel);
+        // when
+        SavedGameModel gameToUpdate = null;
+        Executable e = () -> savedGamesDao.update(gameToUpdate);
+        // then
+        NullPointerException exception = assertThrows(NullPointerException.class, e);
+        assertNull(exception.getMessage());
     }
 
     @Test
@@ -96,6 +108,12 @@ class SavedGamesDaoJdbcTest {
         // when
 
         // then
+    }
+
+    private SavedGameModel getModel() {
+        String name = "New saved Game";
+        int gameStateId = databaseManager.getLastSavedGameId();
+        return new SavedGameModel(gameStateId, name);
     }
 
     private void checkAssertions(SavedGameModel gameModel, SavedGameModel testedGame) {
