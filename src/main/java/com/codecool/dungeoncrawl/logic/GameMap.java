@@ -1,6 +1,7 @@
 package com.codecool.dungeoncrawl.logic;
 
 import com.codecool.dungeoncrawl.logic.actors.Actor;
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.monster_move.MonsterMoveLogic;
 import com.codecool.dungeoncrawl.logic.utils.Randomizer;
@@ -17,6 +18,8 @@ public class GameMap {
     private MonsterMoveLogic monsterMoveLogic = new MonsterMoveLogic();
     private Player player;
     private List<Actor> enemiesList;
+    private List<Actor> allEnemiesList;
+    private List<Item> itemsList;
 
     private final Randomizer randomizer = new Randomizer();
 
@@ -25,6 +28,8 @@ public class GameMap {
         this.height = height;
         this.mapName = mapName;
         enemiesList = new ArrayList<>();
+        allEnemiesList = new ArrayList<>();
+        itemsList = new ArrayList<>();
         cells = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -148,13 +153,31 @@ public class GameMap {
         enemiesList.add(enemy);
     }
 
+    public void addAllEnemyToList(Actor enemy) {
+        allEnemiesList.add(enemy);
+    }
+
+    public void addItemToList(Item item) {
+        itemsList.add(item);
+    }
+
     public void removeEnemyFromList(int id) {
         enemiesList.removeIf(enemy -> enemy.getId() == id);
+    }
+
+    public void removeItemFromList(int id) {
+        enemiesList.removeIf(item -> item.getId() == id);
     }
 
     public String getMapName() {
         return mapName;
     }
 
+    public List<Item> getItemsList() {
+        return itemsList;
+    }
 
+    public List<Actor> getAllEnemiesList() {
+        return allEnemiesList;
+    }
 }

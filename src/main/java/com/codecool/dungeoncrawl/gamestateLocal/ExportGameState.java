@@ -7,11 +7,15 @@ import java.io.IOException;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.codecool.dungeoncrawl.logic.GameMap;
+import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+
+import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.PlayerModel;
@@ -23,10 +27,9 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     private PlayerModel playerModel;
     private GameStateModel state;
 
-    public void chooseLocationToSave(Player player, GameMap map) {
+    public void chooseLocationToSave(Player player, GameMap map, GameMap map1, GameMap map2) {
         playerModel = new PlayerModel(player);
         state = new GameStateModel(map);
-
         JSONObject jo = new JSONObject();
         prepareLocationSelectWindow("Select directory and insert filename to save.");
         if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -39,7 +42,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
                 } else {
                     myWriter = new FileWriter(chooser.getSelectedFile() + ".json");
                 }
-                export(playerModel, jo, state);
+                export(playerModel, jo, state, map1, map2);
                 myWriter.write(jo.toString());
                 myWriter.close();
                 messageFlashing.showImportAndExportAlerts("Successfully wrote to the file.");
@@ -54,7 +57,6 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
 
 
     private void prepareLocationSelectWindow(String title) {
-
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle(title);
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -64,7 +66,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     }
 
     @Override
-    public void export(PlayerModel player, JSONObject jo, GameStateModel state) {
+    public void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2) {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = df.format(date);
@@ -78,11 +80,38 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
         jo.put("hasKey", player.getHasKey());
         jo.put("items", player.getItems());
         jo.put("current map", state.getCurrentMap());
+        String[] enemyList1 = toStringConverter(map1.getEnemiesList());
+        String[] enemyList2 = toStringConverter(map2.getEnemiesList());
+        String[] itemList1 = toStringConverterItem(map1.getItemsList());
+        String[] itemList2 = toStringConverterItem(map2.getItemsList());
+
+        jo.put("map 1 enemy list", enemyList1);
+        jo.put("map 1 item list", itemList1);
+        jo.put("map 2 enemy list", enemyList2);
+        jo.put("map 2 item list", itemList2);
     }
+    private String[] toStringConverter(List<Actor> list){
+        ArrayList<String> listToReturn = new ArrayList<>();
+    for (Object obj : list)
+    {
+        listToReturn.add(obj.toString());
+    }
+        return listToReturn.toArray(new String[0]);
+    }
+
+    private String[] toStringConverterItem(List<Item> list){
+        ArrayList<String> listToReturn = new ArrayList<>();
+        for (Object obj : list)
+        {
+            listToReturn.add(obj.toString());
+        }
+        return listToReturn.toArray(new String[0]);
+    }
+
+
 
     @Override
     public void load(PlayerModel player) {
-
     }
 
     @Override

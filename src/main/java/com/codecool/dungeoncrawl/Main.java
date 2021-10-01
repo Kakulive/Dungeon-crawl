@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
@@ -29,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -75,12 +77,6 @@ public class Main extends Application {
         sceneSwitcher.getStartGameButton().setOnAction(event -> {
             sceneSwitcher.menuGameScene(stage, windowWidth, windowHeight);
 
-//            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-//            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
-            // TODO
-            // scene.setOnKeyReleased(this::onKeyReleased);
-//            refresh();
-//            sceneSwitcher.getMainBorderPane().requestFocus(); // Brings the focus back on the map, instead of user UI
         });
         sceneSwitcher.getSetPlayer().setOnAction(event -> {
             sceneSwitcher.changeMenuIfStart(stage, windowWidth, windowHeight);
@@ -114,7 +110,11 @@ public class Main extends Application {
             if (buttons.validInputsAddingMenu(sceneSwitcher)) {
                 buttons.submitButtonDo(map, sceneSwitcher);
                 String userName = sceneSwitcher.getPlayerNameInput().getText();
-                map.getPlayer().setName(userName);
+                Player player = map.getPlayer();
+                if (player.checkCheatCode(userName)) {
+                    player.setCheatMode(true);
+                }
+                player.setName(userName);
                 sceneSwitcher.getName().setText(userName);
                 sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
                 sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
@@ -126,13 +126,15 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getExportGameStateButton().setOnAction(event -> {
-            exportGameState.chooseLocationToSave(map.getPlayer(), map);
+            exportGameState.chooseLocationToSave(map.getPlayer(), map, map1, map2);
+            sceneSwitcher.getMainBorderPane().requestFocus();
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            importGameState.chooseLocationToImport(map);
+            map = importGameState.chooseLocationToImport(map, map1, map2);
             String userName = map.getPlayer().getName();
             sceneSwitcher.getName().setText(userName);
+            drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus();
         });
@@ -144,7 +146,11 @@ public class Main extends Application {
         });
 
 
-        sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
+        sceneSwitcher.getPickUpButton().setOnAction(event -> {
+            pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
+            sceneSwitcher.getMainBorderPane().requestFocus();
+
+        });
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
@@ -167,6 +173,42 @@ public class Main extends Application {
         }
         refresh();
     }
+
+    private void drawItems(GridPane ui, BorderPane borderPane) {
+        Inventory inventory = new Inventory();
+        int inventoryRowIndex = 13;
+        int inventoryColumnIndex = 0;
+        List<String> items = inventory.getInventoryList();
+        borderPane.requestFocus();
+        Label imageLabel = new Label();
+        for (String item : items) {
+            String itemUrl = null;
+            switch (item) {
+                case "key":
+                    itemUrl = "/key.png";
+                    break;
+                case "shield":
+                    itemUrl = "/shield.png";
+                    break;
+                case "sword":
+                    itemUrl = "/sword.png";
+                    break;
+            }
+            Image image = new Image(itemUrl);
+            imageLabel.setGraphic(new ImageView(image));
+            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
+            if (inventoryColumnIndex == 1) {
+                inventoryColumnIndex = 0;
+                inventoryRowIndex++;
+            } else {
+                inventoryColumnIndex++;
+            }
+        }
+        this.inventoryColumnIndex = inventoryColumnIndex;
+        this.inventoryRowIndex = inventoryRowIndex;
+        refresh();
+    }
+
 
     // TODO
     private void onKeyReleased(KeyEvent keyEvent) {
@@ -260,9 +302,11 @@ public class Main extends Application {
             map.setPlayer(null);
             oldPlayerCell.setActor(null);
             if (isGoingDown) {
-                changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(), staircaseExits.DOWNSTAIRS_Y.getValue());
+                changeLevel(currentPlayer, map2, staircaseExits.DOWNSTAIRS_X.getValue(),
+                        staircaseExits.DOWNSTAIRS_Y.getValue());
             } else {
-                changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(), staircaseExits.UPSTAIRS_Y.getValue());
+                changeLevel(currentPlayer, map1, staircaseExits.UPSTAIRS_X.getValue(),
+                        staircaseExits.UPSTAIRS_Y.getValue());
             }
             map.getPlayer().setGoingDown(false);
             map.getPlayer().setGoingUp(false);

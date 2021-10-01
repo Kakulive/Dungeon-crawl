@@ -126,6 +126,8 @@ public class Player extends Actor {
         } else setItemUrl(null);
     }
 
+
+
     public boolean isGoingDown() {
         return goingDown;
     }

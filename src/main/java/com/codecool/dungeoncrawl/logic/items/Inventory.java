@@ -21,6 +21,16 @@ public class Inventory {
         }
     }
 
+    public void addItemToInventory(String item){
+        if (item != "heart"){
+            this.inventory.add(item);
+        }
+    }
+
+    public void clearTnventory(){
+        this.inventory.clear();
+    }
+
     @Override
     public String toString() {
         StringBuilder inventoryString = new StringBuilder();
