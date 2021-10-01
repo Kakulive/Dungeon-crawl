@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 
-import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import com.codecool.dungeoncrawl.model.GameStateModel;
@@ -80,11 +80,35 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
         jo.put("hasKey", player.getHasKey());
         jo.put("items", player.getItems());
         jo.put("current map", state.getCurrentMap());
-        jo.put("map 1 enemy list", map1.getEnemiesList().toString());
-        jo.put("map 1 item list", map1.getItemsList().toString());
-        jo.put("map 2 enemy list", map2.getEnemiesList().toString());
-        jo.put("map 2 item list", map2.getItemsList().toString());
+        String[] enemyList1 = toStringConverter(map1.getEnemiesList());
+        String[] enemyList2 = toStringConverter(map2.getEnemiesList());
+        String[] itemList1 = toStringConverterItem(map1.getItemsList());
+        String[] itemList2 = toStringConverterItem(map2.getItemsList());
+
+        jo.put("map 1 enemy list", enemyList1);
+        jo.put("map 1 item list", itemList1);
+        jo.put("map 2 enemy list", enemyList2);
+        jo.put("map 2 item list", itemList2);
     }
+    private String[] toStringConverter(List<Actor> list){
+        ArrayList<String> listToReturn = new ArrayList<>();
+    for (Object obj : list)
+    {
+        listToReturn.add(obj.toString());
+    }
+        return listToReturn.toArray(new String[0]);
+    }
+
+    private String[] toStringConverterItem(List<Item> list){
+        ArrayList<String> listToReturn = new ArrayList<>();
+        for (Object obj : list)
+        {
+            listToReturn.add(obj.toString());
+        }
+        return listToReturn.toArray(new String[0]);
+    }
+
+
 
     @Override
     public void load(PlayerModel player) {

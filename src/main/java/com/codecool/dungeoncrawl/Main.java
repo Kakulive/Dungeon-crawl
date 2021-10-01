@@ -7,6 +7,7 @@ import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.MapLoader;
 import com.codecool.dungeoncrawl.logic.actors.Player;
+import com.codecool.dungeoncrawl.logic.items.Inventory;
 import com.codecool.dungeoncrawl.logic.staircaseExits;
 import com.codecool.dungeoncrawl.logic.utils.Buttons;
 import com.codecool.dungeoncrawl.logic.utils.SceneSwitcher;
@@ -29,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -129,9 +131,10 @@ public class Main extends Application {
         });
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
-            importGameState.chooseLocationToImport(map, map1, map2);
+            map = importGameState.chooseLocationToImport(map, map1, map2);
             String userName = map.getPlayer().getName();
             sceneSwitcher.getName().setText(userName);
+            drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus();
         });
@@ -143,7 +146,11 @@ public class Main extends Application {
         });
 
 
-        sceneSwitcher.getPickUpButton().setOnAction(event -> pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane()));
+        sceneSwitcher.getPickUpButton().setOnAction(event -> {
+            pickUpItem(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
+            sceneSwitcher.getMainBorderPane().requestFocus();
+
+        });
     }
 
     private void pickUpItem(GridPane ui, BorderPane borderPane) {
@@ -167,12 +174,27 @@ public class Main extends Application {
         refresh();
     }
 
-    private void drawItems (GridPane ui, BorderPane borderPane) {
-
+    private void drawItems(GridPane ui, BorderPane borderPane) {
+        Inventory inventory = new Inventory();
+        int inventoryRowIndex = 13;
+        int inventoryColumnIndex = 0;
+        List<String> items = inventory.getInventoryList();
         borderPane.requestFocus();
         Label imageLabel = new Label();
-        if (map.getPlayer().getItemUrl() != null) {
-            Image image = new Image(map.getPlayer().getItemUrl());
+        for (String item : items) {
+            String itemUrl = null;
+            switch (item) {
+                case "key":
+                    itemUrl = "/key.png";
+                    break;
+                case "shield":
+                    itemUrl = "/shield.png";
+                    break;
+                case "sword":
+                    itemUrl = "/sword.png";
+                    break;
+            }
+            Image image = new Image(itemUrl);
             imageLabel.setGraphic(new ImageView(image));
             ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
             if (inventoryColumnIndex == 1) {
@@ -182,10 +204,10 @@ public class Main extends Application {
                 inventoryColumnIndex++;
             }
         }
+        this.inventoryColumnIndex = inventoryColumnIndex;
+        this.inventoryRowIndex = inventoryRowIndex;
         refresh();
     }
-
-
 
 
     // TODO

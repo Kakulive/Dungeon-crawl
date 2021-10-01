@@ -5,15 +5,19 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import com.codecool.dungeoncrawl.logic.Cell;
+import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
 import com.codecool.dungeoncrawl.logic.actors.Actor;
 import com.codecool.dungeoncrawl.logic.actors.Player;
 import com.codecool.dungeoncrawl.logic.items.Item;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -23,7 +27,7 @@ public class ImportGameState extends JPanel {
     private JFileChooser chooser = new JFileChooser();
 
 
-    public void chooseLocationToImport(GameMap map, GameMap map1, GameMap map2) {
+    public GameMap chooseLocationToImport(GameMap map, GameMap map1, GameMap map2) {
         JSONParser jsonParser = new JSONParser();
 
         prepareLocationSelectWindow("Select file to import");
@@ -34,41 +38,19 @@ public class ImportGameState extends JPanel {
                 JSONObject gameState = (JSONObject) obj;
                 Player player = map.getPlayer();
                 deletePlayerFromOldMap(map, player);
-                player.setName((String) gameState.get("player name"));
-                player.setHealth(Integer.parseInt(String.valueOf((Long) gameState.get("HP"))));
-                player.setArmor(Integer.parseInt(String.valueOf((Long) gameState.get("Armor"))));
-                player.setAttack(Integer.parseInt(String.valueOf((Long) gameState.get("Attack"))));
-                player.setHasKey((Boolean) gameState.get("hasKey"));
-                clearMaps(map1, map2);
-
-                String map1Enemies = (String) gameState.get("map 1 enemy list");
-                String map2Enemies = (String) gameState.get("map 2 enemy list");
-                String map1Items = (String) gameState.get("map 1 item list");
-                String map2Items = (String) gameState.get("map 2 item list");
-
-                String[] map1EnemiesList = map1Enemies.split(";");
-                String[] map2EnemiesList = map2Enemies.split(";");
-                String[] map1ItemsList = map1Items.split(";");
-                String[] map2ItemsList = map2Items.split(";");
-
+                setItemsAndEnemiesOnTheMap(map1, map2, gameState);
 
                 String mapName = (String) gameState.get("current map");
-                if (mapName == "/map2.txt") {
-                    map = map2;
-                } else {
+                if (mapName.equals("/map.txt")) {
                     map = map1;
+                } else {
+                    map = map2;
                 }
                 int playerX = (Integer.parseInt(String.valueOf((Long) gameState.get("X"))));
                 int playerY = (Integer.parseInt(String.valueOf((Long) gameState.get("Y"))));
                 setPlayerOnMap(player, map, playerX, playerY);
-                String items = ((String) gameState.get("items"));
-                player.getInventory().clearTnventory();
-                if (items.length() > 0) {
-                    String[] singleItem = items.split(";");
-                    for (String item : singleItem) {
-                        player.getInventory().addItemToInventory(item);
-                    }
-                }
+                addItemsToInventory(gameState, player);
+                setPlayerParameters(gameState, player);
                 messageFlashing.showImportAndExportAlerts("Game state imported successfully!");
             } catch (FileNotFoundException e) {
                 messageFlashing.showImportAndExportAlerts("File not found");
@@ -85,6 +67,42 @@ public class ImportGameState extends JPanel {
             System.out.println("No Selection ");
         }
 
+        return map;
+    }
+
+    private void addItemsToInventory(JSONObject gameState, Player player) {
+        String items = ((String) gameState.get("items"));
+        player.getInventory().clearTnventory();
+        if (items.length() > 0) {
+            String[] singleItem = items.split(";");
+            for (String item : singleItem) {
+                player.getInventory().addItemToInventory(item);
+            }
+        }
+    }
+
+    private void setPlayerParameters(JSONObject gameState, Player player) {
+        player.setName((String) gameState.get("player name"));
+        player.setHealth(Integer.parseInt(String.valueOf((Long) gameState.get("HP"))));
+        player.setArmor(Integer.parseInt(String.valueOf((Long) gameState.get("Armor"))));
+        player.setAttack(Integer.parseInt(String.valueOf((Long) gameState.get("Attack"))));
+        player.setHasKey((Boolean) gameState.get("hasKey"));
+    }
+
+    private void setItemsAndEnemiesOnTheMap(GameMap map1, GameMap map2, JSONObject gameState) {
+        clearMaps(map1, map2);
+        JSONArray arr = new JSONArray();
+        JSONArray gameStatArray = (JSONArray) arr;
+
+        String[] map1Enemies = (String[]) gameState.get("map 1 enemy list");
+        String[] map2Enemies = (String[]) gameState.get("map 2 enemy list");
+        String[] map1Items = (String[]) gameState.get("map 1 item list");
+        String[] map2Items = (String[]) gameState.get("map 2 item list");
+
+        setEnemiesOnMap(map1, map1Enemies);
+        setEnemiesOnMap(map2, map2Enemies);
+        setItemsOnMap(map1, map1Items);
+        setItemsOnMap(map2, map2Items);
     }
 
     private void prepareLocationSelectWindow(String title) {
@@ -154,8 +172,26 @@ public class ImportGameState extends JPanel {
         List<Item> itemList = map.getItemsList();
         for (String item : items) {
             for (Item itemToCompare : itemList) {
-                if (itemToCompare.toString().equals(item)) {
-                    itemToCompare.getCell().setItem(itemToCompare);
+                if ((itemToCompare.toString()).equals(item)) {
+                    String type = itemToCompare.getTileName();
+                    CellType cellType = null;
+                    switch (type){
+                        case "key":
+                            cellType = CellType.KEY;
+                            break;
+                        case "shield":
+                            cellType = CellType.SHIELD;
+                            break;
+                        case "sword":
+                            cellType = CellType.SWORD;
+                            break;
+                        case "heart":
+                            cellType = CellType.HEART;
+                            break;
+                    }
+                    itemToCompare.getCell().setType(cellType);
+                    (itemToCompare.getCell()).setItem(itemToCompare);
+
                 }
             }
         }
