@@ -80,7 +80,7 @@ class SavedGamesDaoJdbcTest {
     }
 
     @Test
-    void test(){
+    void whenUpdateSavedGameDataWithGameThatIsNull_ThrowsNullPointerException(){
         // given
         SavedGameModel gameModel = getModel();
         savedGamesDao.add(gameModel);
@@ -93,12 +93,36 @@ class SavedGamesDaoJdbcTest {
     }
 
     @Test
-    void get() {
+    void get_whenGetSavedGameByNameViaDao_ReturnRequiredGameCorrectly() {
         // given
-
+        SavedGameModel gameModel = getModel();
+        savedGamesDao.add(gameModel);
         // when
+        SavedGameModel testedGame = savedGamesDao.get(gameModel.getSaveName());
+        //
+        assertNotNull(testedGame);
+        checkAssertions(gameModel, testedGame);
+        assertEquals(gameModel.getId(), testedGame.getId());
+    }
 
+    @Test
+    void whenGetSavedGameByInvalidName_ReturnNull() {
+        // given
+        SavedGameModel gameModel = getModel();
+        savedGamesDao.add(gameModel);
+        // when
+        SavedGameModel testedGame = savedGamesDao.get("Invalid name");
         // then
+        assertNull(testedGame);
+    }
+
+    @Test
+    void whenGetSavedGameFromEmptyDB_ReturnNull() {
+        // given
+        // when
+        SavedGameModel testedGame = savedGamesDao.get("Tested name");
+        // then
+        assertNull(testedGame);
     }
 
     @Test
