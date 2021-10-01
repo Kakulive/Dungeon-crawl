@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class SavedGamesDaoJdbcTest {
     private GameDatabaseManager databaseManager;
     private SavedGamesDao savedGamesDao;
+    private final SavedGameModel firstModel = getModel("New saved Game");
+    private final SavedGameModel secondModel = getModel("Another game");
 
     @BeforeEach
     public void clearDB() throws SQLException {
@@ -38,15 +40,14 @@ class SavedGamesDaoJdbcTest {
     @Test
     void add_whenSavedNewGameViaDao_addsNewGameCorrectlyAndSetItsId() {
         // given
-        SavedGameModel gameModel = getModel();
         // when
-        savedGamesDao.add(gameModel);
+        savedGamesDao.add(firstModel);
         // then
         List<SavedGameModel> savedGames = databaseManager.getAllSavedGames();
         assertNotNull(savedGames);
         assertEquals(1, savedGames.size());
         SavedGameModel testedGame = savedGames.get(savedGames.size() - 1);
-        checkAssertions(gameModel, testedGame);
+        checkAssertions(firstModel, testedGame);
         assertNotNull(testedGame.getGameStateId());
     }
 
@@ -64,12 +65,11 @@ class SavedGamesDaoJdbcTest {
     @Test
     void update_whenUpdateSavedGameDataViaDao_dataUpdatesCorrectly() {
         // given
-        SavedGameModel gameModel = getModel();
-        savedGamesDao.add(gameModel);
-        SavedGameModel savedGame = databaseManager.getSavedGame(gameModel.getSaveName());
+        savedGamesDao.add(firstModel);
+        SavedGameModel savedGame = databaseManager.getSavedGame(firstModel.getSaveName());
         int savedGameId = savedGame.getId();
         int newGameStateId = 5;
-        SavedGameModel gameToUpdate = new SavedGameModel(savedGameId, newGameStateId, gameModel.getSaveName());
+        SavedGameModel gameToUpdate = new SavedGameModel(savedGameId, newGameStateId, firstModel.getSaveName());
         // when
         savedGamesDao.update(gameToUpdate);
         // then
@@ -82,8 +82,7 @@ class SavedGamesDaoJdbcTest {
     @Test
     void whenUpdateSavedGameDataWithGameThatIsNull_ThrowsNullPointerException(){
         // given
-        SavedGameModel gameModel = getModel();
-        savedGamesDao.add(gameModel);
+        savedGamesDao.add(firstModel);
         // when
         SavedGameModel gameToUpdate = null;
         Executable e = () -> savedGamesDao.update(gameToUpdate);
@@ -95,21 +94,19 @@ class SavedGamesDaoJdbcTest {
     @Test
     void get_whenGetSavedGameByNameViaDao_ReturnRequiredGameCorrectly() {
         // given
-        SavedGameModel gameModel = getModel();
-        savedGamesDao.add(gameModel);
+        savedGamesDao.add(firstModel);
         // when
-        SavedGameModel testedGame = savedGamesDao.get(gameModel.getSaveName());
-        //
+        SavedGameModel testedGame = savedGamesDao.get(firstModel.getSaveName());
+        // then
         assertNotNull(testedGame);
-        checkAssertions(gameModel, testedGame);
-        assertEquals(gameModel.getId(), testedGame.getId());
+        checkAssertions(firstModel, testedGame);
+        assertEquals(firstModel.getId(), testedGame.getId());
     }
 
     @Test
     void whenGetSavedGameByInvalidName_ReturnNull() {
         // given
-        SavedGameModel gameModel = getModel();
-        savedGamesDao.add(gameModel);
+        savedGamesDao.add(firstModel);
         // when
         SavedGameModel testedGame = savedGamesDao.get("Invalid name");
         // then
@@ -120,13 +117,13 @@ class SavedGamesDaoJdbcTest {
     void whenGetSavedGameFromEmptyDB_ReturnNull() {
         // given
         // when
-        SavedGameModel testedGame = savedGamesDao.get("Tested name");
+        SavedGameModel testedGame = savedGamesDao.get("Tested game");
         // then
         assertNull(testedGame);
     }
 
     @Test
-    void getAll() {
+    void getAll_WhenGetAllSavedGamesViaDao_ReturnListOfAllGamesCorrectly() {
         // given
 
         // when
@@ -134,10 +131,9 @@ class SavedGamesDaoJdbcTest {
         // then
     }
 
-    private SavedGameModel getModel() {
-        String name = "New saved Game";
-        int gameStateId = databaseManager.getLastSavedGameId();
-        return new SavedGameModel(gameStateId, name);
+    private SavedGameModel getModel(String gameName) {
+        int gameStateId = databaseManager != null ? databaseManager.getLastSavedGameId() : 0;
+        return new SavedGameModel(gameStateId, gameName);
     }
 
     private void checkAssertions(SavedGameModel gameModel, SavedGameModel testedGame) {
