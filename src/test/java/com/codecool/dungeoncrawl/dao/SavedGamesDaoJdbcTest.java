@@ -114,7 +114,7 @@ class SavedGamesDaoJdbcTest {
     }
 
     @Test
-    void whenGetSavedGameFromEmptyDB_ReturnNull() {
+    void whenGetSavedGameFromDBWithNoRecords_ReturnNull() {
         // given
         // when
         SavedGameModel testedGame = savedGamesDao.get("Tested game");
@@ -125,10 +125,25 @@ class SavedGamesDaoJdbcTest {
     @Test
     void getAll_WhenGetAllSavedGamesViaDao_ReturnListOfAllGamesCorrectly() {
         // given
-
+        savedGamesDao.add(firstModel);
+        savedGamesDao.add(secondModel);
         // when
-
+        List<SavedGameModel> savedGames = databaseManager.getAllSavedGames();
         // then
+        assertNotNull(savedGames);
+        assertEquals(2, savedGames.size());
+        checkAssertions(firstModel, savedGames.get(0));
+        checkAssertions(secondModel, savedGames.get(1));
+    }
+
+    @Test
+    void getAll_WhenGetAllSavedGamesFromDBWithNoRecords_ReturnListWithZeroElements() {
+        // given
+        // when
+        List<SavedGameModel> savedGames = databaseManager.getAllSavedGames();
+        // then
+        assertNotNull(savedGames);
+        assertEquals(0, savedGames.size());
     }
 
     private SavedGameModel getModel(String gameName) {
