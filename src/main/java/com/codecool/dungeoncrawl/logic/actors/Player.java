@@ -95,7 +95,7 @@ public class Player extends Actor {
                 || name.toLowerCase().equals("damian") || name.toLowerCase().equals("dymitr");
     }
 
-    public void pickUpItem() {
+    public void pickUpItem(GameMap map) {
         Cell currentCell = cell.getNeighbor(0, 0);
         CellType cellType = currentCell.getType();
         if (cellType.equals(CellType.SWORD)
@@ -103,6 +103,7 @@ public class Player extends Actor {
                 || cellType.equals(CellType.HEART)
                 || cellType.equals(CellType.SHIELD)) {
             inventory.addItemToInventory(currentCell.getItem());
+            map.getItemsList().remove(currentCell.getItem());
             currentCell.setType(CellType.FLOOR);
             String tileName = cellType.getTileName().toUpperCase();
             messageFlashing.showPickUpMessage(tileName);

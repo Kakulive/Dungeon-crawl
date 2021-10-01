@@ -34,4 +34,6 @@ private void updatePlayerAttack (Actor player){
         player.setArmor(player.getAttack() + attack);
 }
 
+
+
 }

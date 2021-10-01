@@ -5,17 +5,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.codecool.dungeoncrawl.logic.Cell;
 import com.codecool.dungeoncrawl.logic.CellType;
 import com.codecool.dungeoncrawl.logic.GameMap;
-import com.codecool.dungeoncrawl.logic.actors.Actor;
-import com.codecool.dungeoncrawl.logic.actors.Player;
-import com.codecool.dungeoncrawl.logic.items.Item;
+import com.codecool.dungeoncrawl.logic.actors.*;
+import com.codecool.dungeoncrawl.logic.items.*;
 import com.codecool.dungeoncrawl.logic.utils.MessageFlashing;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -27,7 +24,7 @@ public class ImportGameState extends JPanel {
     private JFileChooser chooser = new JFileChooser();
 
 
-    public GameMap chooseLocationToImport(GameMap map, GameMap map1, GameMap map2) {
+    public GameMap chooseLocationToImport(GameMap map, GameMap map1, GameMap map2, Inventory inventory) {
         JSONParser jsonParser = new JSONParser();
 
         prepareLocationSelectWindow("Select file to import");
@@ -49,7 +46,7 @@ public class ImportGameState extends JPanel {
                 int playerX = (Integer.parseInt(String.valueOf((Long) gameState.get("X"))));
                 int playerY = (Integer.parseInt(String.valueOf((Long) gameState.get("Y"))));
                 setPlayerOnMap(player, map, playerX, playerY);
-                addItemsToInventory(gameState, player);
+                addItemsToInventory(gameState, player, inventory);
                 setPlayerParameters(gameState, player);
                 messageFlashing.showImportAndExportAlerts("Game state imported successfully!");
             } catch (FileNotFoundException e) {
@@ -70,13 +67,13 @@ public class ImportGameState extends JPanel {
         return map;
     }
 
-    private void addItemsToInventory(JSONObject gameState, Player player) {
-        String items = ((String) gameState.get("items"));
+    private void addItemsToInventory(JSONObject gameState, Player player, Inventory inventory) {
+        ArrayList items = ((ArrayList) gameState.get("items"));
         player.getInventory().clearTnventory();
-        if (items.length() > 0) {
-            String[] singleItem = items.split(";");
-            for (String item : singleItem) {
-                player.getInventory().addItemToInventory(item);
+        if (items.size() > 0) {
+            for (Object item : items) {
+                String singleItem = (String) item;
+                inventory.addItemToInventory(singleItem);
             }
         }
     }
@@ -91,13 +88,11 @@ public class ImportGameState extends JPanel {
 
     private void setItemsAndEnemiesOnTheMap(GameMap map1, GameMap map2, JSONObject gameState) {
         clearMaps(map1, map2);
-        JSONArray arr = new JSONArray();
-        JSONArray gameStatArray = (JSONArray) arr;
 
-        String[] map1Enemies = (String[]) gameState.get("map 1 enemy list");
-        String[] map2Enemies = (String[]) gameState.get("map 2 enemy list");
-        String[] map1Items = (String[]) gameState.get("map 1 item list");
-        String[] map2Items = (String[]) gameState.get("map 2 item list");
+        ArrayList map1Enemies = (ArrayList) gameState.get("map 1 enemy list");
+        ArrayList map2Enemies = (ArrayList) gameState.get("map 2 enemy list");
+        ArrayList map1Items = (ArrayList) gameState.get("map 1 item list");
+        ArrayList map2Items = (ArrayList) gameState.get("map 2 item list");
 
         setEnemiesOnMap(map1, map1Enemies);
         setEnemiesOnMap(map2, map2Enemies);
@@ -155,47 +150,75 @@ public class ImportGameState extends JPanel {
         map2.getEnemiesList().clear();
     }
 
-    private void setEnemiesOnMap(GameMap map, String[] enemies) {
-        List<Actor> allEnemiesList = map.getAllEnemiesList();
-        for (String enemy : enemies) {
-            for (Actor enemyToCompare : allEnemiesList) {
-                if (enemyToCompare.toString().equals(enemy)) {
-                    Cell enemyCell = map.getCell(enemyToCompare.getX(), enemyToCompare.getY());
-                    enemyCell.setActor(enemyToCompare);
-                    map.addEnemyToList(enemyToCompare);
-                }
+    private void setEnemiesOnMap(GameMap map, ArrayList enemies) {
+        map.getEnemiesList().clear();
+        for (Object enemy : enemies) {
+            String singleItem = (String) enemy;
+            String[] splittedItem = singleItem.split(";");
+            String name = splittedItem[0];
+            int x = Integer.parseInt(splittedItem[1]);
+            int y = Integer.parseInt(splittedItem[2]);
+            CellType cellType = CellType.FLOOR;
+            map.getCell(x, y).setType(cellType);
+            switch (name){
+                case "skeleton":
+                    Skeleton skeleton = new Skeleton(map.getCell(x, y));
+                    map.addEnemyToList(skeleton);
+                    break;
+                case "wizard":
+                    Wizard wizard = new Wizard(map.getCell(x, y));
+                    map.addEnemyToList(wizard);
+                    break;
+                case "ghost":
+                    Ghost ghost = new Ghost(map.getCell(x, y));
+                    map.addEnemyToList(ghost);
+                    break;
+                case "spider":
+                    Spider spider = new Spider(map.getCell(x, y));
+                    map.addEnemyToList(spider);
+                    break;
             }
+
+
         }
     }
 
-    private void setItemsOnMap(GameMap map, String[] items) {
-        List<Item> itemList = map.getItemsList();
-        for (String item : items) {
-            for (Item itemToCompare : itemList) {
-                if ((itemToCompare.toString()).equals(item)) {
-                    String type = itemToCompare.getTileName();
-                    CellType cellType = null;
-                    switch (type){
+
+
+    private void setItemsOnMap(GameMap map, ArrayList items) {
+        for (Object item : items) {
+            String singleItem = (String) item;
+            String[] splittedItem = singleItem.split(";");
+            String name = splittedItem[0];
+            int x = Integer.parseInt(splittedItem[1]);
+            int y = Integer.parseInt(splittedItem[2]);
+            CellType cellType = null;
+                    switch (name){
                         case "key":
                             cellType = CellType.KEY;
+                            map.getCell(x, y).setType(cellType);
+                            Key key = new Key(map.getCell(x,y));
                             break;
                         case "shield":
                             cellType = CellType.SHIELD;
+                            map.getCell(x, y).setType(cellType);
+                            Shield shield = new Shield(map.getCell(x,y));
                             break;
                         case "sword":
                             cellType = CellType.SWORD;
+                            map.getCell(x, y).setType(cellType);
+                            Sword sword = new Sword(map.getCell(x,y));
                             break;
                         case "heart":
                             cellType = CellType.HEART;
+                            map.getCell(x, y).setType(cellType);
+                            Heart heart = new Heart(map.getCell(x,y));
                             break;
                     }
-                    itemToCompare.getCell().setType(cellType);
-                    (itemToCompare.getCell()).setItem(itemToCompare);
+                    map.getCell(x, y).setType(cellType);
 
                 }
             }
         }
-    }
-}
 
 
