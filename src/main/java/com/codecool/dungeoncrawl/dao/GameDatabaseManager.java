@@ -89,9 +89,9 @@ public class GameDatabaseManager {
         return savedGameModel;
     }
 
-    private int getLastSavedGameId() {
+    protected int getLastSavedGameId() {
         List<GameStateModel> allSavedGames = this.getAllSavedStatesOfGames();
-        return allSavedGames.get(allSavedGames.size() - 1).getId();
+        return allSavedGames.size() > 0 ? allSavedGames.get(allSavedGames.size() - 1).getId() : 1;
     }
 
     public List<SavedGameModel> getAllSavedGames() {
