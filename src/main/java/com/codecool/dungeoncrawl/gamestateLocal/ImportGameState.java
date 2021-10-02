@@ -34,7 +34,8 @@ public class ImportGameState extends JPanel {
                 Object obj = jsonParser.parse(reader);
                 JSONObject gameState = (JSONObject) obj;
                 Player player = map.getPlayer();
-                deletePlayerFromOldMap(map, player);
+                deletePlayerFromOldMap(map, map.getPlayer());
+//                deletePlayerFromOldMap(map2, map2.getPlayer());
                 setItemsAndEnemiesOnTheMap(map1, map2, gameState);
 
                 String mapName = (String) gameState.get("current map");
@@ -110,27 +111,30 @@ public class ImportGameState extends JPanel {
         chooser.addChoosableFileFilter(filter);
     }
 
-    private void deletePlayerFromOldMap(GameMap map, Player player) {
+    private void deletePlayerFromOldMap(GameMap map,  Player player) {
         int X = player.getX();
         int Y = player.getY();
         Cell oldPlayerCell = map.getCell(X, Y);
         map.setPlayer(null);
         oldPlayerCell.setActor(null);
+        oldPlayerCell.setType(CellType.FLOOR);
     }
 
     private void deleteEnemiesFromMap(GameMap map) {
-        List<Actor> enemyList = map.getEnemiesList();
+        List<Actor> enemyList = map.getAllEnemiesList();
         for (Actor enemy : enemyList) {
             Cell enemyCell = map.getCell(enemy.getX(), enemy.getY());
             enemyCell.setActor(null);
+            enemyCell.setType(CellType.FLOOR);
         }
     }
 
     private void deleteItemsFromMap(GameMap map) {
-        List<Item> itemList = map.getItemsList();
+        List<Item> itemList = map.getAllItemsList();
         for (Item item : itemList) {
             Cell itemCell = item.getCell();
             itemCell.setItem(null);
+            itemCell.setType(CellType.FLOOR);
         }
     }
 

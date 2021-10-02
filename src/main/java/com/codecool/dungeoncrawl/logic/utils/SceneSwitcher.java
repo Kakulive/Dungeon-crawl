@@ -185,7 +185,8 @@ public class SceneSwitcher {
         ui = setUiToMethods();
         ui.add(setPlayer, 0, 1);
         ui.add(loadGame, 0, 3);
-        ui.add(exitButton, 0, 5);
+        ui.add(exitButton, 0, 9);
+        ui.add(importGameStateButton,0,5);
         return ui;
     }
 

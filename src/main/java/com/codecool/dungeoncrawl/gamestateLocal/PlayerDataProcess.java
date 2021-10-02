@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 public interface PlayerDataProcess {
-        void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2);
+        void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2, GameMap map);
         void load(PlayerModel player);
         List<PlayerModel> importAll();
 }
