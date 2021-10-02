@@ -54,27 +54,30 @@ public class Buttons {
 
         if (sumStatsPlayer > sumStatsConstant) {
             if (numberAddButtons == 1) {
-                if (validStats(map)) {
+                if (validHealth(sceneSwitcher)) {
                     map.getPlayer().setHealth(health - maxSub);
                     sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
                     sceneSwitcher.getHealthLabel().setText("" + map.getPlayer().getHealth());
                 } else {
+                    map.getPlayer().setHealth(PlayerStats.HEALTH.getValueStat());
                     MessageFlashing.flashMessage("That game is hard to play. Is better when you have more HP");
                 }
             } else if (numberAddButtons == 2) {
-                if (validStats(map)) {
+                if (validArmor(sceneSwitcher)) {
                     map.getPlayer().setArmor(armor - maxSub);
                     sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
                     sceneSwitcher.getArmorLabel().setText("" + map.getPlayer().getArmor());
                 } else {
+                    map.getPlayer().setArmor(PlayerStats.ARMOR.getValueStat());
                     MessageFlashing.flashMessage("0 armor is small value. And you want have smaller value???");
                 }
             } else if (numberAddButtons == 3){
-                if (validStats(map)) {
+                if (validAttack(sceneSwitcher)) {
                     map.getPlayer().setAttack(attack - maxSub);
                     sceneSwitcher.setSeparationStatistic(maximumToAdd + numberToScene);
                     sceneSwitcher.getAttackLabel().setText("" + map.getPlayer().getAttack());
                 } else {
+                    map.getPlayer().setAttack(PlayerStats.ATTACK.getValueStat());
                     MessageFlashing.flashMessage("Don't subtract attack!!!");
                 }
             }
@@ -119,16 +122,23 @@ public class Buttons {
         }
     }
 
-    private boolean validStats(GameMap gameMap) {
-        if (gameMap.getPlayer().getHealth() <= PlayerStats.HEALTH.getValueStat()) {
-            return false;
-        } else if (gameMap.getPlayer().getArmor() <= PlayerStats.ARMOR.getValueStat()) {
-            return false;
-        } else if (gameMap.getPlayer().getAttack() <= PlayerStats.ATTACK.getValueStat()) {
-            return false;
-        }
-        return true;
+    private boolean validHealth (SceneSwitcher sceneSwitcher) {
+        return (PlayerStats.HEALTH.getValueStat()) < emptyStrToInt(sceneSwitcher.getHealthLabel().getText());
     }
 
+    private boolean validArmor (SceneSwitcher sceneSwitcher) {
+        return PlayerStats.ARMOR.getValueStat() < emptyStrToInt(sceneSwitcher.getArmorLabel().getText());
+    }
 
+    private boolean validAttack(SceneSwitcher sceneSwitcher) {
+        return PlayerStats.ATTACK.getValueStat() < emptyStrToInt(sceneSwitcher.getAttackLabel().getText());
+    }
+
+    private int emptyStrToInt(String valueFromScene) {
+        if (valueFromScene.equals("")) {
+            return 0;
+        } else {
+            return Integer.parseInt(valueFromScene);
+        }
+    }
 }
