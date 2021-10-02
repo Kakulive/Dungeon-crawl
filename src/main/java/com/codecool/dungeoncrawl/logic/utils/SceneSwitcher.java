@@ -139,8 +139,8 @@ public class SceneSwitcher {
         ui = setUiToMethods();
         ui.add(setPlayer, 0, 1);
         ui.add(loadGame, 0, 3);
-        ui.add(exitButton, 0, 5);
-        ui.add(importGameStateButton,0,7);
+        ui.add(exitButton, 0, 9);
+        ui.add(importGameStateButton,0,5);
         return ui;
     }
 
@@ -231,7 +231,6 @@ public class SceneSwitcher {
 
         left.add(startGameButton, 0, 0);
         left.add(loadGame, 0, 1);
-        left.add(importGameStateButton,0, 2);
 
         setPlayerPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
         setPlayerPane.setLeft(left);
@@ -343,5 +342,4 @@ public class SceneSwitcher {
     public Button getImportGameStateButton() {
         return importGameStateButton;
     }
-
 }

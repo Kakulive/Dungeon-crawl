@@ -61,6 +61,7 @@ public class Main extends Application {
 
     private int inventoryRowIndex = 13;
     private int inventoryColumnIndex = 0;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -132,6 +133,7 @@ public class Main extends Application {
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
             map = importGameState.chooseLocationToImport(map, map1, map2, inventory);
             refresh();
+
             sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
             sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             String userName = map.getPlayer().getName();
@@ -144,6 +146,7 @@ public class Main extends Application {
             drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus();
+
         });
 
 
@@ -216,15 +219,16 @@ public class Main extends Application {
 
     private void deleteItems(GridPane ui, BorderPane borderPane) {
         borderPane.requestFocus();
-        for (int i= 0; i<2; i++){
-        for (int j= 13; j<16; j++) {
-            ui.getChildren().remove(i,j);
+        for (int i = 0; i < 2; i++) {
+            for (int j = 13; j < 16; j++) {
+                ui.getChildren().remove(i, j);
 //            Label imageLabel = new Label();
 ////            Image image = new Image(itemUrl);
 //            imageLabel.setGraphic(null);
 //            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
 
-        }}
+            }
+        }
         refresh();
     }
 
@@ -401,6 +405,7 @@ public class Main extends Application {
         overwriteAlert.setContentText("Would you like to overwrite existing save?");
         return overwriteAlert;
     }
+
     public void setInventoryRowIndex(int inventoryRowIndex) {
         this.inventoryRowIndex = inventoryRowIndex;
     }
