@@ -67,7 +67,7 @@ public class GameDatabaseManager {
         return gameStateModel;
     }
 
-    public List<GameStateModel> getAllSavedGames() {
+    public List<GameStateModel> getAllSavedStatesOfGames() {
         return this.gameStateDao.getAll();
     }
 
@@ -89,12 +89,16 @@ public class GameDatabaseManager {
         return savedGameModel;
     }
 
-    private int getLastSavedGameId() {
-        List<GameStateModel> allSavedGames = this.getAllSavedGames();
-        return allSavedGames.get(allSavedGames.size() - 1).getId();
+    protected int getLastSavedGameId() {
+        List<GameStateModel> allSavedGames = this.getAllSavedStatesOfGames();
+        return allSavedGames.size() > 0 ? allSavedGames.get(allSavedGames.size() - 1).getId() : 1;
     }
 
-    private DataSource connect() throws SQLException {
+    public List<SavedGameModel> getAllSavedGames() {
+        return this.savedGamesDao.getAll();
+    }
+
+    public DataSource connect() throws SQLException {
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         String dbName = env.get("APP_DB_NAME");

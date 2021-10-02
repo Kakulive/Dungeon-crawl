@@ -23,7 +23,7 @@ class ActorTest {
     @Test
     void moveUpdatesCells() {
         //given
-        Player player = new Player(gameMap.getCell(1, 1));
+        Player player = new Player(gameMap.getCell(1, 1), "Bobol");
         //when
         player.move(1, 0);
         //then
@@ -149,5 +149,104 @@ class ActorTest {
         assertFalse(player.isDead());
         assertEquals(1, player.getX());
         assertEquals(2, player.getY());
+    }
+
+    @Test
+    void whenPlayerMovesIntoCandle_loosesHealth() {
+        //given
+        gameMap.getCell(2, 1).setType(CellType.CANDLE);
+        Player player = new Player(gameMap.getCell(1, 1));
+        player.setHealth(10);
+        //when
+        player.move(1, 0);
+        //then
+        assertEquals(2, player.getX());
+        assertEquals(1, player.getY());
+        assertEquals(9, player.getHealth());
+    }
+
+    @Test
+    void whenPlayerWalksIntoStairsAndGoesDown_goingDownTriggers() {
+        //given
+        gameMap.getCell(2, 1).setType(CellType.DOWN_STAIRS);
+        Player player = new Player(gameMap.getCell(1, 1));
+        //when
+        player.move(1, 0);
+        player.setGoingDown(true);
+        //then
+        assertEquals(1, player.getX());
+        assertEquals(1, player.getY());
+        assertTrue(player.isGoingDown());
+    }
+
+    @Test
+    void whenPlayerWalksIntoStairsAndGoesUP_goingUPTriggers() {
+        //given
+        gameMap.getCell(2, 1).setType(CellType.UP_STAIRS);
+        Player player = new Player(gameMap.getCell(1, 1));
+        //when
+        player.move(1, 0);
+        player.setGoingUp(true);
+        //then
+        assertEquals(1, player.getX());
+        assertEquals(1, player.getY());
+        assertTrue(player.isGoingUp());
+    }
+
+    @Test
+    void whenPlayerEntersNameOfOneOfTheDevs_cheatModeIsActivated () {
+        //given
+        Player player1 = new Player(gameMap.getCell(1,1));
+        Player player2 = new Player(gameMap.getCell(1,1));
+        Player player3 = new Player(gameMap.getCell(1,1));
+        Player player4 = new Player(gameMap.getCell(1,1));
+        player1.setName("adam");
+        player2.setName("marcelina");
+        player3.setName("dymitr");
+        player4.setName("damian");
+        //when
+        player1.checkCheatCode(player1.getName());
+        player1.setCheatMode(true);
+        player2.checkCheatCode(player2.getName());
+        player2.setCheatMode(true);
+        player3.checkCheatCode(player3.getName());
+        player3.setCheatMode(true);
+        player4.checkCheatCode(player4.getName());
+        player4.setCheatMode(true);
+        //then
+        assertTrue(player1.isCheatModeOn());
+        assertTrue(player2.isCheatModeOn());
+        assertTrue(player3.isCheatModeOn());
+        assertTrue(player4.isCheatModeOn());
+        assertTrue(player1.checkCheatCode(player1.getName()));
+        assertTrue(player2.checkCheatCode(player2.getName()));
+        assertTrue(player3.checkCheatCode(player3.getName()));
+        assertTrue(player4.checkCheatCode(player4.getName()));
+    }
+
+    @Test
+    void whenCreatingANewSpider_AllOfAttributesWorkProperly() {
+        //given
+        Spider spider = new Spider(gameMap.getCell(1, 1));
+        //when
+        spider.move(1,0);
+        //then
+        assertEquals(2, spider.getHealth());
+        assertEquals(1, spider.getAttack());
+        assertEquals("spider", spider.getTileName());
+        assertNotEquals(spider.cell, gameMap.getCell(1,1));
+    }
+
+    @Test
+    void whenCreatingANewWizard_AllOfAttributesWorkProperly() {
+        //given
+        Wizard wizard = new Wizard(gameMap.getCell(1, 1));
+        //when
+        wizard.move(1,0);
+        //then
+        assertEquals(12, wizard.getHealth());
+        assertEquals(5, wizard.getAttack());
+        assertEquals("wizard", wizard.getTileName());
+        assertEquals(wizard.cell, gameMap.getCell(1,1));
     }
 }

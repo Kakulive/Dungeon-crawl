@@ -52,37 +52,45 @@ public class MapLoader {
                             cell.setType(CellType.FLOOR);
                             Skeleton skeleton = new Skeleton(cell);
                             map.addEnemyToList(skeleton);
+                            map.addAllEnemyToList(skeleton);
                             break;
                         case 'p':
                             cell.setType(CellType.FLOOR);
                             Spider spider = new Spider(cell);
                             map.addEnemyToList(spider);
+                            map.addAllEnemyToList(spider);
                             break;
                         case 'w':
                             cell.setType(CellType.FLOOR);
                             Wizard wizard = new Wizard(cell);
                             map.addEnemyToList(wizard);
+                            map.addAllEnemyToList(wizard);
                             break;
                         case 'g':
                             cell.setType(CellType.FLOOR);
                             Ghost ghost = new Ghost(cell);
                             map.addEnemyToList(ghost);
+                            map.addAllEnemyToList(ghost);
                             break;
                         case 'k':
                             cell.setType(CellType.KEY);
-                            new Key(cell);
+                            Key key = new Key(cell);
+                            map.addItemToList(key);
                             break;
                         case 'x':
                             cell.setType(CellType.HEART);
-                            new Heart(cell);
+                            Heart heart = new Heart(cell);
+                            map.addItemToList(heart);
                             break;
                         case 'i':
                             cell.setType(CellType.SWORD);
-                            new Sword(cell);
+                            Sword sword = new Sword(cell);
+                            map.addItemToList(sword);
                             break;
                         case 'h':
                             cell.setType(CellType.SHIELD);
-                            new Shield(cell);
+                            Shield shield = new Shield(cell);
+                            map.addItemToList(shield);
                             break;
                         case 'n':
                             cell.setType(CellType.CANDLE);

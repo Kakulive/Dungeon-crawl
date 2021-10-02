@@ -137,6 +137,8 @@ public abstract class Actor implements Drawable {
         return cell.getY();
     }
 
+
+
     public void setHealth(int health) {
         this.health = health;
     }
