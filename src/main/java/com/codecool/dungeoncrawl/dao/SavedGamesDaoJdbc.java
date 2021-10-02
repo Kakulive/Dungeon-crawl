@@ -1,11 +1,10 @@
 package com.codecool.dungeoncrawl.dao;
 
-import com.codecool.dungeoncrawl.model.PlayerModel;
+import com.codecool.dungeoncrawl.model.GameStateModel;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SavedGamesDaoJdbc implements SavedGamesDao{
@@ -73,22 +72,8 @@ public class SavedGamesDaoJdbc implements SavedGamesDao{
     }
 
     @Override
-    public List<SavedGameModel> getAll() {
-        try (Connection conn = dataSource.getConnection()){
-            String sql = "SELECT id, game_state_id, save_name " +
-                    "FROM saved_games";
-            ResultSet resultSet = conn.createStatement().executeQuery(sql);
-            List<SavedGameModel> savedGameModels = new ArrayList<>();
-            while (resultSet.next()) {
-                SavedGameModel savedGameModel = getSaveGameModel(resultSet);
-                savedGameModel.setId(resultSet.getInt(1));
-                savedGameModels.add(savedGameModel);
-            }
-            return savedGameModels;
-        } catch (SQLException e) {
-            // TODO Flash message? Make it in another window or in the same?
-            throw new RuntimeException("Error, cannot read all authors", e);
-        }
+    public List<GameStateModel> getAll() {
+        return null;
     }
 
     private SavedGameModel getSaveGameModel(ResultSet resultSet) throws SQLException {

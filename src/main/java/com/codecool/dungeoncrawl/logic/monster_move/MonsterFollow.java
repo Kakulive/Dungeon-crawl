@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MonsterFollow {
-    ChoiceDirection choiceDirection = new ChoiceDirection();
+
 
     public boolean checkIfPlayer(GameMap gameMap, Cell monsterCell) {
         int maxLeft = monsterCell.getY() - 3;
