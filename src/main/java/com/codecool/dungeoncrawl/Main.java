@@ -56,13 +56,11 @@ public class Main extends Application {
     private Canvas canvas = new Canvas(windowWidth, windowHeight);
     private GraphicsContext context = canvas.getGraphicsContext2D();
 
-
     // TODO
     GameDatabaseManager dbManager;
 
     private int inventoryRowIndex = 13;
     private int inventoryColumnIndex = 0;
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -133,8 +131,16 @@ public class Main extends Application {
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
             map = importGameState.chooseLocationToImport(map, map1, map2, inventory);
+            refresh();
+            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
             String userName = map.getPlayer().getName();
             sceneSwitcher.getName().setText(userName);
+            Player player = map.getPlayer();
+            if (player.checkCheatCode(userName)) {
+                player.setCheatMode(true);
+            }
+//            deleteItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
             drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
             refresh();
             sceneSwitcher.getMainBorderPane().requestFocus();
@@ -175,24 +181,24 @@ public class Main extends Application {
     }
 
     private void drawItems(GridPane ui, BorderPane borderPane) {
-        int inventoryRowIndex = 13;
-        int inventoryColumnIndex = 0;
+        setInventoryColumnIndex(0);
+        setInventoryRowIndex(13);
         List<String> items = inventory.getInventoryList();
         borderPane.requestFocus();
-        Label imageLabel = new Label();
         for (String item : items) {
             String itemUrl = null;
             switch (item) {
                 case "key":
-                    itemUrl = "/key.png";
+                    itemUrl = "key.png";
                     break;
                 case "shield":
-                    itemUrl = "/shield.png";
+                    itemUrl = "shield.png";
                     break;
                 case "sword":
-                    itemUrl = "/sword.png";
+                    itemUrl = "sword.png";
                     break;
             }
+            Label imageLabel = new Label();
             Image image = new Image(itemUrl);
             imageLabel.setGraphic(new ImageView(image));
             ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
@@ -202,9 +208,23 @@ public class Main extends Application {
             } else {
                 inventoryColumnIndex++;
             }
+            refresh();
         }
-        this.inventoryColumnIndex = inventoryColumnIndex;
-        this.inventoryRowIndex = inventoryRowIndex;
+        setInventoryColumnIndex(inventoryColumnIndex);
+        setInventoryRowIndex(inventoryRowIndex);
+    }
+
+    private void deleteItems(GridPane ui, BorderPane borderPane) {
+        borderPane.requestFocus();
+        for (int i= 0; i<2; i++){
+        for (int j= 13; j<16; j++) {
+            ui.getChildren().remove(i,j);
+//            Label imageLabel = new Label();
+////            Image image = new Image(itemUrl);
+//            imageLabel.setGraphic(null);
+//            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
+
+        }}
         refresh();
     }
 
@@ -380,6 +400,13 @@ public class Main extends Application {
         overwriteAlert.setHeaderText("Previous save found!");
         overwriteAlert.setContentText("Would you like to overwrite existing save?");
         return overwriteAlert;
+    }
+    public void setInventoryRowIndex(int inventoryRowIndex) {
+        this.inventoryRowIndex = inventoryRowIndex;
+    }
+
+    public void setInventoryColumnIndex(int inventoryColumnIndex) {
+        this.inventoryColumnIndex = inventoryColumnIndex;
     }
 
 }

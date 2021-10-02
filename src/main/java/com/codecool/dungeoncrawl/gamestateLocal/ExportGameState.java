@@ -45,7 +45,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
                 } else {
                     myWriter = new FileWriter(chooser.getSelectedFile() + ".json");
                 }
-                export(playerModel, jo, state, map1, map2);
+                export(playerModel, jo, state, map1, map2, map);
                 myWriter.write(jo.toString());
                 myWriter.close();
                 messageFlashing.showImportAndExportAlerts("Successfully wrote to the file.");
@@ -69,7 +69,7 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
     }
 
     @Override
-    public void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2) {
+    public void export(PlayerModel player, JSONObject jo, GameStateModel state, GameMap map1, GameMap map2, GameMap map) {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String strDate = df.format(date);
@@ -81,8 +81,8 @@ public class ExportGameState extends JPanel implements PlayerDataProcess {
         jo.put("Armor", player.getArmor());
         jo.put("Attack", player.getAttack());
         jo.put("hasKey", player.getHasKey());
-        jo.put("items", inventory.getInventoryList());
-        jo.put("current map", state.getCurrentMap());
+        jo.put("items", map.getPlayer().getInventory().getInventoryList());
+        jo.put("current map", map.getMapName());
         String[] enemyList1 = toStringConverter(map1.getEnemiesList());
         String[] enemyList2 = toStringConverter(map2.getEnemiesList());
         String[] itemList1 = toStringConverterItem(map1.getItemsList());

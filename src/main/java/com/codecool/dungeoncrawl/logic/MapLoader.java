@@ -76,21 +76,26 @@ public class MapLoader {
                             cell.setType(CellType.KEY);
                             Key key = new Key(cell);
                             map.addItemToList(key);
+                            map.addAllItemToList(key);
+
                             break;
                         case 'x':
                             cell.setType(CellType.HEART);
                             Heart heart = new Heart(cell);
                             map.addItemToList(heart);
+                            map.addAllItemToList(heart);
                             break;
                         case 'i':
                             cell.setType(CellType.SWORD);
                             Sword sword = new Sword(cell);
                             map.addItemToList(sword);
+                            map.addAllItemToList(sword);
                             break;
                         case 'h':
                             cell.setType(CellType.SHIELD);
                             Shield shield = new Shield(cell);
                             map.addItemToList(shield);
+                            map.addAllItemToList(shield);
                             break;
                         case 'n':
                             cell.setType(CellType.CANDLE);

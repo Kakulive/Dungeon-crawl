@@ -20,6 +20,7 @@ public class GameMap {
     private List<Actor> enemiesList;
     private List<Actor> allEnemiesList;
     private List<Item> itemsList;
+    private List<Item> allItemsList;
 
     private final Randomizer randomizer = new Randomizer();
 
@@ -30,6 +31,7 @@ public class GameMap {
         enemiesList = new ArrayList<>();
         allEnemiesList = new ArrayList<>();
         itemsList = new ArrayList<>();
+        allItemsList = new ArrayList<>();
         cells = new Cell[width][height];
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -160,6 +162,10 @@ public class GameMap {
     public void addItemToList(Item item) {
         itemsList.add(item);
     }
+    public void addAllItemToList(Item item) {
+        allItemsList.add(item);
+    }
+
 
     public void removeEnemyFromList(int id) {
         enemiesList.removeIf(enemy -> enemy.getId() == id);
@@ -175,6 +181,10 @@ public class GameMap {
 
     public List<Item> getItemsList() {
         return itemsList;
+    }
+
+    public List<Item> getAllItemsList() {
+        return allItemsList;
     }
 
     public List<Actor> getAllEnemiesList() {
