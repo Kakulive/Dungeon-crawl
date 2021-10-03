@@ -22,11 +22,12 @@ import org.json.simple.parser.ParseException;
 public class ImportGameState extends JPanel {
     private MessageFlashing messageFlashing = new MessageFlashing();
     private JFileChooser chooser = new JFileChooser();
+    private int importStatus = 0;
 
 
     public GameMap chooseLocationToImport(GameMap map, GameMap map1, GameMap map2, Inventory inventory) {
         JSONParser jsonParser = new JSONParser();
-
+//        this.map = map;
         prepareLocationSelectWindow("Select file to import");
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try {
@@ -49,6 +50,7 @@ public class ImportGameState extends JPanel {
                 setPlayerOnMap(player, map, playerX, playerY);
                 addItemsToInventory(gameState, player, inventory);
                 setPlayerParameters(gameState, player);
+                this.importStatus = 1;
                 messageFlashing.showImportAndExportAlerts("Game state imported successfully!");
             } catch (FileNotFoundException e) {
                 messageFlashing.showImportAndExportAlerts("File not found");
@@ -64,9 +66,12 @@ public class ImportGameState extends JPanel {
         } else {
             System.out.println("No Selection ");
         }
-
         return map;
     }
+
+//    public GameMap getMap() {
+//        return map;
+//    }
 
     private void addItemsToInventory(JSONObject gameState, Player player, Inventory inventory) {
         ArrayList items = ((ArrayList) gameState.get("items"));
@@ -187,7 +192,9 @@ public class ImportGameState extends JPanel {
         }
     }
 
-
+    public int getImportStatus() {
+        return importStatus;
+    }
 
     private void setItemsOnMap(GameMap map, ArrayList items) {
         for (Object item : items) {
