@@ -15,6 +15,8 @@ import com.codecool.dungeoncrawl.model.LoadMenu;
 import com.codecool.dungeoncrawl.model.SavedGameModel;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -29,6 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -132,20 +135,23 @@ public class Main extends Application {
 
         sceneSwitcher.getImportGameStateButton().setOnAction(event -> {
             map = importGameState.chooseLocationToImport(map, map1, map2, inventory);
-            refresh();
-
-            sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
-            sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
-            String userName = map.getPlayer().getName();
-            sceneSwitcher.getName().setText(userName);
-            Player player = map.getPlayer();
-            if (player.checkCheatCode(userName)) {
-                player.setCheatMode(true);
+            int status = importGameState.getImportStatus();
+            if (status == 1) {
+                refresh();
+                sceneSwitcher.mainScene(stage, windowWidth, windowHeight, canvas);
+                sceneSwitcher.getMainScene().setOnKeyPressed(this::onKeyPressed);
+                String userName = map.getPlayer().getName();
+                sceneSwitcher.getName().setText(userName);
+                Player player = map.getPlayer();
+                if (player.checkCheatCode(userName)) {
+                    player.setCheatMode(true);
+                }
+//                deleteItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
+                refresh();
+                drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
+                refresh();
+                sceneSwitcher.getMainBorderPane().requestFocus();
             }
-//            deleteItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
-            drawItems(sceneSwitcher.getUi(), sceneSwitcher.getMainBorderPane());
-            refresh();
-            sceneSwitcher.getMainBorderPane().requestFocus();
 
         });
 
@@ -219,19 +225,14 @@ public class Main extends Application {
 
     private void deleteItems(GridPane ui, BorderPane borderPane) {
         borderPane.requestFocus();
-        for (int i = 0; i < 2; i++) {
-            for (int j = 13; j < 16; j++) {
-                ui.getChildren().remove(i, j);
-//            Label imageLabel = new Label();
-////            Image image = new Image(itemUrl);
-//            imageLabel.setGraphic(null);
-//            ui.add(imageLabel, inventoryColumnIndex, inventoryRowIndex);
-
+        for (int j = 13; j < 20; j++) {
+            try {
+                ui.getChildren().remove(0,j);
+                ui.getChildren().remove(1, j);
+            } catch (IndexOutOfBoundsException ignore) {
             }
         }
-        refresh();
     }
-
 
     // TODO
     private void onKeyReleased(KeyEvent keyEvent) {
@@ -414,4 +415,7 @@ public class Main extends Application {
         this.inventoryColumnIndex = inventoryColumnIndex;
     }
 
+    public void setMap(GameMap map) {
+        this.map = map;
+    }
 }

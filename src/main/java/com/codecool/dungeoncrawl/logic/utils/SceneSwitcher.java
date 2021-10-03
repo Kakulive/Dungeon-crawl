@@ -231,6 +231,7 @@ public class SceneSwitcher {
 
         left.add(startGameButton, 0, 0);
         left.add(loadGame, 0, 1);
+        left.add(importGameStateButton, 0, 2);
 
         setPlayerPane.setStyle(getSceneStyleString("dungeon_masters2.jpg"));
         setPlayerPane.setLeft(left);
